@@ -13,6 +13,7 @@ class ContentVM: ObservableObject {
     
     let center = AuthorizationCenter.shared
     let store = ManagedSettingsStore()
+    
     @Published var appSelection = FamilyActivitySelection(includeEntireCategory: true)
     
     func setShieldRestrictions() {
@@ -22,8 +23,4 @@ class ContentVM: ObservableObject {
         ? nil
         : ShieldSettings.ActivityCategoryPolicy.specific(appSelection.categoryTokens)
     }
-    
-
-    
-
 }

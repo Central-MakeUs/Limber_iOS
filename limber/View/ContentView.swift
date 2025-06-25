@@ -38,10 +38,10 @@ struct ContentView: View {
                         .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                     }
                 }
-                 .listStyle(.plain)
-                 .listStyle(.grouped)
+                .listStyle(.plain)
+                .listStyle(.grouped)
             }
-
+            
             
             Button (action: {
                 showPicker = true
@@ -51,16 +51,11 @@ struct ContentView: View {
                 .onChange(of: showPicker) { newValue in
                     if newValue == false { // Picker가 닫히는 시점
                         Task {
-                        vm.setShieldRestrictions()
+                            vm.setShieldRestrictions()
                         }
                     }
                 }
             
         }
     }
-}
-
-#Preview {
-    @StateObject var vm = ContentVM()
-    return ContentView().environmentObject(vm)
 }
