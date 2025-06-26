@@ -9,16 +9,33 @@ import SwiftUI
 
 @main
 struct LimberApp: App {
-    // 자식에게 전달해줄 FamlyViewModel StateObject 선언
-    @StateObject var vm = ContentVM()
-        
-        var body: some Scene {
-            WindowGroup {
-                RootView()
+    @StateObject private var router = AppRouter()
+
+    var body: some Scene {
+        WindowGroup {
+            NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
+                MainView().navigationDestination(for: SomeRoute.self) { route in
+                    switch route {
+                    case .home:
+                        HomeView()
+                    case .laboratory:
+                        ContentView()
+                    case .more:
+                        SettingView()
+                    case .timer:
+                        SettingView()
+                        
+                    }
+                }
             }
+            .environmentObject(router)
+            .background(Color.white)
+           
         }
+    }
 }
 
 #Preview {
-    RootView()
+    MainView()
+        .environmentObject(AppRouter())
 }
