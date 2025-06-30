@@ -28,6 +28,10 @@ struct OnBoarding1View: View {
             CenterView()
             Spacer()
             
+            bottomBtn()
+            Spacer()
+                .frame(height: 10)
+            
         }
         .padding(.horizontal)
     
@@ -83,10 +87,6 @@ struct OnBoarding1View: View {
       
    }
 
-@ViewBuilder
-func nextBtn() -> some View {
-    
-}
 
 #Preview {
     OnBoarding1View()
