@@ -10,6 +10,7 @@ import SwiftUI
 
 extension Color {
     static let LimberPurple = Color("LimberPurple")
+    static let LimberLightGray = Color("LimberLightGray")
     static let LimberOrange = Color("LimberOrange")
     static let LimerLightPurple = Color("LimerLightPurple")
     static let TabBarDark = Color("TabBarDark")

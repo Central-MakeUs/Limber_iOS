@@ -11,6 +11,8 @@ import ManagedSettings
 
 class ContentVM: ObservableObject {
     
+    
+    
     let center = AuthorizationCenter.shared
     let store = ManagedSettingsStore()
     
@@ -22,5 +24,9 @@ class ContentVM: ObservableObject {
         store.shield.applicationCategories = appSelection.categoryTokens.isEmpty
         ? nil
         : ShieldSettings.ActivityCategoryPolicy.specific(appSelection.categoryTokens)
+    }
+    
+    func onAppear() {
+        
     }
 }

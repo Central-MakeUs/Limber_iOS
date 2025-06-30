@@ -21,9 +21,9 @@ struct LimberApp: App {
                     case .laboratory:
                         ContentView()
                     case .more:
-                        SettingView()
+                        ExampleView()
                     case .timer:
-                        SettingView()
+                        ExampleView()
                         
                     }
                 }

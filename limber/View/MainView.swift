@@ -27,7 +27,7 @@ struct MainView: View {
                 .environmentObject(contentVM)
                 .tag(AppRouter.Tab.laboratory)
                 .tabItem { Label("타이머", image: "timer") }
-            SettingView()
+            ExampleView()
                 .tag(AppRouter.Tab.more)
                 .tabItem { Label("더보기", image: "more") }
         
