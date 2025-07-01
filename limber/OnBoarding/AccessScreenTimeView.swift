@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
+import FamilyControls
 
 struct AccessScreenTimeView: View {
+    
+    @EnvironmentObject var router: AppRouter
     
     var body: some View {
         HStack {
             Button {
                 
             } label: {
-                //TODO: 이미지로 바꾸기
                 Image("backBtn")
             }
             Spacer()
@@ -63,8 +65,16 @@ struct AccessScreenTimeView: View {
             
             Spacer()
             
-            BottomBtn {
-                
+            BottomBtn(title: "동의하고 시작하기") {
+                Task {
+                    let status = await ScreenTimeManager.shared.requestPermission()
+                    ScreenTimeManager.shared.setStatus(status: status)
+                    if ScreenTimeManager.shared.currentStatus() == .approved {
+                        router.push(.selectApp)
+                    }
+                }
+               
+
             }
             Spacer()
                 .frame(height: 10)
@@ -75,6 +85,55 @@ struct AccessScreenTimeView: View {
     }
 }
 
+
+final class ScreenTimeManager {
+    static let shared = ScreenTimeManager()
+
+    private init() { }
+
+    /// 스크린 타임 권한 요청 및 상태 반환
+    func requestPermission() async -> String {
+        let authCenter = AuthorizationCenter.shared
+
+        do {
+            try await authCenter.requestAuthorization(for: .individual)
+        } catch {
+            print("❌ 권한 요청 실패: \(error)")
+            return "err"
+        }
+
+        try? await Task.sleep(nanoseconds: 500_000_000)
+
+        let status = authCenter.authorizationStatus
+        
+        switch status {
+        case .approved:
+            return "approved"
+        case .denied:
+            return "denied"
+        case .notDetermined:
+            return "notDetermined"
+        default:
+            return ""
+            
+        }
+        
+        
+    }
+
+    /// 현재 상태만 가져오는 경우
+    func currentStatus() -> AuthorizationStatus {
+        return AuthorizationCenter.shared.authorizationStatus
+    }
+    
+    func latestStatus() -> String {
+        UserDefaults.standard.string(forKey: "screenTime") ?? ""
+    }
+    func setStatus(status: String) {
+        UserDefaults.standard.set(status, forKey: "screenTime")
+
+    }
+}
 
 
 

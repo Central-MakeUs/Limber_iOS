@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BottomBtn: View {
-    var title: String = "동의하고 시작하기"
+    var title: String
     var action: () -> Void
 
     var body: some View {

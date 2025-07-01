@@ -28,7 +28,7 @@ struct OnBoarding1View: View {
             CenterView()
             Spacer()
             
-            BottomBtn {
+            BottomBtn(title: "동의하고 시작하기") {
                 
             }
             Spacer()

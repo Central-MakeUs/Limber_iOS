@@ -59,6 +59,7 @@ enum SomeRoute: Hashable {
     case timer
     case laboratory
     case more
+    case selectApp
 
 }
 

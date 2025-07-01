@@ -9,16 +9,18 @@ import SwiftUI
 import FamilyControls
 
 struct RootView: View {
-    @EnvironmentObject var router: AppRouter
+//    @EnvironmentObject var router: AppRouter
     
     var body: some View {
         let _ = print(AuthorizationCenter.shared.authorizationStatus)
-        if AuthorizationCenter.shared.authorizationStatus != .approved {
+        
+        if ScreenTimeManager.shared.latestStatus() != "approved" {
             AccessScreenTimeView()
-                .environmentObject(router)
+//                .environmentObject(router)
         } else {
+            let _ = print("go main View")
             MainView()
-                .environmentObject(router)
+//                .environmentObject(router)
         }
     }
     
