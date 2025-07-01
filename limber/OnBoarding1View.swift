@@ -28,7 +28,9 @@ struct OnBoarding1View: View {
             CenterView()
             Spacer()
             
-            bottomBtn()
+            BottomBtn {
+                
+            }
             Spacer()
                 .frame(height: 10)
             

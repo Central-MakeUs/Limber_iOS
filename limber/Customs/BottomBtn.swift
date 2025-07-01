@@ -7,14 +7,18 @@
 
 import SwiftUI
 
-struct bottomBtn: View {
+struct BottomBtn: View {
+    var title: String = "동의하고 시작하기"
+    var action: () -> Void
+
     var body: some View {
-        Text("동의하고 시작하기")
-        .font(Font.custom("SUIT", size: 16)
-        .weight(.semibold))
-        .frame(width: 350, height: 54)
-        .background(Color(red: 0.69, green: 0.35, blue: 0.96))
-        .foregroundColor(.white)
-        .cornerRadius(10)
+        Button(action: action) {
+            Text(title)
+                .font(Font.suit(.semiBold, size: 16))
+                .frame(width: 350, height: 54)
+                .background(Color(red: 0.69, green: 0.35, blue: 0.96))
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
     }
 }

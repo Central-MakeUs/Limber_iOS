@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FamilyControls
 
 @main
 struct LimberApp: App {
@@ -14,7 +15,7 @@ struct LimberApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
-                MainView().navigationDestination(for: SomeRoute.self) { route in
+                RootView().navigationDestination(for: SomeRoute.self) { route in
                     switch route {
                     case .home:
                         HomeView()
@@ -24,7 +25,6 @@ struct LimberApp: App {
                         ExampleView()
                     case .timer:
                         ExampleView()
-                        
                     }
                 }
             }

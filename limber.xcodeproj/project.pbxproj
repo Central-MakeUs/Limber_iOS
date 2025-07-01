@@ -81,9 +81,19 @@
 			membershipExceptions = (
 				AccessScreenTimeView.swift,
 				App/LimberApp.swift,
+				Customs/BottomBtn.swift,
+				Info.plist,
 				OnBoarding1View.swift,
+				View/RootView.swift,
 			);
 			target = 6076CA1D2E0969560068E676 /* limber_ActivityReport */;
+		};
+		6076CADC2E141B5A0068E676 /* Exceptions for "limber" folder in "limber" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6076C9F02E09664B0068E676 /* limber */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -91,6 +101,7 @@
 		6076C9F32E09664B0068E676 /* limber */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				6076CADC2E141B5A0068E676 /* Exceptions for "limber" folder in "limber" target */,
 				6076CAAF2E12C8C80068E676 /* Exceptions for "limber" folder in "limber_ActivityReport" target */,
 			);
 			path = limber;
@@ -477,6 +488,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = limber/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -508,6 +520,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = limber/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
