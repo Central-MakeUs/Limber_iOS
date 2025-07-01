@@ -73,8 +73,6 @@ struct AccessScreenTimeView: View {
                         router.push(.selectApp)
                     }
                 }
-               
-
             }
             Spacer()
                 .frame(height: 10)

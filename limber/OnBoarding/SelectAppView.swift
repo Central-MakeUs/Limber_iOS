@@ -7,24 +7,22 @@
 
 import SwiftUI
 
-struct SelecAppView: View {
+struct SelectAppView: View {
     @EnvironmentObject var vm: SelectAppVM
+    @EnvironmentObject var router: AppRouter
     @State var showPicker = false
     
     var body: some View {
         HStack {
             Button {
-                
             } label: {
                 Image("backBtn")
             }
             Spacer()
-            
         }
         .padding()
         
-        VStack() {
-            
+        VStack {
             Spacer()
                 .frame(height: 20)
             
@@ -34,7 +32,6 @@ struct SelecAppView: View {
                 )
                 .multilineTextAlignment(.center)
             
-            
             Spacer()
                 .frame(height: 20)
             
@@ -42,20 +39,28 @@ struct SelecAppView: View {
                 .font(
                     Font.suitBody2
                 )
-            
             Spacer()
             
             BottomBtn(title: "앱 등록하기") {
-                vm.setShieldRestrictions()
+                showPicker = true
             }.padding()
+                .familyActivityPicker(isPresented: $showPicker, selection: $vm.appSelection)
+                .onChange(of: showPicker) { new in
+                    if new == false {
+                        Task {
+                            vm.setShieldRestrictions()
+                            router.setRoutes(.main)
+                        }
+                    }
+                }
         }
-        
+        .toolbar(.hidden, for: .navigationBar)
 
     }
     
     
 }
 #Preview {
-    SelecAppView()
+    SelectAppView()
         .environmentObject(SelectAppVM())
 }

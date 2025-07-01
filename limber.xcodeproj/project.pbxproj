@@ -82,6 +82,7 @@
 				App/LimberApp.swift,
 				Info.plist,
 				OnBoarding/AccessScreenTimeView.swift,
+				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoarding1View.swift,
 				View/RootView.swift,
 			);

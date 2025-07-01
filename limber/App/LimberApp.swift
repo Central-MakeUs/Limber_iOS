@@ -26,8 +26,10 @@ struct LimberApp: App {
                     case .timer:
                         ExampleView()
                     case .selectApp:
-                        SelecAppView()
+                        SelectAppView()
                             .environmentObject(SelectAppVM())
+                    case .main:
+                        MainView()
                     }
                 }
             }

@@ -54,7 +54,20 @@ extension AppRouter {
     }
     
 }
+
+extension AppRouter {
+    func setRoutes(_ route: SomeRoute) {
+        someRoutes = [route]
+        path.removeLast(path.count)
+        path.append(route)
+        
+
+        print("newPath \(path.count)")
+    }
+}
+
 enum SomeRoute: Hashable {
+    case main
     case home
     case timer
     case laboratory
@@ -62,4 +75,5 @@ enum SomeRoute: Hashable {
     case selectApp
 
 }
+
 
