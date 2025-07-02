@@ -81,9 +81,10 @@
 			membershipExceptions = (
 				App/LimberApp.swift,
 				Info.plist,
+				"OnBoarding/나중.swift",
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
-				OnBoarding/OnBoarding1View.swift,
+				OnBoarding/OnBoardingView.swift,
 				View/RootView.swift,
 			);
 			target = 6076CA1D2E0969560068E676 /* limber_ActivityReport */;

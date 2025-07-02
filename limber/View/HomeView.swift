@@ -9,10 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        ZStack {
-         Color(red: 0.95, green: 0.94, blue: 0.96)
 
             VStack(spacing: 0) {
+
                 HStack {
                     Image("LIMBER")
                     Spacer()
@@ -150,12 +149,13 @@ struct HomeView: View {
                 
                 
             }
-        }
+            .background(Color.TabBarGray)
     }
 
 
 }
 
 #Preview {
-    MainView().environmentObject(AppRouter())
+    MainView()
+        .environmentObject(AppRouter())
 }

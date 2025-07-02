@@ -10,6 +10,7 @@ import SwiftUI
 struct SelectAppView: View {
     @EnvironmentObject var vm: SelectAppVM
     @EnvironmentObject var router: AppRouter
+    @Binding var onComplete: () -> Void
     @State var showPicker = false
     
     var body: some View {
@@ -49,7 +50,7 @@ struct SelectAppView: View {
                     if new == false {
                         Task {
                             vm.setShieldRestrictions()
-                            router.setRoutes(.main)
+                            onComplete()
                         }
                     }
                 }
@@ -59,8 +60,4 @@ struct SelectAppView: View {
     }
     
     
-}
-#Preview {
-    SelectAppView()
-        .environmentObject(SelectAppVM())
 }
