@@ -16,34 +16,34 @@ struct LimberApp: App {
     
     var body: some Scene {
         WindowGroup {
-            
+            TimerView()
             //            if hasSeenMain {
-            if hasSeenMain {
-                NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
-                    MainView().navigationDestination(for: SomeRoute.self) { route in
-                        switch route {
-                        case .home:
-                            HomeView()
-                        case .laboratory:
-                            ContentView()
-                        case .more:
-                            ExampleView()
-                        case .timer:
-                            ExampleView()
-                        case .main:
-                            MainView()
-                        }
-                    }
-                }
-                .environmentObject(router)
-                .background(Color.white)
-                
-            } else {
-                OnBoardingView(onComplete: {
-                    hasSeenMain = true
-                    
-                })
-            }
+//            if hasSeenMain {
+//                NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
+//                    MainView().navigationDestination(for: SomeRoute.self) { route in
+//                        switch route {
+//                        case .home:
+//                            HomeView()
+//                        case .laboratory:
+//                            ContentView()
+//                        case .more:
+//                            ExampleView()
+//                        case .timer:
+//                            ExampleView()
+//                        case .main:
+//                            MainView()
+//                        }
+//                    }
+//                }
+//                .environmentObject(router)
+//                .background(Color.white)
+//                
+//            } else {
+//                OnBoardingView(onComplete: {
+//                    hasSeenMain = true
+//                    
+//                })
+//            }
             
         }
     }

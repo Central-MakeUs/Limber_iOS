@@ -86,6 +86,7 @@
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
 				View/RootView.swift,
+				View/TimerView.swift,
 			);
 			target = 6076CA1D2E0969560068E676 /* limber_ActivityReport */;
 		};
