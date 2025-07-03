@@ -13,7 +13,7 @@ extension Color {
     static let LimberLightGray = Color("LimberLightGray")
     static let LimberOrange = Color("LimberOrange")
     static let LimerLightPurple = Color("LimerLightPurple")
-    static let TabBarDark = Color("TabBarDark")
+    static let Gray800 = Color("Gray800")
     static let TabBarGray = Color("TabBarGray")
     
 }

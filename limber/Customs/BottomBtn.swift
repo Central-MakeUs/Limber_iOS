@@ -14,7 +14,7 @@ struct BottomBtn: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(Font.suit(.semiBold, size: 16))
+                .font(Font.suitHeading3Small)
                 .frame(width: 350, height: 54)
                 .background(Color(red: 0.69, green: 0.35, blue: 0.96))
                 .foregroundColor(.white)

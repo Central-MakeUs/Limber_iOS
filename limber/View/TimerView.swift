@@ -7,181 +7,277 @@
 
 import SwiftUI
 
-struct TimerView: View {
-    @State private var selectedTime = Date()
-
-    @State var hours: Int = 1
-    @State var minutes: Int = 1
-
-    @State private var duration: TimeInterval = 1500   // 25분
-
-        
-    var body: some View {
-   
-           
-            
-
-            ZStack {
-                
-                
-                Rectangle()
-                          .frame(width: 240, height: 40)
-                          .foregroundStyle(Color.plustoGray.opacity(1))
-                
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        CustomTimePickerView(selectedHour: $hours, selectedMinute: $minutes)
-                            
-                        Spacer()
-                        
-                    }
-                    Spacer()
-                }
-             
-                
-//                HStack {
-//                    Text("시간")
-//                        .offset(x: 180)
-//                    Spacer()
-//                    Text("분")
-//                        .offset(x: -100)
-//
-//                }
-           
-//                CountDownPickerView(duration: $duration)
-//
-            }
-      
-       
+struct ExperimentModel: Hashable {
+    let category: String
+    let title: String
+    let timer: String
+    
+    init(category: String, title: String, timer: String) {
+        self.category = category
+        self.title = title
+        self.timer = timer
     }
+}
+
+struct TimerView: View {
+    
+    @ObservedObject var vm: TimerVM
+    @State var showSheet = false
+    @State var topPick = 0
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            Button {
+                topPick = 0
+            } label: {
+                Text("지금 시작")
+                    .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+                    .font(.suitHeading3Small)
+            }
+            .frame(maxWidth: .infinity, maxHeight: 40)
+            .overlay(
+                Rectangle()
+                    .frame(height: topPick == 1 ? 2: 1 )
+                    .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+            )
             
+            Button {
+                topPick = 1
+            } label: {
+                Text("예약 설정")
+                    .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
+                    .font(.suitHeading3Small)
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: 40)
+            .overlay(
+                Rectangle()
+                    .frame(height: topPick == 1 ? 2: 1 )
+                    .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
+        }
+        
+        
+        VStack(spacing: 0) {
+                        if topPick == 0 {
+                main
+            } else {
+                setting
+            }
+            Spacer()
+            
+            BottomBtn(title: "시작하기"){
+                
+            }.padding()
+        }.background(Color.gray100)
+        
         
     }
     
- 
-#Preview {
-    TimerView()
+    @ViewBuilder
+    var main: some View {
+        Spacer()
+            .frame(height: 60)
+        HStack {
+            Text("무엇에 집중하고 싶으신가요?")
+                .font(.suitHeading3Small)
+                .padding(.horizontal, 20)
+            
+            Spacer()
+        }
+        
+        ScrollView(.horizontal) {
+            
+            HStack(spacing: 8) {
+                ForEach(vm.categorys, id: \.self) { text in
+                    
+                    Text(text)
+                        .foregroundStyle(vm.selectedCategory == text ? Color.Gray800 : Color.gray300)
+                        .frame(width: 68)
+                        .frame(maxHeight: .infinity)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 100)
+                                .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                                            vm.selectedCategory == text ? 2 : 1.2)
+                        )
+                        .cornerRadius(100)
+                        .onTapGesture {
+                            vm.selectedCategory = text
+                        }
+                }
+                
+                Label("직접추가", systemImage: "plus")
+                    .foregroundStyle(Color.gray500)
+                    .frame(width: 112)
+                    .frame(maxHeight: .infinity)             .background(Color.gray200)
+                    .cornerRadius(100)
+                    .onTapGesture {
+                        showSheet = true
+                    }
+                    .sheet(isPresented: $showSheet) {
+                        AutoFocusTextFieldView()
+                            .presentationDetents([.height(700), ]).presentationDragIndicator(.visible)
+                            .presentationCornerRadius(24)
+                            .interactiveDismissDisabled(true)
+                        
+                        
+                        
+                        
+                        
+                    }
+            }
+        }
+        .frame(height: 38)
+        .padding()
+        
+        Spacer()
+            .frame(height: 48)
+        
+        HStack {
+            Text("얼마나 집중하시겠어요?")
+                .font(.suitHeading3Small)
+                .padding(.horizontal, 20)
+            Spacer()
+        }
+        
+        ZStack {
+            Rectangle()
+                .frame(width: 320, height: 44)
+                .cornerRadius(10)
+                .foregroundStyle(
+                    Color.gray200.opacity(0.6))
+            
+            VStack {
+                Spacer()
+                HStack {
+                    CustomTimePickerView(selectedHour: $vm.selectingH, selectedMinute: $vm.selectingM)
+                        .frame(width: 200, height: 200)
+                        .offset(x: -10)
+                }
+                .offset( x: -10, y: -2)
+            }
+            
+        }.frame(maxWidth: .infinity, maxHeight: 200)
+    }
+    
+    @ViewBuilder
+    var setting: some View {
+        Spacer()
+            .frame(height: 25)
+        VStack {
+            HStack {
+                Text("진행 예정인 실험")
+                    .font(.suitHeading3Small)
+                Spacer()
+                Button {
+                } label: {
+                    Text("삭제하기")
+                        .font(.suitBody2)
+                        .frame(width: 80, height: 36)
+                        .foregroundStyle(Color.white)
+                        .background(Color.gray600)
+                        .cornerRadius(100)
+                }
+            }
+            ScrollView {
+            VStack(spacing: 12) {
+                ForEach(vm.staticModels, id: \.self) { model in
+                    HStack(alignment: .top) {
+                        Button(action: {
+                            print("tapp")
+                            if vm.checkedModels.contains(model) {
+                                vm.checkedModels.remove(model)
+                            } else {
+                                vm.checkedModels.insert(model)
+                            }
+                        }) {
+                            ZStack {
+                                // 체크되어 있지 않을 때도 터치 영역 유지!
+                                Circle()
+                                    .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+                                if vm.checkedModels.contains(model) {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .frame(width: 24, height: 24)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.gray300, lineWidth: 1)
+                            )
+                            .contentShape(Circle()) // 터치 판정 확장
+                        }
+                        .padding(8) // 터치가 확실히 잘 되도록 추가 (UI 영향 없음)
+                        
+                        Spacer()
+                            .frame(width: 12)
+                        
+                        VStack(alignment: .leading) {
+                            Text("\(model.category)")
+                                .padding(.bottom, 12)
+                            
+                            Text("\(model.title)")
+                                .padding(.bottom, 6)
+                            Text("\(model.timer)")
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    
+                    
+                }
+                .background(Color.white)
+                .cornerRadius(10)
+                
+            }
+        }
+        }.padding(.horizontal, 20)
+        
+        
+        
+        
+    }
+    
 }
 
 
-struct CustomTimePickerView: UIViewRepresentable {
-    @Binding var selectedHour: Int
-    @Binding var selectedMinute: Int
+#Preview {
+    TimerView(vm: TimerVM())
+}
 
-    let hourRange = Array(0...24)
-    let minuteRange = Array(0...60)
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
 
-    // ⭐️ 여기서 UIView 리턴
-    func makeUIView(context: Context) -> UIView {
-        let stack = UIView()
+struct AutoFocusTextFieldView: View {
+    @State private var text: String = ""
+    @FocusState private var isFocused: Bool
     
-        let hourLabel = UILabel()
-        hourLabel.text = "시간"
-        hourLabel.textAlignment = .center
-        hourLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
-
-        let pickerView = UIPickerView()
-        pickerView.delegate = context.coordinator
-        pickerView.dataSource = context.coordinator
-        pickerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        
-        
-        
-
-        let minuteLabel = UILabel()
-        minuteLabel.text = "분"
-        minuteLabel.textAlignment = .center
-        minuteLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        
-        minuteLabel.translatesAutoresizingMaskIntoConstraints = false
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
-        hourLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        
-        pickerView.backgroundColor = .lightGray.withAlphaComponent(0.2)
-
-        // 원하는 순서대로 추가
-        stack.addSubview(pickerView)
-        stack.addSubview(hourLabel)
-        stack.addSubview(minuteLabel)
-        
-        pickerView.widthAnchor.constraint(equalToConstant: 180).isActive = true
-        pickerView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-
-
-       
-        
-       
-        pickerView.selectRow(selectedHour, inComponent: 0, animated: false)
-        pickerView.selectRow(selectedMinute, inComponent: 1, animated: false)
-        
-        
-       
-        
-        pickerView.centerYAnchor.constraint(equalTo: stack.centerYAnchor).isActive = true
-        pickerView.centerXAnchor.constraint(equalTo: stack.centerXAnchor).isActive = true
-        
-        
-        
-        
-        hourLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        hourLabel.centerYAnchor.constraint(equalTo: pickerView.centerYAnchor).isActive = true
-        hourLabel.leadingAnchor.constraint(equalTo:         pickerView.subviews[0].subviews[0]
-            .trailingAnchor, constant: 0).isActive = true
-        
-        
-        minuteLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        
-        minuteLabel.centerYAnchor.constraint(equalTo: pickerView.centerYAnchor).isActive = true
-        
-        minuteLabel.leadingAnchor.constraint(equalTo: pickerView.subviews[0].subviews[1]
-            .trailingAnchor, constant: 0).isActive = true
-      
-        return stack
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // stackView의 두 번째 뷰가 pickerView임을 가정
-        if let stack = uiView as? UIStackView,
-           let pickerView = stack.arrangedSubviews.first(where: { $0 is UIPickerView }) as? UIPickerView {
-            pickerView.selectRow(selectedHour, inComponent: 0, animated: false)
-            pickerView.selectRow(selectedMinute, inComponent: 1, animated: false)
+    var body: some View {
+        VStack {
+            Spacer()
+                .frame(height: 20)
+            Text("자동 키보드 올라오는 화면")
+                .font(.headline)
+            
+            Spacer()
+            
+            TextField("입력하세요", text: $text)
+                .textFieldStyle(.roundedBorder)
+                .focused($isFocused)
+                .padding()
+                .onChange(of: isFocused) { focused in
+                    if !focused {
+                        // 키보드가 내려가면 다시 포커스!
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                            isFocused = true
+                        }
+                    }
+                }
         }
-    }
-
-    class Coordinator: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
-        var parent: CustomTimePickerView
-
-        init(_ parent: CustomTimePickerView) { self.parent = parent }
-
-        func numberOfComponents(in pickerView: UIPickerView) -> Int { 2 }
-        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-            component == 0 ? parent.hourRange.count : parent.minuteRange.count
-        }
-        func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat { 80 }
-        
-        func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat { 40 }
-        
-        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-            if component == 0 {
-                parent.selectedHour = parent.hourRange[row]
-            } else {
-                parent.selectedMinute = parent.minuteRange[row]
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+                isFocused = true
             }
-        }
-        func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-            if #available(iOS 14.0, *) {
-                pickerView.subviews[1].backgroundColor = .clear
-                
-            }
-            let text = component == 0 ? "\(parent.hourRange[row])" : "\(parent.minuteRange[row])"
-            return NSAttributedString(string: text, attributes: [.foregroundColor: UIColor.black])
+            
         }
     }
 }

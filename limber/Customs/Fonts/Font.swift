@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 extension Font {
     static func suit(_ weight: SuitWeight, size: CGFloat) -> Font {
         .custom(weight.rawValue, size: size)

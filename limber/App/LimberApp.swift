@@ -16,7 +16,7 @@ struct LimberApp: App {
     
     var body: some Scene {
         WindowGroup {
-            TimerView()
+            TimerView(vm: TimerVM())
             //            if hasSeenMain {
 //            if hasSeenMain {
 //                NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
