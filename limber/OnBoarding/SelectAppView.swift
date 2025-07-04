@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import FamilyControls
 
 struct SelectAppView: View {
-    @EnvironmentObject var vm: SelectAppVM
+    @EnvironmentObject var vm: BlockVM
     @EnvironmentObject var router: AppRouter
-    @Binding var onComplete: () -> Void
+    @State var onComplete: () -> Void
     @State var showPicker = false
     
     var body: some View {
@@ -19,6 +20,7 @@ struct SelectAppView: View {
             } label: {
                 Image("backBtn")
             }
+            .padding(.leading)
             Spacer()
         }
         .padding()
@@ -45,19 +47,16 @@ struct SelectAppView: View {
             BottomBtn(title: "앱 등록하기") {
                 showPicker = true
             }.padding()
-                .familyActivityPicker(isPresented: $showPicker, selection: $vm.appSelection)
-                .onChange(of: showPicker) { new in
-                    if new == false {
-                        Task {
-                            vm.setShieldRestrictions()
-                            onComplete()
-                        }
-                    }
+                .sheet(isPresented: $showPicker) {
+                    BlockBottomSheet(vm: vm, onComplete: onComplete)
                 }
+                .presentationDetents([.height(700),])
+                .presentationCornerRadius(24)
         }
         .toolbar(.hidden, for: .navigationBar)
-
+  
     }
     
-    
 }
+
+

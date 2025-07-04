@@ -17,17 +17,18 @@ import Combine
 struct MainView: View {
     @EnvironmentObject var router: AppRouter
     @StateObject var contentVM = ContentVM()
+    @StateObject var timerVM = TimerVM()
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
             HomeView()
                 .tag(AppRouter.Tab.home)
                 .tabItem { Label("홈", image: "home") }
-            ExampleView()
-                .tag(AppRouter.Tab.laboratory)
+            TimerView(vm: timerVM)
+                .tag(AppRouter.Tab.timer)
                 .tabItem { Label("타이머", image: "timer" ) }
             ExampleView()
-                .tag(AppRouter.Tab.timer)
+                .tag(AppRouter.Tab.laboratory)
                 .tabItem { Label("실험실", image: "laboratory") }
             SettingView()
                 .tag(AppRouter.Tab.more)

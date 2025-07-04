@@ -10,26 +10,21 @@ import FamilyControls
 
 @main
 struct LimberApp: App {
-//    @AppStorage("hasSeenMain") var hasSeenMain: Bool = ScreenTimeManager.shared.latestStatus() == "approved"
+ 
     @AppStorage("hasSeenMain") var hasSeenMain: Bool = false
     @StateObject private var router = AppRouter()
-    
+
+
     var body: some Scene {
         WindowGroup {
-            TimerView(vm: TimerVM())
-            //            if hasSeenMain {
-//            if hasSeenMain {
-//                NavigationStack(path: $router.path) { // ✅ 전역 네비게이션 스택
+
+            if hasSeenMain {
+                BlockAppsSheet(filter: .init())
+//                NavigationStack(path: $router.path) {
 //                    MainView().navigationDestination(for: SomeRoute.self) { route in
 //                        switch route {
 //                        case .home:
 //                            HomeView()
-//                        case .laboratory:
-//                            ContentView()
-//                        case .more:
-//                            ExampleView()
-//                        case .timer:
-//                            ExampleView()
 //                        case .main:
 //                            MainView()
 //                        }
@@ -37,13 +32,13 @@ struct LimberApp: App {
 //                }
 //                .environmentObject(router)
 //                .background(Color.white)
-//                
-//            } else {
-//                OnBoardingView(onComplete: {
-//                    hasSeenMain = true
-//                    
-//                })
-//            }
+                
+            } else {
+                OnBoardingView(onComplete: {
+                    hasSeenMain = true
+                    
+                })
+            }
             
         }
     }

@@ -85,6 +85,7 @@
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
+				View/MainView.swift,
 				View/RootView.swift,
 				View/TimerView.swift,
 				ViewModel/TimerVM.swift,

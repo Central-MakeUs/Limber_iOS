@@ -46,13 +46,11 @@ final class ScreenTimeManager {
     func currentStatus() -> AuthorizationStatus {
         return AuthorizationCenter.shared.authorizationStatus
     }
-    
     func latestStatus() -> String {
         UserDefaults.standard.string(forKey: "screenTime") ?? ""
     }
     func setStatus(status: String) {
         UserDefaults.standard.set(status, forKey: "screenTime")
-
     }
 }
  

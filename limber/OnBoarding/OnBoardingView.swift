@@ -18,8 +18,8 @@ struct OnBoardingView: View {
                        .transition(.move(edge: .leading))
                }
                if step == 1 {
-                   SelectAppView(onComplete: $onComplete).transition(.move(edge: .trailing))
-                       .environmentObject(SelectAppVM())
+                   SelectAppView(onComplete: onComplete).transition(.move(edge: .trailing))
+                       .environmentObject(BlockVM())
                }
            }
            .animation(.easeInOut, value: step)

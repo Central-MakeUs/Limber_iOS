@@ -20,58 +20,59 @@ struct ExperimentModel: Hashable {
 }
 
 struct TimerView: View {
-    
     @ObservedObject var vm: TimerVM
     @State var showSheet = false
     @State var topPick = 0
     
     var body: some View {
-        HStack(spacing: 0) {
-            Button {
-                topPick = 0
-            } label: {
-                Text("지금 시작")
-                    .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-                    .font(.suitHeading3Small)
-            }
-            .frame(maxWidth: .infinity, maxHeight: 40)
-            .overlay(
-                Rectangle()
-                    .frame(height: topPick == 1 ? 2: 1 )
-                    .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
-            )
-            
-            Button {
-                topPick = 1
-            } label: {
-                Text("예약 설정")
-                    .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
-                    .font(.suitHeading3Small)
+        
+        VStack {
+            HStack(spacing: 0) {
+                Button {
+                    topPick = 0
+                } label: {
+                    Text("지금 시작")
+                        .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+                        .font(.suitHeading3Small)
+                }
+                .frame(maxWidth: .infinity, maxHeight: 40)
+                .overlay(
+                    Rectangle()
+                        .frame(height: topPick == 1 ? 2: 1 )
+                        .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+                )
                 
+                Button {
+                    topPick = 1
+                } label: {
+                    Text("예약 설정")
+                        .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
+                        .font(.suitHeading3Small)
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: 40)
+                .overlay(
+                    Rectangle()
+                        .frame(height: topPick == 1 ? 2: 1 )
+                        .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
             }
-            .frame(maxWidth: .infinity, maxHeight: 40)
-            .overlay(
-                Rectangle()
-                    .frame(height: topPick == 1 ? 2: 1 )
-                    .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
+            VStack(spacing: 0) {
+                if topPick == 0 {
+                    main
+                } else {
+                    setting
+                }
+                Spacer()
+                
+                BottomBtn(title: "시작하기"){
+                    
+                }.padding()
+            }
         }
-        
-        
-        VStack(spacing: 0) {
-                        if topPick == 0 {
-                main
-            } else {
-                setting
-            }
-            Spacer()
-            
-            BottomBtn(title: "시작하기"){
-                
-            }.padding()
-        }.background(Color.gray100)
-        
-        
+        .background(Color.gray50)
+
     }
+        
     
     @ViewBuilder
     var main: some View {
@@ -84,14 +85,12 @@ struct TimerView: View {
             
             Spacer()
         }
-        
         ScrollView(.horizontal) {
             
             HStack(spacing: 8) {
                 ForEach(vm.categorys, id: \.self) { text in
-                    
                     Text(text)
-                        .foregroundStyle(vm.selectedCategory == text ? Color.Gray800 : Color.gray300)
+                        .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
                         .frame(width: 68)
                         .frame(maxHeight: .infinity)
                         .overlay(
@@ -99,6 +98,7 @@ struct TimerView: View {
                                 .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
                                             vm.selectedCategory == text ? 2 : 1.2)
                         )
+                        .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
                         .cornerRadius(100)
                         .onTapGesture {
                             vm.selectedCategory = text
@@ -115,13 +115,9 @@ struct TimerView: View {
                     }
                     .sheet(isPresented: $showSheet) {
                         AutoFocusTextFieldView()
-                            .presentationDetents([.height(700), ]).presentationDragIndicator(.visible)
+                            .presentationDetents([.height(700), ])
                             .presentationCornerRadius(24)
                             .interactiveDismissDisabled(true)
-                        
-                        
-                        
-                        
                         
                     }
             }
@@ -179,70 +175,67 @@ struct TimerView: View {
                 }
             }
             ScrollView {
-            VStack(spacing: 12) {
-                ForEach(vm.staticModels, id: \.self) { model in
-                    HStack(alignment: .top) {
-                        Button(action: {
-                            print("tapp")
-                            if vm.checkedModels.contains(model) {
-                                vm.checkedModels.remove(model)
-                            } else {
-                                vm.checkedModels.insert(model)
-                            }
-                        }) {
-                            ZStack {
-                                // 체크되어 있지 않을 때도 터치 영역 유지!
-                                Circle()
-                                    .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+                VStack(spacing: 12) {
+                    ForEach(vm.staticModels, id: \.self) { model in
+                        HStack(alignment: .top) {
+                            Button(action: {
                                 if vm.checkedModels.contains(model) {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.white)
+                                    vm.checkedModels.remove(model)
+                                } else {
+                                    vm.checkedModels.insert(model)
                                 }
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+                                    if vm.checkedModels.contains(model) {
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                .frame(width: 24, height: 24)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.gray300, lineWidth: 1)
+                                )
+                                .contentShape(Circle())
                             }
-                            .frame(width: 24, height: 24)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.gray300, lineWidth: 1)
-                            )
-                            .contentShape(Circle()) // 터치 판정 확장
-                        }
-                        .padding(8) // 터치가 확실히 잘 되도록 추가 (UI 영향 없음)
-                        
-                        Spacer()
-                            .frame(width: 12)
-                        
-                        VStack(alignment: .leading) {
-                            Text("\(model.category)")
-                                .padding(.bottom, 12)
+                            .padding(8)
                             
-                            Text("\(model.title)")
-                                .padding(.bottom, 6)
-                            Text("\(model.timer)")
+                            Spacer()
+                                .frame(width: 12)
+                            
+                            VStack(alignment: .leading) {
+                                Text("\(model.category)")
+                                    .font(Font.suitBody2)
+                                    .frame(width: 49, height: 28)
+                                    .background(Color.LimerLightPurple)
+                                    .cornerRadius(100)
+                                    .padding(.bottom, 12)
+                                
+                                
+                                Text("\(model.title)")
+                                    .padding(.bottom, 6)
+                                Text("\(model.timer)")
+                            }
+                            Spacer()
                         }
-                        Spacer()
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    
-                    
+                    .background(Color.white)
+                    .cornerRadius(10)
                 }
-                .background(Color.white)
-                .cornerRadius(10)
-                
             }
-        }
         }.padding(.horizontal, 20)
-        
-        
-        
-        
     }
     
 }
 
-
 #Preview {
-    TimerView(vm: TimerVM())
+    MainView( contentVM: ContentVM(), timerVM: TimerVM())
+        .environmentObject(AppRouter())
 }
 
 
@@ -266,8 +259,7 @@ struct AutoFocusTextFieldView: View {
                 .padding()
                 .onChange(of: isFocused) { focused in
                     if !focused {
-                        // 키보드가 내려가면 다시 포커스!
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             isFocused = true
                         }
                     }

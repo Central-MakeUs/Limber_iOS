@@ -154,8 +154,3 @@ struct HomeView: View {
 
 
 }
-
-#Preview {
-    MainView()
-        .environmentObject(AppRouter())
-}

@@ -9,9 +9,7 @@ import FamilyControls
 import Foundation
 import ManagedSettings
 
-class SelectAppVM: ObservableObject {
-    
-    
+class BlockVM: ObservableObject {
     
     let center = AuthorizationCenter.shared
     let store = ManagedSettingsStore()
@@ -21,9 +19,11 @@ class SelectAppVM: ObservableObject {
     func setShieldRestrictions() {
         store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
         
+        
         store.shield.applicationCategories = appSelection.categoryTokens.isEmpty
         ? nil
         : ShieldSettings.ActivityCategoryPolicy.specific(appSelection.categoryTokens)
+        
     }
     
     func onAppear() {
