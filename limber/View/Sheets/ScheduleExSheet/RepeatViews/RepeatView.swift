@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct RepeatView: View {
-        
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            
             ZStack {
                 
                 HStack {
@@ -29,7 +31,7 @@ struct RepeatView: View {
                 HStack {
                     Spacer()
                     Button {
-                        
+                        dismiss()
                     } label: {
                         Image("xmark")
                     }.padding(.trailing)

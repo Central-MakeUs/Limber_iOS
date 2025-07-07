@@ -25,7 +25,8 @@ struct TimerView: View {
     @State var showSheet = false
     @State var topPick = 0
     @State var showModal = false
-    
+    @State var detents: PresentationDetent = .height(700)
+
     var body: some View {
                 VStack {
                 HStack(spacing: 0) {
@@ -256,9 +257,12 @@ struct TimerView: View {
 
         }.padding(.horizontal, 20)
             .sheet(isPresented: $showSheet) {
-                ScheduleExSheet(vm: self.vm, onComplete: {})
-                    .presentationDetents([.height(700), ])
+                ScheduleExSheet(vm: self.vm, onComplete: {}, on432: {
+                    detents = .height(432)
+                })
+                    .presentationDetents([.height(700), .height(432) ], selection: $detents)
                     .presentationCornerRadius(24)
+                    .interactiveDismissDisabled()
             }
     }
     

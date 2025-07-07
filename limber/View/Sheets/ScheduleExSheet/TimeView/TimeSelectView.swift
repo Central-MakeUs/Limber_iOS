@@ -8,9 +8,10 @@
 import SwiftUI
 struct TimeSelectView: View {
 
+    @Environment(\.dismiss) private var dismiss
     @State var selectingH: Int = 0
     @State var selectingM: Int = 0
-    @State var title = "시작"
+    @State var title: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -32,7 +33,7 @@ struct TimeSelectView: View {
                 HStack {
                     Spacer()
                     Button {
-
+                        dismiss()
                     } label: {
                         Image("xmark")
                     }.padding(.trailing)

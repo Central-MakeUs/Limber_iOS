@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+
 class TimerVM: ObservableObject {
     @EnvironmentObject var router: AppRouter
     @Published var selectingH: Int = 0
@@ -23,10 +24,28 @@ class TimerVM: ObservableObject {
         "오후 5시 36분",
         "오후 10시 32분",
         "2"]
+    
+    @Published var startTimePick = false
+    @Published var finTimePick = false
+    @Published var repeatPick = false
+    @Published var changeSheet = false
 
-    func addBtnTapped() {
+
+    func focusCategoryTapped(idx: Int) {
+        switch idx {
+        case 0:
+            startTimePick = true
+        case 1:
+            finTimePick = true
+        default:
+            repeatPick = true
+        }
+        
+        changeSheet = true
         
     }
+    
+    
     
 }
 

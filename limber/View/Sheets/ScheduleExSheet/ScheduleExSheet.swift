@@ -10,65 +10,92 @@ import SwiftUI
 
 struct ScheduleExSheet: View {
     @Environment(\.dismiss) private var dismiss
-
     @ObservedObject var vm: TimerVM
 
     @State var showSheet = false
     @State var text: String = ""
     @State var onComplete: () -> Void
+    @State var on432: () -> Void
+
+    
 
     var body: some View {
         VStack(alignment: .center) {
-            Spacer()
-                .frame(height: 30)
+            
             ZStack {
-                Text("실험 예약하기")
-                    .font(.suitHeading3Small)
+                if vm.changeSheet {
+                    if vm.startTimePick {
+                        BottomSheet4320H(isTime: true, isStartTime: true, onComplete: {
+                            
+                        })
+                    } else if vm.finTimePick {
+                        BottomSheet4320H(isTime: true, isStartTime: false, onComplete:{
 
-                    .foregroundStyle(.gray800)
-                HStack {
-                    Spacer()
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image("xmark")
-                    }.padding(.trailing)
+                        })
+                    } else if vm.repeatPick {
+                        BottomSheet4320H(isTime: false, isStartTime: false, onComplete:{
+
+                        })
+                    } else {
+                        
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                            .frame(height: 30)
+                        ZStack {
+                            Text("실험 예약하기")
+                                .font(.suitHeading3Small)
+
+                                .foregroundStyle(.gray800)
+                            HStack {
+                                Spacer()
+                                Button {
+                                    dismiss()
+                                } label: {
+                                    Image("xmark")
+                                }.padding(.trailing)
+                            }
+
+                        }.frame(height: 24)
+                        Spacer()
+                            .frame(height: 30)
+
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $text)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(.gray300, lineWidth: 1)
+                                )
+
+                            Text("50자 이내로 입력해주세요.")
+                                .font(.suitBody3)
+                                .foregroundColor(.gray500)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 52)
+                        
+                        category
+                        .padding(.bottom, 48)
+                        
+                        bottom
+
+                        Spacer()
+
+                        BottomBtn(title: "예약하기", action: {
+
+                        })
+
+                    }
                 }
 
-            }.frame(height: 24)
-            Spacer()
-                .frame(height: 30)
-
-
-            VStack(alignment: .leading, spacing: 8) {
-                TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $text)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.gray300, lineWidth: 1)
-                    )
-
-                Text("50자 이내로 입력해주세요.")
-                    .font(.suitBody3)
-                    .foregroundColor(.gray500)
             }
-            .padding(.horizontal)
-            .padding(.bottom, 52)
-            
-            category
-            .padding(.bottom, 48)
-            
-            bottom
-
-            Spacer()
-
-            BottomBtn(title: "예약하기", action: {
-
-            })
-
-        }
-        .background(Color.white)
-        .cornerRadius(24)
+            .background(Color.white)
+            .cornerRadius(24)
+                    }
+                    
 
     }
 
@@ -80,10 +107,11 @@ struct ScheduleExSheet: View {
             HStack {
                 Text("무엇에 집중하고 싶으신가요?")
                     .font(.suitHeading3Small)
-                    .padding(.horizontal, 20)
+                    
                 
                 Spacer()
             }
+            .padding(.bottom, 20)
             ScrollView(.horizontal) {
                 
                 HStack(spacing: 8) {
@@ -122,10 +150,11 @@ struct ScheduleExSheet: View {
                 }
             }
             .frame(height: 38)
-            .padding()
 
 
         }
+        .padding(.horizontal, 20)
+
     }
 
     @ViewBuilder
@@ -148,13 +177,17 @@ struct ScheduleExSheet: View {
                         .font(.suitHeading3Small)
 
                     Button {
-
+                        on432()
+                        vm.focusCategoryTapped(idx: i)
                     } label: {
-                        Image("chevron")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .padding(.leading, 8)
+                            Image("chevron")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .padding(.leading, 8)
+                        
+                        
                     }
+                    .frame(width: 32, height: 32)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -162,12 +195,18 @@ struct ScheduleExSheet: View {
             }
         }
         .padding(.horizontal)
+      
+           
+         
+    
+        
     }
+        
 
 }
 
 
 
 #Preview {
-    BottomSheet700H()
+    ScheduleExSheet(vm: TimerVM(), onComplete: {}, on432: {})
 }
