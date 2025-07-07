@@ -69,6 +69,7 @@ extension AppRouter {
 enum SomeRoute: Hashable {
     case main
     case home
+    
 
 }
 

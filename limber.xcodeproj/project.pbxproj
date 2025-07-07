@@ -7,12 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		604971682E1AADBC00AB2731 /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971672E1AADBC00AB2731 /* SharedData.swift */; };
+		604971692E1AADBC00AB2731 /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971672E1AADBC00AB2731 /* SharedData.swift */; };
+		604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
+		604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */; };
+		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
 		6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA2A2E0969570068E676 /* limber_ActivityReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		604971782E1AAF3900AB2731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6076C9E92E09664B0068E676 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6049716D2E1AAF3900AB2731;
+			remoteInfo = ShieldConfigurationEx;
+		};
 		6076CA122E0969290068E676 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6076C9E92E09664B0068E676 /* Project object */;
@@ -37,6 +49,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */,
+				6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -55,6 +68,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		604971672E1AADBC00AB2731 /* SharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedData.swift; sourceTree = "<group>"; };
+		6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfigurationEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
+		604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = System/Library/Frameworks/ManagedSettingsUI.framework; sourceTree = SDKROOT; };
 		6076C9F12E09664B0068E676 /* limber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = limber_ActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA0B2E0969290068E676 /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
@@ -62,6 +79,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6049717E2E1AAF3A00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "ShieldConfigurationEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
+		};
 		6076CA152E0969290068E676 /* Exceptions for "limber_ActivityMonitor" folder in "limber_ActivityMonitor" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -87,6 +111,7 @@
 				OnBoarding/OnBoardingView.swift,
 				View/MainView.swift,
 				View/RootView.swift,
+				View/Sheets/ScheduleExSheet/ScheduleExSheet.swift,
 				View/TimerView.swift,
 				ViewModel/TimerVM.swift,
 			);
@@ -102,6 +127,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		604971732E1AAF3900AB2731 /* ShieldConfigurationEx */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6049717E2E1AAF3A00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "ShieldConfigurationEx" target */,
+			);
+			path = ShieldConfigurationEx;
+			sourceTree = "<group>";
+		};
 		6076C9F32E09664B0068E676 /* limber */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -130,6 +163,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6049716B2E1AAF3900AB2731 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */,
+				604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6076C9EE2E09664B0068E676 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -158,9 +200,11 @@
 		6076C9E82E09664B0068E676 = {
 			isa = PBXGroup;
 			children = (
+				604971672E1AADBC00AB2731 /* SharedData.swift */,
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
 				6076CA1F2E0969560068E676 /* limber_ActivityReport */,
+				604971732E1AAF3900AB2731 /* ShieldConfigurationEx */,
 				6076CA0A2E0969280068E676 /* Frameworks */,
 				6076C9F22E09664B0068E676 /* Products */,
 			);
@@ -172,6 +216,7 @@
 				6076C9F12E09664B0068E676 /* limber.app */,
 				6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */,
 				6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */,
+				6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -180,6 +225,8 @@
 			isa = PBXGroup;
 			children = (
 				6076CA0B2E0969290068E676 /* DeviceActivity.framework */,
+				6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */,
+				604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -187,6 +234,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6049717B2E1AAF3A00AB2731 /* Build configuration list for PBXNativeTarget "ShieldConfigurationEx" */;
+			buildPhases = (
+				6049716A2E1AAF3900AB2731 /* Sources */,
+				6049716B2E1AAF3900AB2731 /* Frameworks */,
+				6049716C2E1AAF3900AB2731 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				604971732E1AAF3900AB2731 /* ShieldConfigurationEx */,
+			);
+			name = ShieldConfigurationEx;
+			packageProductDependencies = (
+			);
+			productName = ShieldConfigurationEx;
+			productReference = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		6076C9F02E09664B0068E676 /* limber */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6076C9FF2E09664D0068E676 /* Build configuration list for PBXNativeTarget "limber" */;
@@ -202,6 +271,7 @@
 			dependencies = (
 				6076CA132E0969290068E676 /* PBXTargetDependency */,
 				6076CA292E0969570068E676 /* PBXTargetDependency */,
+				604971792E1AAF3900AB2731 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6076C9F32E09664B0068E676 /* limber */,
@@ -268,6 +338,9 @@
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					6049716D2E1AAF3900AB2731 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					6076C9F02E09664B0068E676 = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -296,11 +369,19 @@
 				6076C9F02E09664B0068E676 /* limber */,
 				6076CA082E0969280068E676 /* limber_ActivityMonitor */,
 				6076CA1D2E0969560068E676 /* limber_ActivityReport */,
+				6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6049716C2E1AAF3900AB2731 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6076C9EF2E09664B0068E676 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,10 +406,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6049716A2E1AAF3900AB2731 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6076C9ED2E09664B0068E676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604971682E1AADBC00AB2731 /* SharedData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,12 +432,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604971692E1AADBC00AB2731 /* SharedData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		604971792E1AAF3900AB2731 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
+			targetProxy = 604971782E1AAF3900AB2731 /* PBXContainerItemProxy */;
+		};
 		6076CA132E0969290068E676 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
@@ -362,6 +457,58 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6049717C2E1AAF3A00AB2731 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YH4A87H8M4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldConfigurationEx;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6049717D2E1AAF3A00AB2731 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YH4A87H8M4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldConfigurationEx;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		6076C9FD2E09664D0068E676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -654,6 +801,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6049717B2E1AAF3A00AB2731 /* Build configuration list for PBXNativeTarget "ShieldConfigurationEx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6049717C2E1AAF3A00AB2731 /* Debug */,
+				6049717D2E1AAF3A00AB2731 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6076C9EC2E09664B0068E676 /* Build configuration list for PBXProject "limber" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

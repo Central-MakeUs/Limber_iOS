@@ -19,19 +19,19 @@ struct LimberApp: App {
         WindowGroup {
 
             if hasSeenMain {
-                BlockAppsSheet(filter: .init())
-//                NavigationStack(path: $router.path) {
-//                    MainView().navigationDestination(for: SomeRoute.self) { route in
-//                        switch route {
-//                        case .home:
-//                            HomeView()
-//                        case .main:
-//                            MainView()
-//                        }
-//                    }
-//                }
-//                .environmentObject(router)
-//                .background(Color.white)
+                NavigationStack(path: $router.path) {
+                    MainView().navigationDestination(for: SomeRoute.self) { route in
+                        switch route {
+                        case .home:
+                            HomeView()
+                        case .main:
+                            MainView()
+                     
+                        }
+                    }
+                }
+                .environmentObject(router)
+                .background(Color.white)
                 
             } else {
                 OnBoardingView(onComplete: {

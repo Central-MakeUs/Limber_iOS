@@ -18,9 +18,18 @@ class TimerVM: ObservableObject {
     @Published var checkedModels: Set<ExperimentModel> = []
     @Published var staticModels: Array<ExperimentModel> = [ExperimentModel(category: "작업", title: "포트폴리오 작업하기", timer: "매일, 오전 8시-9시"),ExperimentModel(category: "독서", title: "독서 모임용 책 <IT 트렌드 2024> 다 읽기", timer: "주말, 오후 5시 20분-6시 10분")]
 
-    
+    @Published var timeSelect: [String] = ["시작", "종료", "반복"]
+    @Published var allTime: [String] = [
+        "오후 5시 36분",
+        "오후 10시 32분",
+        "2"]
+
     func addBtnTapped() {
         
     }
     
+}
+
+
+extension TimerVM {
 }

@@ -18,18 +18,19 @@ struct MainView: View {
     @EnvironmentObject var router: AppRouter
     @StateObject var contentVM = ContentVM()
     @StateObject var timerVM = TimerVM()
+    @StateObject var exampleVM = ExampleVM()
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
             HomeView()
                 .tag(AppRouter.Tab.home)
                 .tabItem { Label("홈", image: "home") }
-            TimerView(vm: timerVM)
+            TimerView(exampleVM: exampleVM, vm: timerVM)
                 .tag(AppRouter.Tab.timer)
                 .tabItem { Label("타이머", image: "timer" ) }
-            ExampleView()
-                .tag(AppRouter.Tab.laboratory)
-                .tabItem { Label("실험실", image: "laboratory") }
+//            BlockAppsSheet(vm: exampleVM, showModal: )
+//                .tag(AppRouter.Tab.laboratory)
+//                .tabItem { Label("실험실", image: "laboratory") }
             SettingView()
                 .tag(AppRouter.Tab.more)
                 .tabItem { Label("더보기", image: "more") }

@@ -10,32 +10,33 @@ import DeviceActivity
 import FamilyControls
 
 struct BlockAppsSheet: View {
+    @EnvironmentObject var router: AppRouter
+    @StateObject var pickerVM: BlockVM = BlockVM()
+    @ObservedObject var vm: ExampleVM
     @State private var context: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
-    @State var filter: DeviceActivityFilter
-    var fam = FamilyActivitySelection(includeEntireCategory: true)
-    let duration: String = "1시간 4분"
+    @State private var showPicker = false
+    @Binding var showModal: Bool
+    
     let appCount: Int = 8
-    let blockedApps: [BlockedApp] = [
-        BlockedApp(name: "인스타그램", image: "instagram"),
-        BlockedApp(name: "유튜브", image: "youtube"),
-        BlockedApp(name: "카카오톡", image: "kakao")
-    ]
  
     var body: some View {
+        
+        VStack {
+            
         VStack(spacing: 0) {
             VStack {
-            HStack {
-                Spacer()
-                Button(action: {
-                    
-                }) {
-                    Image("xmark")
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showModal = false
+                    }) {
+                        Image("xmark")
+                    }
                 }
-            }
-            .padding([.top, .trailing], 20)
-            
-            Spacer().frame(height: 16)
-
+                .padding([.top, .trailing], 20)
+                
+                Spacer().frame(height: 16)
+                
                 ZStack {
                     Circle()
                         .fill(Color.gray.opacity(0.15))
@@ -44,26 +45,22 @@ struct BlockAppsSheet: View {
                         .font(.title3)
                         .foregroundColor(.gray)
                 }
-                
-                
                 Spacer().frame(height: 16)
             }
             .frame(maxWidth: .infinity)
             .background(Color.gray200)
-           
+            
             Spacer().frame(height: 28)
-
+            
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    Text("\(duration)")
+                    Text("1시간 4분")
                         .foregroundColor(Color.limberPurple)
                         .font(.suitHeading2)
                     Text("동안")
                         .foregroundColor(.gray800)
                         .font(.suitHeading2)
                 }
-                .padding(.bottom, 2)
-
                 HStack(spacing: 0) {
                     Text("\(appCount)개")
                         .foregroundColor(Color.limberPurple)
@@ -72,42 +69,40 @@ struct BlockAppsSheet: View {
                         .foregroundColor(.gray800)
                         .font(.suitHeading2)
                 }
-  
             }
             .multilineTextAlignment(.center)
             .padding(.bottom, 32)
-
-            // 앱 리스트
-            HStack(spacing: 16) {
-//                ForEach(blockedApps) { app in
-//                    VStack(spacing: 8) {
-//                        Image(app.image) // 실제 이미지 리소스 필요
-//                            .resizable()
-//                            .frame(width: 40, height: 40)
-//                            .cornerRadius(8)
-//                        Text(app.name)
-//                            
-//                    }
-//                    .frame(width: 100, height: 76)
-//                }
-                DeviceActivityReport(context, filter: filter)
-                    
-
-            }
-            .padding(.bottom, 16)
             
-            HStack(spacing: 8) {
+            HStack(spacing: 0) {
                 Spacer()
-                Image(systemName: "pencil")
-                    .foregroundColor(.gray500)
-                Text("편집하기")
-                    .foregroundColor(.gray500)
-                    .font(.system(size: 15))
+                DeviceActivityReport(context, filter: vm.filter)
+                    .foregroundColor(.black)
+           
+                  
                 Spacer()
             }
-            .padding(.bottom, 12)
-
-            // 안내 문구
+            .frame(height: 76)
+            .padding(16)
+            
+            Button {
+                showPicker = true
+            } label: {
+                HStack(spacing: 8) {
+                    Spacer()
+                    Image( "pencil")
+                        .resizable()
+                        .frame(width: 16,height: 16)
+                        .foregroundColor(.gray500)
+                    
+                    Text("편집하기")
+                        .foregroundColor(.gray500)
+                        .font(.system(size: 15))
+                    Spacer()
+                }
+                .padding(.bottom, 12)
+            }
+            
+            
             Text("버튼을 누르면 실험이 시작돼요")
                 .foregroundColor(.gray500)
                 .font(.system(size: 15))
@@ -128,8 +123,20 @@ struct BlockAppsSheet: View {
         }
         .background(Color.white)
         .cornerRadius(16)
-        .padding(24)
-        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 4)
+        .padding(.horizontal, 24)
+        
+    }.background(ClearBackground())
+        .sheet(isPresented: $showPicker) {
+            BlockBottomSheet(vm: pickerVM, onComplete: {})
+                .presentationDetents([.height(700),])
+                .presentationCornerRadius(24)
+                .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 4)
+
+        }
+        
+   
+    
+        
     }
         
 }
@@ -139,8 +146,25 @@ struct BlockedApp: Identifiable {
     let name: String
     let image: String
 }
+struct ClearBackground: UIViewRepresentable {
+    
+    public func makeUIView(context: Context) -> UIView {
+        
+        let view = ClearBackgroundView()
+        DispatchQueue.main.async {
+            view.superview?.superview?.backgroundColor = .clear
+        }
+        return view
+    }
 
-// 프리뷰
-#Preview {
-    BlockAppsSheet(filter: .init())
+    public func updateUIView(_ uiView: UIView, context: Context) {}
+}
+
+class ClearBackgroundView: UIView {
+    open override func layoutSubviews() {
+        guard let parentView = superview?.superview else {
+            return
+        }
+        parentView.backgroundColor = .clear
+    }
 }

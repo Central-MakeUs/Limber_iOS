@@ -43,7 +43,6 @@ struct SelectAppView: View {
                     Font.suitBody2
                 )
             Spacer()
-            
             BottomBtn(title: "앱 등록하기") {
                 showPicker = true
             }.padding()
@@ -54,7 +53,7 @@ struct SelectAppView: View {
                 .presentationCornerRadius(24)
         }
         .toolbar(.hidden, for: .navigationBar)
-  
+     
     }
     
 }

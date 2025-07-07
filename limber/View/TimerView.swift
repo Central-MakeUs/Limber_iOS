@@ -20,59 +20,72 @@ struct ExperimentModel: Hashable {
 }
 
 struct TimerView: View {
+    @ObservedObject var exampleVM: ExampleVM
     @ObservedObject var vm: TimerVM
     @State var showSheet = false
     @State var topPick = 0
+    @State var showModal = false
     
     var body: some View {
-        
-        VStack {
-            HStack(spacing: 0) {
-                Button {
-                    topPick = 0
-                } label: {
-                    Text("지금 시작")
-                        .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-                        .font(.suitHeading3Small)
-                }
-                .frame(maxWidth: .infinity, maxHeight: 40)
-                .overlay(
-                    Rectangle()
-                        .frame(height: topPick == 1 ? 2: 1 )
-                        .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
-                )
-                
-                Button {
-                    topPick = 1
-                } label: {
-                    Text("예약 설정")
-                        .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
-                        .font(.suitHeading3Small)
+                VStack {
+                HStack(spacing: 0) {
+                    Button {
+                        topPick = 0
+                    } label: {
+                        Text("지금 시작")
+                            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+                            .font(.suitHeading3Small)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 40)
+                    .overlay(
+                        Rectangle()
+                            .frame(height: topPick == 1 ? 2: 1 )
+                            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+                    )
                     
+                    Button {
+                        topPick = 1
+                    } label: {
+                        Text("예약 설정")
+                            .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
+                            .font(.suitHeading3Small)
+                        
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 40)
+                    .overlay(
+                        Rectangle()
+                            .frame(height: topPick == 1 ? 2: 1 )
+                            .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
                 }
-                .frame(maxWidth: .infinity, maxHeight: 40)
-                .overlay(
-                    Rectangle()
-                        .frame(height: topPick == 1 ? 2: 1 )
-                        .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
-            }
-            VStack(spacing: 0) {
-                if topPick == 0 {
-                    main
-                } else {
-                    setting
-                }
-                Spacer()
-                
-                BottomBtn(title: "시작하기"){
+                VStack(spacing: 0) {
+                    if topPick == 0 {
+
+                        main
+                        
+                        Spacer()
+
+                        BottomBtn(title: "시작하기"){
+                            self.showModal = true
+                            
+                        }.padding()
+                    } else {
+                        setting
+                    }
                     
-                }.padding()
+            
+                }.background(Color.gray100)
             }
-        }
-        .background(Color.gray50)
+            .fullScreenCover(isPresented: $showModal) {
+                BlockAppsSheet(vm: exampleVM, showModal: $showModal)
+                    .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+                    .background(Color.black.opacity(0.3))
+                        .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+                    .ignoresSafeArea(.all)
+                    }
+            
 
     }
-        
+                               
     
     @ViewBuilder
     var main: some View {
@@ -108,7 +121,7 @@ struct TimerView: View {
                 Label("직접추가", systemImage: "plus")
                     .foregroundStyle(Color.gray500)
                     .frame(width: 112)
-                    .frame(maxHeight: .infinity)             .background(Color.gray200)
+                    .frame(maxHeight: .infinity)            .background(Color.gray200)
                     .cornerRadius(100)
                     .onTapGesture {
                         showSheet = true
@@ -174,68 +187,85 @@ struct TimerView: View {
                         .cornerRadius(100)
                 }
             }
-            ScrollView {
-                VStack(spacing: 12) {
-                    ForEach(vm.staticModels, id: \.self) { model in
-                        HStack(alignment: .top) {
-                            Button(action: {
-                                if vm.checkedModels.contains(model) {
-                                    vm.checkedModels.remove(model)
-                                } else {
-                                    vm.checkedModels.insert(model)
-                                }
-                            }) {
-                                ZStack {
-                                    Circle()
-                                        .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+            
+            ZStack(alignment: .bottomTrailing) {
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach(vm.staticModels, id: \.self) { model in
+                            HStack(alignment: .top) {
+                                Button(action: {
                                     if vm.checkedModels.contains(model) {
-                                        Image(systemName: "checkmark")
-                                            .foregroundColor(.white)
+                                        vm.checkedModels.remove(model)
+                                    } else {
+                                        vm.checkedModels.insert(model)
                                     }
+                                }) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+                                        if vm.checkedModels.contains(model) {
+                                            Image(systemName: "checkmark")
+                                                .foregroundColor(.white)
+                                        }
+                                    }
+                                    .frame(width: 24, height: 24)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.gray300, lineWidth: 1)
+                                    )
+                                    .contentShape(Circle())
                                 }
-                                .frame(width: 24, height: 24)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.gray300, lineWidth: 1)
-                                )
-                                .contentShape(Circle())
-                            }
-                            .padding(8)
-                            
-                            Spacer()
-                                .frame(width: 12)
-                            
-                            VStack(alignment: .leading) {
-                                Text("\(model.category)")
-                                    .font(Font.suitBody2)
-                                    .frame(width: 49, height: 28)
-                                    .background(Color.LimerLightPurple)
-                                    .cornerRadius(100)
-                                    .padding(.bottom, 12)
+                                .padding(8)
                                 
+                                Spacer()
+                                    .frame(width: 12)
                                 
-                                Text("\(model.title)")
-                                    .padding(.bottom, 6)
-                                Text("\(model.timer)")
+                                VStack(alignment: .leading) {
+                                    Text("\(model.category)")
+                                        .font(Font.suitBody2)
+                                        .frame(width: 49, height: 28)
+                                        .background(Color.LimerLightPurple)
+                                        .cornerRadius(100)
+                                        .padding(.bottom, 12)
+                                    
+                                    
+                                    Text("\(model.title)")
+                                        .padding(.bottom, 6)
+                                    Text("\(model.timer)")
+                                }
+                                Spacer()
                             }
-                            Spacer()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        
+                        .background(Color.white)
+                        .cornerRadius(10)
                     }
-                    .background(Color.white)
-                    .cornerRadius(10)
                 }
+                
+                Button {
+                    showSheet = true
+                } label: {
+                    Image("addBtn")
+                }
+                .frame(width: 56, height: 56)
+                .padding(.bottom, 40)
+
             }
+
         }.padding(.horizontal, 20)
+            .sheet(isPresented: $showSheet) {
+                ScheduleExSheet(vm: self.vm, onComplete: {})
+                    .presentationDetents([.height(700), ])
+                    .presentationCornerRadius(24)
+            }
     }
     
 }
 
 #Preview {
-    MainView( contentVM: ContentVM(), timerVM: TimerVM())
-        .environmentObject(AppRouter())
+    TimerView(exampleVM: ExampleVM(), vm: TimerVM())
 }
 
 

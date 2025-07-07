@@ -18,7 +18,11 @@ struct BlockBottomSheet: View {
             Spacer()
                 .frame(height: 20)
             HStack {
-                Image("backBtn")
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image("xmark")
+                }
                 Spacer()
                 
                 Button {
@@ -31,14 +35,15 @@ struct BlockBottomSheet: View {
                 } label: {
                     Text("선택 완료")
                         .font(.suitBody2)
-                        .foregroundStyle(Color.limberPurple)
+                        .foregroundStyle(vm.appSelection.applications.count > 10 ? .gray400 :
+                                .limberPurple)
                     
                 }
+            
                 .disabled(vm.appSelection.applications.count > 10)
 
             }
             .padding(20)
-            
             HStack {
                 Text("관리할 앱을 최대 10개까지 등록해주세요")
                     .font(.suitHeading3)
@@ -47,7 +52,6 @@ struct BlockBottomSheet: View {
             }
             .padding(.leading)
             .padding(.bottom, 6)
-            
             HStack(spacing: 0) {
                 Text("\(vm.appSelection.applications.count)")
                     .font(.suitHeading3Small)
@@ -71,8 +75,10 @@ struct BlockBottomSheet: View {
                 .frame(height: 16)
             
             FamilyActivityPicker(selection: $vm.appSelection)
+                .onAppear(perform: vm.onAppear)
         }
         
         
     }
+    
 }

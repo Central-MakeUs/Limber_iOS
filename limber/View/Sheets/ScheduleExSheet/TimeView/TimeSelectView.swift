@@ -1,0 +1,74 @@
+//
+//  TimeSelectView.swift
+//  limber
+//
+//  Created by 양승완 on 7/7/25.
+//
+
+import SwiftUI
+struct TimeSelectView: View {
+
+    @State var selectingH: Int = 0
+    @State var selectingM: Int = 0
+    @State var title = "시작"
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack {
+
+                HStack {
+                    Button {
+
+                    } label: {
+                        Image("backBtn")
+                    }.padding(.leading)
+
+                    Spacer()
+
+                }
+                Text("\(title) 시간")
+                    .font(.suitHeading3Small)
+                    .foregroundStyle(.gray800)
+                HStack {
+                    Spacer()
+                    Button {
+
+                    } label: {
+                        Image("xmark")
+                    }.padding(.trailing)
+                }
+
+            }.frame(height: 24)
+
+            Spacer()
+                .frame(height: 30)
+
+            Text("시작할 시간을 선택해주세요")
+                .foregroundStyle(.gray800)
+                .font(.suitHeading3)
+                .padding(.leading, 20)
+
+            ZStack {
+                Rectangle()
+                    .frame(width: 320, height: 44)
+                    .cornerRadius(10)
+                    .foregroundStyle(
+                        Color.gray200.opacity(0.6))
+
+                VStack {
+                    Spacer()
+                    HStack {
+                        CustomTimePickerView(selectedHour: $selectingH, selectedMinute: $selectingM)
+                            .frame(width: 200, height: 200)
+                            .offset(x: -10)
+                    }
+                    .offset( x: -10, y: -2)
+                }
+
+            }.frame(maxWidth: .infinity, maxHeight: 200)
+            Spacer()
+
+        }
+    }
+
+}
