@@ -19,13 +19,14 @@ struct MainView: View {
     @StateObject var contentVM = ContentVM()
     @StateObject var timerVM = TimerVM()
     @StateObject var exampleVM = ExampleVM()
+    @StateObject var scheduleExVM = ScheduleExVM()
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
             HomeView()
                 .tag(AppRouter.Tab.home)
                 .tabItem { Label("홈", image: "home") }
-            TimerView(exampleVM: exampleVM, vm: timerVM)
+            TimerView(exampleVM: exampleVM, timerVM: timerVM, schedulExVM: scheduleExVM)
                 .tag(AppRouter.Tab.timer)
                 .tabItem { Label("타이머", image: "timer" ) }
 //            BlockAppsSheet(vm: exampleVM, showModal: )

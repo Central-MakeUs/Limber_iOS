@@ -15,16 +15,7 @@ struct SelectAppView: View {
     @State var showPicker = false
     
     var body: some View {
-        HStack {
-            Button {
-            } label: {
-                Image("backBtn")
-            }
-            .padding(.leading)
-            Spacer()
-        }
-        .padding()
-        
+
         VStack {
             Spacer()
                 .frame(height: 20)

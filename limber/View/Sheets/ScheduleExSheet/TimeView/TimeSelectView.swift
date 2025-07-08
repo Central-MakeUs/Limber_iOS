@@ -9,17 +9,15 @@ import SwiftUI
 struct TimeSelectView: View {
 
     @Environment(\.dismiss) private var dismiss
-    @State var selectingH: Int = 0
-    @State var selectingM: Int = 0
-    @State var title: String
+    @ObservedObject var vm: ScheduleExVM
+    
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack {
-
                 HStack {
                     Button {
-
+                        vm.goBack700H()
                     } label: {
                         Image("backBtn")
                     }.padding(.leading)
@@ -27,7 +25,7 @@ struct TimeSelectView: View {
                     Spacer()
 
                 }
-                Text("\(title) 시간")
+                Text("\(vm.bottomSheetTitle) 시간")
                     .font(.suitHeading3Small)
                     .foregroundStyle(.gray800)
                 HStack {
@@ -59,7 +57,7 @@ struct TimeSelectView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        CustomTimePickerView(selectedHour: $selectingH, selectedMinute: $selectingM)
+                        CustomTimePickerView(selectedHour: $vm.selectedHour, selectedMinute: $vm.selectedMinute)
                             .frame(width: 200, height: 200)
                             .offset(x: -10)
                     }
@@ -69,6 +67,8 @@ struct TimeSelectView: View {
             }.frame(maxWidth: .infinity, maxHeight: 200)
             Spacer()
 
+        }.onAppear {
+            vm.checkBottomBtn()
         }
     }
 

@@ -17,7 +17,6 @@ struct LimberApp: App {
 
     var body: some Scene {
         WindowGroup {
-
             if hasSeenMain {
                 NavigationStack(path: $router.path) {
                     MainView().navigationDestination(for: SomeRoute.self) { route in

@@ -10,35 +10,18 @@ import SwiftUI
 
 struct ScheduleExSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var vm: TimerVM
-
+    @ObservedObject var vm = ScheduleExVM()
+    
+    
     @State var showSheet = false
     @State var text: String = ""
-    @State var onComplete: () -> Void
-    @State var on432: () -> Void
-
-    
 
     var body: some View {
         VStack(alignment: .center) {
             
             ZStack {
                 if vm.changeSheet {
-                    if vm.startTimePick {
-                        BottomSheet4320H(isTime: true, isStartTime: true, onComplete: {
-                            
-                        })
-                    } else if vm.finTimePick {
-                        BottomSheet4320H(isTime: true, isStartTime: false, onComplete:{
-
-                        })
-                    } else if vm.repeatPick {
-                        BottomSheet4320H(isTime: false, isStartTime: false, onComplete:{
-
-                        })
-                    } else {
-                        
-                    }
+                    BottomSheet4320H(vm: vm)
                 } else {
                     VStack {
                         Spacer()
@@ -60,7 +43,6 @@ struct ScheduleExSheet: View {
                         }.frame(height: 24)
                         Spacer()
                             .frame(height: 30)
-
 
                         VStack(alignment: .leading, spacing: 8) {
                             TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $text)
@@ -85,7 +67,7 @@ struct ScheduleExSheet: View {
                         Spacer()
 
                         BottomBtn(title: "예약하기", action: {
-
+                            
                         })
 
                     }
@@ -94,6 +76,7 @@ struct ScheduleExSheet: View {
             }
             .background(Color.white)
             .cornerRadius(24)
+            
                     }
                     
 
@@ -135,13 +118,14 @@ struct ScheduleExSheet: View {
                     Label("직접추가", systemImage: "plus")
                         .foregroundStyle(Color.gray500)
                         .frame(width: 112)
-                        .frame(maxHeight: .infinity)            .background(Color.gray200)
+                        .frame(maxHeight: .infinity)
+                        .background(Color.gray200)
                         .cornerRadius(100)
                         .onTapGesture {
                             showSheet = true
                         }
                         .sheet(isPresented: $showSheet) {
-                            AutoFocusTextFieldView()
+                            AutoFocusSheet()
                                 .presentationDetents([.height(700), ])
                                 .presentationCornerRadius(24)
                                 .interactiveDismissDisabled(true)
@@ -177,7 +161,6 @@ struct ScheduleExSheet: View {
                         .font(.suitHeading3Small)
 
                     Button {
-                        on432()
                         vm.focusCategoryTapped(idx: i)
                     } label: {
                             Image("chevron")
@@ -207,6 +190,7 @@ struct ScheduleExSheet: View {
 
 
 
-#Preview {
-    ScheduleExSheet(vm: TimerVM(), onComplete: {}, on432: {})
-}
+//#Preview {
+//  
+//}
+ 

@@ -10,6 +10,24 @@ import SwiftUI
 struct BottomBtn: View {
     var title: String
     var action: () -> Void
+    let gradient = LinearGradient(
+        stops: [
+        Gradient.Stop(color: Color(red: 0.73, green: 0.38, blue: 1), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.51, green: 0.03, blue: 0.82), location: 1.00),
+        ],
+        startPoint: UnitPoint(x: 0, y: 0.5),
+        endPoint: UnitPoint(x: 1, y: 0.5)
+            )
+    
+    let disabled = LinearGradient(
+        stops: [
+            Gradient.Stop(color: .gray600, location: 0.00),
+        ],
+        startPoint: UnitPoint(x: 0, y: 0),
+        endPoint: UnitPoint(x: 1, y: 1)
+            )
+    
+    @State var isEnable: Bool = true
 
     var body: some View {
         Button(action: action) {
@@ -17,14 +35,7 @@ struct BottomBtn: View {
                 .font(Font.suitHeading3Small)
                 .frame(width: 350, height: 54)
                 .background(
-                LinearGradient(
-                stops: [
-                Gradient.Stop(color: Color(red: 0.73, green: 0.38, blue: 1), location: 0.00),
-                Gradient.Stop(color: Color(red: 0.51, green: 0.03, blue: 0.82), location: 1.00),
-                ],
-                startPoint: UnitPoint(x: 0, y: 0.5),
-                endPoint: UnitPoint(x: 1, y: 0.5)
-                )
+                    isEnable == true ? gradient : disabled
                 )
                 .foregroundColor(.white)
                 .cornerRadius(10)

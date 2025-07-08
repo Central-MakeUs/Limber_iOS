@@ -27,15 +27,6 @@ class BlockVM: ObservableObject {
         
         store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
         
-        appSelection.applications.forEach  {
-            var list: [Data:String] = [:]
-            if let encoded = try? JSONEncoder().encode($0.token) {
-                list[encoded] = $0.localizedDisplayName
-            }
-            UserDefaults.standard.set(list, forKey: "blocked")
-
-        }
-        
         store.shield.applicationCategories = appSelection.categoryTokens.isEmpty
         ? nil
         : ShieldSettings.ActivityCategoryPolicy.specific(appSelection.categoryTokens)

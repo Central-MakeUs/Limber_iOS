@@ -6,37 +6,33 @@
 //
 
 import SwiftUI
+import Combine
 
 struct BottomSheet4320H: View {
-    @State var isTime: Bool
-    @State var isStartTime: Bool
-    @State var title = "시작"
-    var onComplete: () -> Void
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var vm: ScheduleExVM
+    
     var body: some View {
         VStack {
             Spacer()
                 .frame(height: 30)
-                if isTime {
-                    
-                    if isStartTime {
-                        TimeSelectView(title: "시작")
-
-                    } else {
-                        TimeSelectView(title: "종료")
-
-                    }
-
-                    Spacer()
-
-                } else {
-                    RepeatView()
-                    Spacer()
-
-                }
-            
-            BottomBtn(title: "완료", action: {
+            if vm.isTime {
+                TimeSelectView(vm: vm)
+                Spacer()
                 
-            })
+            } else {
+                RepeatView(vm: vm)
+                Spacer()
+            }
+            BottomBtn(title: "완료", action: {
+                if vm.isTime {
+                    vm.timePicked()
+                } else {
+                    vm.repeatPicked()
+                }
+                vm.goBack700H()
+            }, isEnable: vm.bottomBtnEnable)
+            
         }
     }
 }

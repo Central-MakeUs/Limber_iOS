@@ -15,7 +15,6 @@ struct AccessScreenTimeView: View {
     var body: some View {
         HStack {
             Button {
-                
             } label: {
                 Image("backBtn")
             }

@@ -7,86 +7,76 @@
 
 import SwiftUI
 
-struct ExperimentModel: Hashable {
-    let category: String
-    let title: String
-    let timer: String
-    
-    init(category: String, title: String, timer: String) {
-        self.category = category
-        self.title = title
-        self.timer = timer
-    }
-}
 
 struct TimerView: View {
     @ObservedObject var exampleVM: ExampleVM
-    @ObservedObject var vm: TimerVM
+    @ObservedObject var timerVM: TimerVM
+    @ObservedObject var schedulExVM: ScheduleExVM
+    
     @State var showSheet = false
-    @State var topPick = 0
     @State var showModal = false
-    @State var detents: PresentationDetent = .height(700)
-
+    @State var topPick = 0
+    
     var body: some View {
-                VStack {
-                HStack(spacing: 0) {
-                    Button {
-                        topPick = 0
-                    } label: {
-                        Text("지금 시작")
-                            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-                            .font(.suitHeading3Small)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .overlay(
-                        Rectangle()
-                            .frame(height: topPick == 1 ? 2: 1 )
-                            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
-                    )
-                    
-                    Button {
-                        topPick = 1
-                    } label: {
-                        Text("예약 설정")
-                            .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
-                            .font(.suitHeading3Small)
-                        
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .overlay(
-                        Rectangle()
-                            .frame(height: topPick == 1 ? 2: 1 )
-                            .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
+        VStack {
+            HStack(spacing: 0) {
+                Button {
+                    topPick = 0
+                } label: {
+                    Text("지금 시작")
+                        .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+                        .font(.suitHeading3Small)
                 }
-                VStack(spacing: 0) {
-                    if topPick == 0 {
-
-                        main
-                        
-                        Spacer()
-
-                        BottomBtn(title: "시작하기"){
-                            self.showModal = true
-                            
-                        }.padding()
-                    } else {
-                        setting
-                    }
+                .frame(maxWidth: .infinity, maxHeight: 40)
+                .overlay(
+                    Rectangle()
+                        .frame(height: topPick == 0 ? 2: 1 )
+                        .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+                )
+                
+                Button {
+                    topPick = 1
+                } label: {
+                    Text("예약 설정")
+                        .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
+                        .font(.suitHeading3Small)
                     
-            
-                }.background(Color.gray100)
+                }
+                .frame(maxWidth: .infinity, maxHeight: 40)
+                .overlay(
+                    Rectangle()
+                        .frame(height: topPick == 1 ? 2: 1 )
+                        .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
             }
-            .fullScreenCover(isPresented: $showModal) {
-                BlockAppsSheet(vm: exampleVM, showModal: $showModal)
-                    .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
-                    .background(Color.black.opacity(0.3))
-                        .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
-                    .ignoresSafeArea(.all)
-                    }
-            
-
+            VStack(spacing: 0) {
+                if topPick == 0 {
+                    
+                    main
+                    
+                    Spacer()
+                    
+                    BottomBtn(title: "시작하기"){
+                        self.showModal = true
+                        
+                    }.padding()
+                } else {
+                    setting
+                }
+                
+                
+            }.background(Color.gray100)
+        }
+        .fullScreenCover(isPresented: $showModal) {
+            BlockAppsSheet(vm: exampleVM, showModal: $showModal)
+                .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+                .background(Color.black.opacity(0.3))
+                .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+                .ignoresSafeArea(.all)
+        }
+        
+        
     }
-                               
+    
     
     @ViewBuilder
     var main: some View {
@@ -102,20 +92,20 @@ struct TimerView: View {
         ScrollView(.horizontal) {
             
             HStack(spacing: 8) {
-                ForEach(vm.categorys, id: \.self) { text in
+                ForEach(timerVM.categorys, id: \.self) { text in
                     Text(text)
-                        .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
+                        .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
                         .frame(width: 68)
                         .frame(maxHeight: .infinity)
                         .overlay(
                             RoundedRectangle(cornerRadius: 100)
-                                .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
-                                            vm.selectedCategory == text ? 2 : 1.2)
+                                .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                                            timerVM.selectedCategory == text ? 2 : 1.2)
                         )
-                        .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
+                        .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
                         .cornerRadius(100)
                         .onTapGesture {
-                            vm.selectedCategory = text
+                            timerVM.selectedCategory = text
                         }
                 }
                 
@@ -128,7 +118,7 @@ struct TimerView: View {
                         showSheet = true
                     }
                     .sheet(isPresented: $showSheet) {
-                        AutoFocusTextFieldView()
+                        AutoFocusSheet()
                             .presentationDetents([.height(700), ])
                             .presentationCornerRadius(24)
                             .interactiveDismissDisabled(true)
@@ -159,7 +149,7 @@ struct TimerView: View {
             VStack {
                 Spacer()
                 HStack {
-                    CustomTimePickerView(selectedHour: $vm.selectingH, selectedMinute: $vm.selectingM)
+                    CustomTimePickerView(selectedHour: $timerVM.selectingH, selectedMinute: $timerVM.selectingM)
                         .frame(width: 200, height: 200)
                         .offset(x: -10)
                 }
@@ -180,64 +170,87 @@ struct TimerView: View {
                 Spacer()
                 Button {
                 } label: {
-                    Text("삭제하기")
-                        .font(.suitBody2)
-                        .frame(width: 80, height: 36)
-                        .foregroundStyle(Color.white)
-                        .background(Color.gray600)
-                        .cornerRadius(100)
+                    
+                    HStack(spacing: 4) {
+                        Image("pencil")
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                            .padding(.leading, 12)
+                        Text("편집하기")
+                            .frame(width: 49, height: 20)
+                            .font(.suitBody2)
+                            .padding(.trailing, 12)
+                    }
                 }
+                .frame(width: 95, height: 36)
+                .foregroundStyle(.gray600)
+                .background(.gray200)
+                .cornerRadius(100)
             }
             
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     VStack(spacing: 12) {
-                        ForEach(vm.staticModels, id: \.self) { model in
+                        ForEach(timerVM.staticModels, id: \.self) { model in
                             HStack(alignment: .top) {
-                                Button(action: {
-                                    if vm.checkedModels.contains(model) {
-                                        vm.checkedModels.remove(model)
-                                    } else {
-                                        vm.checkedModels.insert(model)
-                                    }
-                                }) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(vm.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
-                                        if vm.checkedModels.contains(model) {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.white)
-                                        }
-                                    }
-                                    .frame(width: 24, height: 24)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.gray300, lineWidth: 1)
-                                    )
-                                    .contentShape(Circle())
-                                }
-                                .padding(8)
+                                // 체크
+                                //                                Button(action: {
+                                //                                    if timerVM.checkedModels.contains(model) {
+                                //                                        timerVM.checkedModels.remove(model)
+                                //                                    } else {
+                                //                                        timerVM.checkedModels.insert(model)
+                                //                                    }
+                                //                                })
+                                //
                                 
-                                Spacer()
-                                    .frame(width: 12)
+                                //                                {
+                                //                                    ZStack {
+                                //                                        Circle()
+                                //                                            .fill(timerVM.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
+                                //                                        if timerVM.checkedModels.contains(model) {
+                                //                                            Image(systemName: "checkmark")
+                                //                                                .foregroundColor(.white)
+                                //                                        }
+                                //                                    }
+                                //                                    .frame(width: 24, height: 24)
+                                //                                    .overlay(
+                                //                                        Circle()
+                                //                                            .stroke(Color.gray300, lineWidth: 1)
+                                //                                    )
+                                //                                    .contentShape(Circle())
+                                //                                }
+                                //                                .padding(8)
                                 
-                                VStack(alignment: .leading) {
+//                                Spacer()
+//                                    .frame(width: 12)
+                                
+                                VStack(alignment: .leading, spacing: 0) {
                                     Text("\(model.category)")
                                         .font(Font.suitBody2)
                                         .frame(width: 49, height: 28)
                                         .background(Color.LimerLightPurple)
+                                        .foregroundStyle(Color.LimberPurple)
                                         .cornerRadius(100)
                                         .padding(.bottom, 12)
-                                    
                                     
                                     Text("\(model.title)")
                                         .padding(.bottom, 6)
                                     Text("\(model.timer)")
                                 }
                                 Spacer()
+                                
+                                Toggle("", isOn: Binding(
+                                    get: { model.isOn },
+                                    set: { newValue in
+                                        timerVM.toggleChanged(id: model.id, newValue: newValue)
+                                    }
+                                ))
+                                .labelsHidden()
+                                .tint(Color.LimberPurple)
+
                             }
                             .frame(maxWidth: .infinity)
-                            .padding()
+                            .padding(20)
                             
                         }
                         .background(Color.white)
@@ -246,21 +259,21 @@ struct TimerView: View {
                 }
                 
                 Button {
+                    schedulExVM.on700()
                     showSheet = true
                 } label: {
                     Image("addBtn")
                 }
                 .frame(width: 56, height: 56)
                 .padding(.bottom, 40)
-
+                
             }
-
+            
         }.padding(.horizontal, 20)
             .sheet(isPresented: $showSheet) {
-                ScheduleExSheet(vm: self.vm, onComplete: {}, on432: {
-                    detents = .height(432)
-                })
-                    .presentationDetents([.height(700), .height(432) ], selection: $detents)
+                ScheduleExSheet(vm: schedulExVM)
+                    .presentationDetents(schedulExVM.heights, selection: $schedulExVM.detents)
+                    .presentationDragIndicator(.hidden)
                     .presentationCornerRadius(24)
                     .interactiveDismissDisabled()
             }
@@ -269,41 +282,8 @@ struct TimerView: View {
 }
 
 #Preview {
-    TimerView(exampleVM: ExampleVM(), vm: TimerVM())
+    TimerView(exampleVM: ExampleVM(), timerVM: TimerVM(), schedulExVM: ScheduleExVM())
 }
 
 
 
-struct AutoFocusTextFieldView: View {
-    @State private var text: String = ""
-    @FocusState private var isFocused: Bool
-    
-    var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: 20)
-            Text("자동 키보드 올라오는 화면")
-                .font(.headline)
-            
-            Spacer()
-            
-            TextField("입력하세요", text: $text)
-                .textFieldStyle(.roundedBorder)
-                .focused($isFocused)
-                .padding()
-                .onChange(of: isFocused) { focused in
-                    if !focused {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            isFocused = true
-                        }
-                    }
-                }
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
-                isFocused = true
-            }
-            
-        }
-    }
-}

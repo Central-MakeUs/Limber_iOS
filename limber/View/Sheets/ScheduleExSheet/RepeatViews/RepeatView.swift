@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Combine
 
 struct RepeatView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var vm: ScheduleExVM
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -17,7 +19,7 @@ struct RepeatView: View {
                 
                 HStack {
                     Button {
-                        
+                        vm.goBack700H()
                     } label: {
                         Image("backBtn")
                     }.padding(.leading)
@@ -46,7 +48,7 @@ struct RepeatView: View {
                 .foregroundStyle(.gray800)
                 .font(.suitHeading3)
                 .padding(.leading, 20)
-            RepeatSelectorView()
+            RepeatSelectorView(vm: vm)
 
             
             Spacer()
