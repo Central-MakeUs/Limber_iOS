@@ -10,6 +10,8 @@ import SwiftUI
 import FamilyControls
 
 struct BlockBottomSheet: View {
+    
+    let isOnboarding: Bool
     @ObservedObject var vm: BlockVM
     @Environment(\.dismiss) private var dismiss
     @State var onComplete: () -> Void
@@ -28,16 +30,19 @@ struct BlockBottomSheet: View {
                 Button {
                     dismiss()
                     Task {
-                        vm.setShieldRestrictions()
-                        onComplete()
+                        if self.isOnboarding {
+                            vm.setShieldRestrictions()
+                            onComplete()
+                        } else {
+                            vm.finishPick()
+                        }
                     }
-                    
                 } label: {
                     Text("선택 완료")
                         .font(.suitBody2)
-                        .foregroundStyle(vm.appSelection.applications.count > 10 ? .gray400 :
-                                .limberPurple)
-                    
+                        .foregroundStyle(
+                            vm.appSelection.applications.count > 10 ?
+                            .gray400 : .limberPurple)
                 }
             
                 .disabled(vm.appSelection.applications.count > 10)
@@ -73,9 +78,9 @@ struct BlockBottomSheet: View {
             .padding(.leading)
             Spacer()
                 .frame(height: 16)
-            
+
             FamilyActivityPicker(selection: $vm.appSelection)
-                .onAppear(perform: vm.onAppear)
+
         }
         
         

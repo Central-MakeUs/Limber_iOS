@@ -22,13 +22,13 @@ struct ActivityReport {
     let apps: [ApplicationToken]
 }
 
-struct AppDeviceActivity: Identifiable {
-    var id: String
-    var displayName: String
-    var duration: TimeInterval
-    var numberOfPickups: Int
-    var token: ApplicationToken?
-}
+//struct AppDeviceActivity: Identifiable {
+//    var id: String
+//    var displayName: String
+//    var duration: TimeInterval
+//    var numberOfPickups: Int
+//    var token: ApplicationToken?
+//}
 
 
 struct TotalActivityReport: DeviceActivityReportScene {
@@ -37,6 +37,7 @@ struct TotalActivityReport: DeviceActivityReportScene {
 
         let store = ManagedSettingsStore()
         let apps = store.shield.applications ?? []
+
         
         for token in apps {
             tokens.append(token)

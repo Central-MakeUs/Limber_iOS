@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct BottomBtn: View {
+    
+    @State var width: CGFloat = 350
+
+    
     var title: String
     var action: () -> Void
     let gradient = LinearGradient(
@@ -33,7 +37,7 @@ struct BottomBtn: View {
         Button(action: action) {
             Text(title)
                 .font(Font.suitHeading3Small)
-                .frame(width: 350, height: 54)
+                .frame(width: width, height: 54)
                 .background(
                     isEnable == true ? gradient : disabled
                 )

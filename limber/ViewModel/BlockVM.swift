@@ -9,6 +9,9 @@ import FamilyControls
 import Foundation
 import ManagedSettings
 
+import SwiftUI
+import DeviceActivity
+
 struct BlockedModel {
     let token: String
     let displayName: String
@@ -16,26 +19,26 @@ struct BlockedModel {
 
 class BlockVM: ObservableObject {
     
-    
-    let center = AuthorizationCenter.shared
     let store = ManagedSettingsStore()
     
     @Published var appSelection = FamilyActivitySelection(includeEntireCategory: true)
-    @Published var appCount = 0
+    @Published var applicationTokens = Set<ApplicationToken>()
     
-    func setShieldRestrictions() {
-        
-        store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
-        
-        store.shield.applicationCategories = appSelection.categoryTokens.isEmpty
-        ? nil
-        : ShieldSettings.ActivityCategoryPolicy.specific(appSelection.categoryTokens)
+    var context: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
 
-    }
-    func onAppear() {
-        appCount = store.shield.applications?.count ?? 0
-        appSelection.applicationTokens = store.shield.applications ?? []
+    func setShieldRestrictions() {
+        store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
     }
     
+    func finishPick() {
+        applicationTokens = appSelection.applicationTokens
+    }
+    
+
+    func reset() {
+        appSelection.applicationTokens = store.shield.applications ?? []
+        applicationTokens = store.shield.applications ?? []
+        
+    }
   
 }

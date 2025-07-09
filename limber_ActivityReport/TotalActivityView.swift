@@ -23,25 +23,27 @@ struct TotalActivityView: View {
                 }
                 .labelStyle(TrailingIconLabelStyle())
                 .foregroundStyle(.black)
+            
 
    
 
 
             }
         }
+
     }
 }
-struct TrailingIconLabelStyle: LabelStyle {
-        
-    func makeBody(configuration: Configuration) -> some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 12)
-            configuration.icon
-            
-            configuration.title
-            Spacer()
-                .frame(height: 12)
-        }
-    }
-}
+//struct TrailingIconLabelStyle: LabelStyle {
+//        
+//    func makeBody(configuration: Configuration) -> some View {
+//        VStack(spacing: 0) {
+//            Spacer()
+//                .frame(height: 12)
+//            configuration.icon
+//            
+//            configuration.title
+//            Spacer()
+//                .frame(height: 12)
+//        }
+//    }
+//}

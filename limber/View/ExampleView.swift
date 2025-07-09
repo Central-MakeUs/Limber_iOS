@@ -26,11 +26,11 @@ struct ExampleView: View {
 
 
 class ExampleVM: ObservableObject {
-    @Published var filter: DeviceActivityFilter = DeviceActivityFilter (
+    var filter: DeviceActivityFilter = DeviceActivityFilter (
         users: .all,
         devices: .init([.iPhone, .iPad])
     )
-    @Published var pickedDate: Date = .now
+    var pickedDate: Date = .now
 
 
 }

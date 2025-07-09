@@ -11,23 +11,24 @@ import FamilyControls
 
 struct BlockAppsSheet: View {
     @EnvironmentObject var router: AppRouter
-    @StateObject var pickerVM: BlockVM = BlockVM()
+    @Environment(\.dismiss) private var dismiss
+    @StateObject var blockVM: BlockVM = BlockVM()
     @ObservedObject var vm: ExampleVM
-    @State private var context: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
+
     @State private var showPicker = false
     @Binding var showModal: Bool
     
-    let appCount: Int = 8
- 
+
     var body: some View {
         
         VStack {
             
         VStack(spacing: 0) {
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     Spacer()
                     Button(action: {
+                        blockVM.reset()
                         showModal = false
                     }) {
                         Image("xmark")
@@ -35,7 +36,6 @@ struct BlockAppsSheet: View {
                 }
                 .padding([.top, .trailing], 20)
                 
-                Spacer().frame(height: 16)
                 
                 ZStack {
                     Circle()
@@ -62,7 +62,7 @@ struct BlockAppsSheet: View {
                         .font(.suitHeading2)
                 }
                 HStack(spacing: 0) {
-                    Text("\(appCount)개")
+                    Text("\(blockVM.applicationTokens.count)개")
                         .foregroundColor(Color.limberPurple)
                         .font(.suitHeading2)
                     Text("의 앱이 차단돼요")
@@ -71,20 +71,27 @@ struct BlockAppsSheet: View {
                 }
             }
             .multilineTextAlignment(.center)
-            .padding(.bottom, 32)
+            .padding(.bottom, 24)
             
-            HStack(spacing: 0) {
-                Spacer()
-                DeviceActivityReport(context, filter: vm.filter)
-                    .foregroundColor(.black)
-           
-                  
-                Spacer()
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .center) {
+                    ForEach(Array(blockVM.applicationTokens.sorted { $0.hashValue < $1.hashValue }), id: \.self) { token in
+                        Label(token)
+                            .frame(width: 100, height: 76, alignment: .center)
+                            .background(Color.gray100)
+                            .cornerRadius(8)
+        
+                    }
+                    .labelStyle(TrailingIconLabelStyle())
+              
+
+                }
             }
             .frame(height: 76)
-            .padding(16)
+            .padding([.bottom, .horizontal], 16)
             
             Button {
+                blockVM.reset()
                 showPicker = true
             } label: {
                 HStack(spacing: 8) {
@@ -101,37 +108,35 @@ struct BlockAppsSheet: View {
                 }
                 .padding(.bottom, 12)
             }
-            
+            Spacer()
             
             Text("버튼을 누르면 실험이 시작돼요")
                 .foregroundColor(.gray500)
                 .font(.system(size: 15))
                 .padding(.bottom, 8)
             
-            Button(action: {
-                // 시작 액션
-            }) {
-                Text("시작하기")
-                    .font(.system(size: 19, weight: .bold))
-                    .frame(maxWidth: .infinity, minHeight: 56)
-                    .background(Color.limberPurple)
-                    .foregroundColor(.white)
-                    .cornerRadius(14)
-            }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 16)
+                
+            BottomBtn(width: 318, title: "시작하기") {
+                blockVM.setShieldRestrictions()
+                dismiss()
+                }
+                .padding(.bottom, 16)
         }
+        .frame(height: 515)
         .background(Color.white)
         .cornerRadius(16)
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 20)
         
     }.background(ClearBackground())
         .sheet(isPresented: $showPicker) {
-            BlockBottomSheet(vm: pickerVM, onComplete: {})
+            BlockBottomSheet(isOnboarding: false, vm: blockVM, onComplete: {})
                 .presentationDetents([.height(700),])
                 .presentationCornerRadius(24)
                 .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 4)
 
+        }
+        .onAppear {
+            blockVM.reset()
         }
         
    
@@ -166,5 +171,19 @@ class ClearBackgroundView: UIView {
             return
         }
         parentView.backgroundColor = .clear
+    }
+}
+struct TrailingIconLabelStyle: LabelStyle {
+        
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(spacing: 0) {
+            Spacer()
+                .frame(height: 12)
+            configuration.icon
+            
+            configuration.title
+            Spacer()
+                .frame(height: 12)
+        }
     }
 }

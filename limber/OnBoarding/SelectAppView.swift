@@ -38,7 +38,7 @@ struct SelectAppView: View {
                 showPicker = true
             }.padding()
                 .sheet(isPresented: $showPicker) {
-                    BlockBottomSheet(vm: vm, onComplete: onComplete)
+                    BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
                 }
                 .presentationDetents([.height(700),])
                 .presentationCornerRadius(24)
