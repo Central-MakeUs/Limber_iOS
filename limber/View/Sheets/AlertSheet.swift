@@ -70,6 +70,3 @@ struct AlertSheet: View {
 
 
 
-#Preview {
-    AlertSheet()
-}

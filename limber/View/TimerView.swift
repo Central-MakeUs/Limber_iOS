@@ -144,7 +144,7 @@ struct TimerView: View {
                 .ignoresSafeArea(.all)
         }
         .fullScreenCover(isPresented: $timerVM.delAlert) {
-            AlertSheet()
+            AlertSheet(timerVM: timerVM)
                 .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
                 .background(Color.black.opacity(0.3))
                 .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
