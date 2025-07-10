@@ -10,7 +10,6 @@ struct TimeSelectView: View {
 
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var vm: ScheduleExVM
-    
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -57,19 +56,25 @@ struct TimeSelectView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        CustomTimePickerView(selectedHour: $vm.selectedHour, selectedMinute: $vm.selectedMinute)
-                            .frame(width: 200, height: 200)
-                            .offset(x: -10)
+                     
+                        
+                        HStack {
+                            AmPmPickerWrapper(selectedRow: 0, selectedData: $vm.selectedAMPM)
+                                .frame(width: 20, height: 20)
+                            Spacer()
+                                .frame(width: 30)
+                            CustomTimePickerView(selectedHour: $vm.selectedHour, selectedMinute: $vm.selectedMinute, hourText: "시 ")
+                                .frame(width: 200, height: 200)
+                                .offset(x: -10)
+                        }
+                        .offset( x: 10, y: -2)
                     }
-                    .offset( x: -10, y: -2)
                 }
-
             }.frame(maxWidth: .infinity, maxHeight: 200)
             Spacer()
-
-        }.onAppear {
-            vm.checkBottomBtn()
         }
     }
-
+}
+#Preview {
+    TimeSelectView(vm: ScheduleExVM())
 }

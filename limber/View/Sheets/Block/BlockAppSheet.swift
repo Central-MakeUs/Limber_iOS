@@ -17,6 +17,7 @@ struct BlockAppsSheet: View {
 
     @State private var showPicker = false
     @Binding var showModal: Bool
+    @State private var isEnable = true
     
 
     var body: some View {
@@ -116,7 +117,7 @@ struct BlockAppsSheet: View {
                 .padding(.bottom, 8)
             
                 
-            BottomBtn(width: 318, title: "시작하기") {
+            BottomBtn(width: 318, isEnable: $isEnable, title: "시작하기") {
                 blockVM.setShieldRestrictions()
                 dismiss()
                 }
@@ -181,9 +182,18 @@ struct TrailingIconLabelStyle: LabelStyle {
                 .frame(height: 12)
             configuration.icon
             
-            configuration.title
+            configuration.title.modifier(TitleStyleModifier())
             Spacer()
                 .frame(height: 12)
         }
+    }
+}
+struct TitleStyleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.footnote)
+            .lineLimit(1)
+            .frame(maxWidth: 72)
+            .truncationMode(.tail)
     }
 }

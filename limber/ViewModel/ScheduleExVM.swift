@@ -11,17 +11,15 @@ import SwiftUI
 class ScheduleExVM: ObservableObject {
     
     
-    
-    
+    @Published var textFieldName: String = ""
     @Published var selectedCategory: String = ""
-    @Published var categorys: [String] = ["더보기"]
+    @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
 
     @Published var timeSelect: [String] = ["시작", "종료", "반복"]
     @Published var allTime: [String] = [
-        "오후 5시 36분",
-        "오후 10시 32분",
-        "2"]
-    
+        "",
+        "",
+        ""]
 
     @Published var changeSheet = false
     @Published var bottomSheetTitle = "시작"
@@ -30,11 +28,13 @@ class ScheduleExVM: ObservableObject {
     
     @Published var selectedMinute = 0
     @Published var selectedHour = 0
+    @Published var selectedAMPM = ""
     
     @Published var startTime = ""
     @Published var finishTime = ""
     @Published var repeatTime = ""
     
+    //SheetConfigure
     @Published var detents: PresentationDetent = .height(700)
     @Published var heights: Set<PresentationDetent> = [.height(700)]
     
@@ -46,7 +46,33 @@ class ScheduleExVM: ObservableObject {
     @Published var selectedOption: String? = nil
 
     //MARK: BottomBtn
-    @Published var bottomBtnEnable = true
+    @Published var scheduleExBtnEnable = false
+    @Published var timeBtnEnable = false
+    @Published var repeatBtnEnable = false
+    
+    //Binding
+    init() {
+        $allTime.allSatisfy { !(!$0.isEmpty) }
+            .assign(to: &$scheduleExBtnEnable)
+        
+        $selectedDays
+              .map { !$0.isEmpty }
+              .assign(to: &$repeatBtnEnable)
+        
+        Publishers.CombineLatest($selectedMinute, $selectedHour)
+            .map { m, h in
+                m != 0 || h != 0
+            }
+            .assign(to: &$timeBtnEnable)
+        
+        Publishers.CombineLatest3($selectedCategory, $textFieldName, $allTime)
+            .map { category, text, allTime in
+                !category.isEmpty && !text.isEmpty && !allTime.isEmpty
+            }.assign(to: &$scheduleExBtnEnable)
+        
+        
+        //TODO: 시간 쪽 bottomBtn 이랑 월~일 sort
+    }
 
     func on432() {
         heights = [.height(700),.height(432)]
@@ -59,10 +85,15 @@ class ScheduleExVM: ObservableObject {
     }
       
     func on700() {
+        self.allTime[2] = selectedDays.reduce("") { $0 + " " + $1 }
         heights = [.height(700), .height(432)]
         detents = .height(700)
+  
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            self.heights = [.height(700)]
 
-      
+        })
+
     }
     func onReset() {
         heights = [.height(700)]
@@ -120,17 +151,5 @@ class ScheduleExVM: ObservableObject {
             self.changeSheet = false
         }
     }
-    
-    func checkBottomBtn() {
-        
-        
-        
-        if isTime {
-            if allTime[0].count >= 3 && allTime.filter({ !$0.isEmpty }).count >= 3 {
-                bottomBtnEnable = true
-            }
-        }
-    }
-    
     
 }

@@ -14,11 +14,9 @@ struct ScheduleExSheet: View {
     
     
     @State var showSheet = false
-    @State var text: String = ""
 
     var body: some View {
         VStack(alignment: .center) {
-            
             ZStack {
                 if vm.changeSheet {
                     BottomSheet4320H(vm: vm)
@@ -29,7 +27,6 @@ struct ScheduleExSheet: View {
                         ZStack {
                             Text("실험 예약하기")
                                 .font(.suitHeading3Small)
-
                                 .foregroundStyle(.gray800)
                             HStack {
                                 Spacer()
@@ -45,7 +42,7 @@ struct ScheduleExSheet: View {
                             .frame(height: 30)
 
                         VStack(alignment: .leading, spacing: 8) {
-                            TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $text)
+                            TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $vm.textFieldName)
                                 .padding()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
@@ -66,7 +63,7 @@ struct ScheduleExSheet: View {
 
                         Spacer()
 
-                        BottomBtn(title: "예약하기", action: {
+                        BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
                             
                         })
 
@@ -78,6 +75,8 @@ struct ScheduleExSheet: View {
             .cornerRadius(24)
             
                     }
+        .ignoresSafeArea(.keyboard)
+        .hideKeyboardOnTap()
                     
 
     }
@@ -115,22 +114,22 @@ struct ScheduleExSheet: View {
                             }
                     }
                     
-                    Label("직접추가", systemImage: "plus")
-                        .foregroundStyle(Color.gray500)
-                        .frame(width: 112)
-                        .frame(maxHeight: .infinity)
-                        .background(Color.gray200)
-                        .cornerRadius(100)
-                        .onTapGesture {
-                            showSheet = true
-                        }
-                        .sheet(isPresented: $showSheet) {
-                            AutoFocusSheet()
-                                .presentationDetents([.height(700), ])
-                                .presentationCornerRadius(24)
-                                .interactiveDismissDisabled(true)
-                            
-                        }
+//                    Label("직접추가", systemImage: "plus")
+//                        .foregroundStyle(Color.gray500)
+//                        .frame(width: 112)
+//                        .frame(maxHeight: .infinity)
+//                        .background(Color.gray200)
+//                        .cornerRadius(100)
+//                        .onTapGesture {
+//                            showSheet = true
+//                        }
+//                        .sheet(isPresented: $showSheet) {
+//                            AutoFocusSheet()
+//                                .presentationDetents([.height(700), ])
+//                                .presentationCornerRadius(24)
+//                                .interactiveDismissDisabled(true)
+//                            
+//                        }
                 }
             }
             .frame(height: 38)
@@ -184,13 +183,19 @@ struct ScheduleExSheet: View {
     
         
     }
+
         
 
 }
 
 
-
-//#Preview {
-//  
-//}
- 
+extension View {
+    func hideKeyboardOnTap() -> some View {
+        self.onTapGesture {
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder),
+                to: nil, from: nil, for: nil
+            )
+        }
+    }
+}

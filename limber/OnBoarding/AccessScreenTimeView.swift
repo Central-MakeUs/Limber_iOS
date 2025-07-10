@@ -11,6 +11,7 @@ import FamilyControls
 struct AccessScreenTimeView: View {
     @Binding var step: Int
     @EnvironmentObject var router: AppRouter
+    @State var isEnable = true
     
     var body: some View {
         HStack {
@@ -64,7 +65,7 @@ struct AccessScreenTimeView: View {
             
             Spacer()
             
-            BottomBtn(title: "동의하고 시작하기") {
+            BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
                 Task {
                     let status = await ScreenTimeManager.shared.requestPermission()
                     ScreenTimeManager.shared.setStatus(status: status)

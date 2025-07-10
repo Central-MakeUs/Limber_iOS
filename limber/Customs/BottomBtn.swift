@@ -10,7 +10,7 @@ import SwiftUI
 struct BottomBtn: View {
     
     @State var width: CGFloat = 350
-
+    @Binding var isEnable: Bool
     
     var title: String
     var action: () -> Void
@@ -31,7 +31,6 @@ struct BottomBtn: View {
         endPoint: UnitPoint(x: 1, y: 1)
             )
     
-    @State var isEnable: Bool = true
 
     var body: some View {
         Button(action: action) {

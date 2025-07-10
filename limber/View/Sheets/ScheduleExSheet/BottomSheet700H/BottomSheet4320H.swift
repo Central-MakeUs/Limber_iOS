@@ -10,8 +10,9 @@ import Combine
 
 struct BottomSheet4320H: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var vm: ScheduleExVM
-    
+    @StateObject var vm = ScheduleExVM()
+    @State var isEnabled = false
+
     var body: some View {
         VStack {
             Spacer()
@@ -19,19 +20,28 @@ struct BottomSheet4320H: View {
             if vm.isTime {
                 TimeSelectView(vm: vm)
                 Spacer()
+                BottomBtn(isEnable: $vm.timeBtnEnable, title: "완료", action: {
+                    if vm.isTime {
+                        vm.timePicked()
+                    } else {
+                        vm.repeatPicked()
+                    }
+                    vm.goBack700H()
+                } )
                 
             } else {
                 RepeatView(vm: vm)
                 Spacer()
+                BottomBtn(isEnable: $vm.repeatBtnEnable, title: "완료", action: {
+                    if vm.isTime {
+                        vm.timePicked()
+                    } else {
+                        vm.repeatPicked()
+                    }
+                    vm.goBack700H()
+                } )
             }
-            BottomBtn(title: "완료", action: {
-                if vm.isTime {
-                    vm.timePicked()
-                } else {
-                    vm.repeatPicked()
-                }
-                vm.goBack700H()
-            }, isEnable: vm.bottomBtnEnable)
+       
             
         }
     }

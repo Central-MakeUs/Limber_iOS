@@ -14,6 +14,8 @@ struct SelectAppView: View {
     @State var onComplete: () -> Void
     @State var showPicker = false
     
+    @State var isEnable = true
+    
     var body: some View {
 
         VStack {
@@ -34,7 +36,7 @@ struct SelectAppView: View {
                     Font.suitBody2
                 )
             Spacer()
-            BottomBtn(title: "앱 등록하기") {
+            BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
                 showPicker = true
             }.padding()
                 .sheet(isPresented: $showPicker) {

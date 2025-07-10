@@ -11,6 +11,9 @@ struct CustomTimePickerView: UIViewRepresentable {
     @Binding var selectedHour: Int
     @Binding var selectedMinute: Int
     
+    var hourText: String
+
+    
     let hourRange = Array(0...24)
     let minuteRange = Array(0...60)
     
@@ -18,7 +21,7 @@ struct CustomTimePickerView: UIViewRepresentable {
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 200))
         let hourLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        hourLabel.text = "시간"
+        hourLabel.text = hourText
         
         let minuteLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         minuteLabel.text = "분"
@@ -126,6 +129,75 @@ extension UIPickerView{
                 label.textColor = .black
                 self.addSubview(label)
             }
+        }
+    }
+}
+
+struct AmPmPickerWrapper: UIViewRepresentable {
+    @State var selectedRow: Int = 0
+    @Binding var selectedData: String
+    let data: [String] = ["오전", "오후"]
+
+    func makeUIView(context: Context) -> UIPickerView {
+        let picker = UIPickerView()
+        picker.dataSource = context.coordinator
+        picker.delegate = context.coordinator
+        picker.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        return picker
+    }
+
+    func updateUIView(_ uiView: UIPickerView, context: Context) {
+        uiView.selectRow(selectedRow, inComponent: 0, animated: true)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
+        var parent: AmPmPickerWrapper
+
+        init(_ parent: AmPmPickerWrapper) {
+            self.parent = parent
+        }
+
+        func numberOfComponents(in pickerView: UIPickerView) -> Int {
+            return 1
+        }
+
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+            return parent.data.count
+        }
+
+        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+            return parent.data[row]
+        }
+
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            parent.selectedRow = row
+            parent.selectedData = parent.data[row]
+        }
+        func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+            if #available(iOS 14.0, *) {
+                pickerView.subviews[1].backgroundColor = .clear
+            }
+            let label = UILabel()
+            
+            label.text = "\(parent.data[row])"
+            label.textAlignment = .center
+            label.backgroundColor = .clear
+            
+            label.font = UIFont(name: "SUIT-SemiBold", size: 24)
+            label.textColor = .black
+            
+            return label
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+            if #available(iOS 14.0, *) {
+                pickerView.subviews[1].backgroundColor = .clear
+            }
+            return nil
         }
     }
 }

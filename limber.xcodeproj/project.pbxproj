@@ -111,6 +111,7 @@
 				OnBoarding/OnBoardingView.swift,
 				View/MainView.swift,
 				View/RootView.swift,
+				View/Sheets/AlertSheet.swift,
 				View/Sheets/ScheduleExSheet/ScheduleExSheet.swift,
 				View/TimerView.swift,
 				ViewModel/TimerVM.swift,
