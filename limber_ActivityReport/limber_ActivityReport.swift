@@ -14,7 +14,15 @@ struct limber_ActivityReport: DeviceActivityReportExtension {
          TotalActivityReport { totalActivity in
              return TotalActivityView(activityReport: totalActivity)
          }
+        
+        TotalTextScene { totalText in
+            return TotalActivityLabel(activityReport: totalText)
+            
+        }
+        
      }
 }
+
+
 
 

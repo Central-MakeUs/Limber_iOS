@@ -36,7 +36,11 @@ class BlockVM: ObservableObject {
     
 
     func reset() {
+   
         appSelection.applicationTokens = store.shield.applications ?? []
+        _ = appSelection.applicationTokens.map {
+            print($0.hashValue)
+        }
         applicationTokens = store.shield.applications ?? []
         
     }

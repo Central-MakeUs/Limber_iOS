@@ -30,20 +30,22 @@ struct AlertSheet: View {
                     } label: {
                         Text("취소")
                             .font(.suitHeading3Small)
+                            .frame(maxWidth: .infinity , maxHeight: .infinity)
+
                     }
                     .foregroundStyle(.gray800)
-                    .frame(maxWidth: .infinity , maxHeight: .infinity)
                     .background(.gray200)
                     .cornerRadius(10)
 
                     
                     Button {
-//                        timerVM.isDel()
+                        timerVM.setDeleteSheet()
                     } label: {
                         Text("삭제하기")
                             .font(.suitHeading3Small)
+                            .frame(maxWidth: .infinity , maxHeight: .infinity)
+
                     }
-                    .frame(maxWidth: .infinity , maxHeight: .infinity)
                     .background(.limberPurple)
                     .cornerRadius(10)
 
@@ -56,6 +58,7 @@ struct AlertSheet: View {
                 
             }
             .frame(height: 180)
+            .background(.white)
             .cornerRadius(16)
             .padding(.horizontal, 20)
             Spacer()

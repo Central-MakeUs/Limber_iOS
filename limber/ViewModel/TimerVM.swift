@@ -112,10 +112,22 @@ class TimerVM: ObservableObject {
         }
     }
     
-    func isDel() {
+    func setDeleteSheet() {
         if !checkedModels.isEmpty {
             delAlert = true
         }
+    
     }
+//    
+//    func deleteModels() {
+//        staticModels.enumerated().forEach { _,_ in
+//            if checkedModels.contains($0) {
+//                staticModels.remove
+//            }
+//        }
+//
+//    }
+    
+    
 
 }

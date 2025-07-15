@@ -77,13 +77,32 @@ struct BlockAppsSheet: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center) {
                     ForEach(Array(blockVM.applicationTokens.sorted { $0.hashValue < $1.hashValue }), id: \.self) { token in
-                        Label(token)
-                            .frame(width: 100, height: 76, alignment: .center)
-                            .background(Color.gray100)
-                            .cornerRadius(8)
+
+                        VStack {
+                            
+                            Label(token)
+                                .labelStyle(iconLabelStyle())
+                                .scaleEffect(CGSize(width: 1.6, height: 1.6))
+                            Label(token)
+                                .labelStyle(textLabelStyle())
+                                .scaleEffect(CGSize(width: 0.6, height: 0.6))
+
+
+
+                                
+                        }
+                        .cornerRadius(8)
+                        .frame(width: 100, height: 76, alignment: .center)
+                        .background(Color.gray100)
+
+
+
+
+
+                    
+                            
         
                     }
-                    .labelStyle(TrailingIconLabelStyle())
               
 
                 }
@@ -117,7 +136,7 @@ struct BlockAppsSheet: View {
                 .padding(.bottom, 8)
             
                 
-            BottomBtn(width: 318, isEnable: $isEnable, title: "시작하기") {
+            BottomBtn(isEnable: $isEnable, title: "시작하기") {
                 blockVM.setShieldRestrictions()
                 dismiss()
                 }
@@ -134,15 +153,10 @@ struct BlockAppsSheet: View {
                 .presentationDetents([.height(700),])
                 .presentationCornerRadius(24)
                 .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 4)
-
         }
         .onAppear {
             blockVM.reset()
         }
-        
-   
-    
-        
     }
         
 }
@@ -174,26 +188,26 @@ class ClearBackgroundView: UIView {
         parentView.backgroundColor = .clear
     }
 }
-struct TrailingIconLabelStyle: LabelStyle {
+struct iconLabelStyle: LabelStyle {
         
     func makeBody(configuration: Configuration) -> some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 12)
+
             configuration.icon
             
-            configuration.title.modifier(TitleStyleModifier())
-            Spacer()
-                .frame(height: 12)
-        }
     }
 }
-struct TitleStyleModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .font(.footnote)
-            .lineLimit(1)
-            .frame(maxWidth: 72)
-            .truncationMode(.tail)
+struct textLabelStyle: LabelStyle {
+        
+    func makeBody(configuration: Configuration) -> some View {
+            configuration.title
+            .frame(height: 40)
+            .frame(maxWidth: 50)
     }
+}
+
+
+#Preview {
+    BlockAppsSheet(vm: ExampleVM(), showModal: .init(get: {
+        true
+    }, set: {_ in }))
 }

@@ -43,8 +43,6 @@ struct MainView: View {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = UIColor.white
             
-          
-            
             if #available(iOS 15.0, *) {
                 UITabBar.appearance().scrollEdgeAppearance = appearance
             }

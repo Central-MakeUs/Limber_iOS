@@ -384,7 +384,7 @@ struct TimerView: View {
     var buttons: some View {
         HStack(spacing: 8) {
             Button {
-                timerVM.isDel()
+                timerVM.setDeleteSheet()
             } label: {
                 HStack {
                     Text("삭제")

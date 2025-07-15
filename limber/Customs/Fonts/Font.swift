@@ -39,5 +39,5 @@ extension Font {
     static var suitBody2: Font { .custom("SUIT-Medium", size: 14) }
     static var suitBody3: Font { .custom("SUIT-Medium", size: 12) }
     
-    static var suitCaption1: Font { .custom("SUIT-Medium", size: 10) }
+    static var suitCaption1: Font { .custom("SUIT-Medium", size: 12) }
 }

@@ -11,19 +11,30 @@ import DeviceActivity
 
 struct ExampleView: View {
     
-    @ObservedObject var vm: ExampleVM
-    @State private var context: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
-   
+    @State private var contextTotalActivity: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
+    @State private var filter = DeviceActivityFilter(
+        segment: .daily(
+            during: Calendar.current.dateInterval(
+                of: .day,
+                for: .now
+            ) ?? DateInterval()
+        )
+    )
+    
     var body: some View {
-        VStack {
-            Text("\(vm.pickedDate)")
-            DeviceActivityReport(context, filter: vm.filter)
-        }
-       
+        
+        DeviceActivityReport(contextTotalActivity, filter: filter)
     }
+    
 }
 
+struct ExampleTextLabel: View {
+    @State private var contextListValues: DeviceActivityReport.Context = .init(rawValue: "Total Text")
 
+    var body: some View {
+        DeviceActivityReport(contextListValues)
+    }
+}
 
 class ExampleVM: ObservableObject {
     var filter: DeviceActivityFilter = DeviceActivityFilter (
@@ -31,7 +42,7 @@ class ExampleVM: ObservableObject {
         devices: .init([.iPhone, .iPad])
     )
     var pickedDate: Date = .now
-
-
+    
+    
 }
 

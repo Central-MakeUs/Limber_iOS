@@ -12,6 +12,12 @@
 		604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */; };
 		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		604971A12E22278B00AB2731 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971A02E22278500AB2731 /* HomeView.swift */; };
+		604971A22E22278B00AB2731 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971A02E22278500AB2731 /* HomeView.swift */; };
+		604971A92E26612F00AB2731 /* CircularTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971A82E26612F00AB2731 /* CircularTimerView.swift */; };
+		604971AA2E26612F00AB2731 /* CircularTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971A82E26612F00AB2731 /* CircularTimerView.swift */; };
+		604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
+		604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
 		6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA2A2E0969570068E676 /* limber_ActivityReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -72,6 +78,9 @@
 		6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfigurationEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
 		604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = System/Library/Frameworks/ManagedSettingsUI.framework; sourceTree = SDKROOT; };
+		604971A02E22278500AB2731 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		604971A82E26612F00AB2731 /* CircularTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularTimerView.swift; sourceTree = "<group>"; };
+		604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusExperimentView.swift; sourceTree = "<group>"; };
 		6076C9F12E09664B0068E676 /* limber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = limber_ActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA0B2E0969290068E676 /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
@@ -201,6 +210,9 @@
 		6076C9E82E09664B0068E676 = {
 			isa = PBXGroup;
 			children = (
+				604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */,
+				604971A82E26612F00AB2731 /* CircularTimerView.swift */,
+				604971A02E22278500AB2731 /* HomeView.swift */,
 				604971672E1AADBC00AB2731 /* SharedData.swift */,
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
@@ -418,6 +430,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604971A12E22278B00AB2731 /* HomeView.swift in Sources */,
+				604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
+				604971A92E26612F00AB2731 /* CircularTimerView.swift in Sources */,
 				604971682E1AADBC00AB2731 /* SharedData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,6 +448,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604971A22E22278B00AB2731 /* HomeView.swift in Sources */,
+				604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
+				604971AA2E26612F00AB2731 /* CircularTimerView.swift in Sources */,
 				604971692E1AADBC00AB2731 /* SharedData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -648,7 +666,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -681,7 +699,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

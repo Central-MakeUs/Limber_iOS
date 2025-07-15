@@ -56,8 +56,6 @@ struct TimeSelectView: View {
                 VStack {
                     Spacer()
                     HStack {
-                     
-                        
                         HStack {
                             AmPmPickerWrapper(selectedRow: 0, selectedData: $vm.selectedAMPM)
                                 .frame(width: 20, height: 20)

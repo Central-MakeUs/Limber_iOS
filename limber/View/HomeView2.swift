@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeView2: View {
     var body: some View {
 
             VStack(spacing: 0) {

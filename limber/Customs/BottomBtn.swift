@@ -9,7 +9,6 @@ import SwiftUI
 
 struct BottomBtn: View {
     
-    @State var width: CGFloat = 350
     @Binding var isEnable: Bool
     
     var title: String
@@ -36,7 +35,8 @@ struct BottomBtn: View {
         Button(action: action) {
             Text(title)
                 .font(Font.suitHeading3Small)
-                .frame(width: width, height: 54)
+                .frame(height: 54)
+                .frame(maxWidth: .infinity)
                 .background(
                     isEnable == true ? gradient : disabled
                 )
