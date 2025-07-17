@@ -66,6 +66,7 @@ struct ScheduleExSheet: View {
                         BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
                             
                         })
+                        .padding(20)
 
                     }
                 }

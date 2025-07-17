@@ -30,6 +30,10 @@ class BlockVM: ObservableObject {
         store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
     }
     
+    func removeForShieldRestrictions(appToken: ApplicationToken) {
+        store.shield.applications = store.shield.applications?.filter { $0 != appToken }
+    }
+    
     func finishPick() {
         applicationTokens = appSelection.applicationTokens
     }

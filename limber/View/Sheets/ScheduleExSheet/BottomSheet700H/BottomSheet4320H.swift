@@ -28,6 +28,8 @@ struct BottomSheet4320H: View {
                     }
                     vm.goBack700H()
                 } )
+                .padding(20)
+
                 
             } else {
                 RepeatView(vm: vm)
@@ -40,6 +42,8 @@ struct BottomSheet4320H: View {
                     }
                     vm.goBack700H()
                 } )
+                .padding(20)
+
             }
        
             

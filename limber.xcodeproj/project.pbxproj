@@ -18,6 +18,10 @@
 		604971AA2E26612F00AB2731 /* CircularTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971A82E26612F00AB2731 /* CircularTimerView.swift */; };
 		604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
 		604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
+		604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
+		604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		604971F42E27ED3900AB2731 /* UnlockReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971F32E27ED3900AB2731 /* UnlockReasonView.swift */; };
+		604971F52E27ED3900AB2731 /* UnlockReasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971F32E27ED3900AB2731 /* UnlockReasonView.swift */; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
 		6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA2A2E0969570068E676 /* limber_ActivityReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -30,6 +34,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6049716D2E1AAF3900AB2731;
 			remoteInfo = ShieldConfigurationEx;
+		};
+		604971BB2E27CB1900AB2731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6076C9E92E09664B0068E676 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 604971B32E27CB1900AB2731;
+			remoteInfo = ShieldActionEx;
 		};
 		6076CA122E0969290068E676 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -54,6 +65,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */,
 				6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */,
 				6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */,
 			);
@@ -81,6 +93,8 @@
 		604971A02E22278500AB2731 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		604971A82E26612F00AB2731 /* CircularTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularTimerView.swift; sourceTree = "<group>"; };
 		604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusExperimentView.swift; sourceTree = "<group>"; };
+		604971B42E27CB1900AB2731 /* ShieldActionEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldActionEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		604971F32E27ED3900AB2731 /* UnlockReasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockReasonView.swift; sourceTree = "<group>"; };
 		6076C9F12E09664B0068E676 /* limber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = limber_ActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA0B2E0969290068E676 /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
@@ -94,6 +108,44 @@
 				Info.plist,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
+		};
+		604971C12E27CB1900AB2731 /* Exceptions for "ShieldActionEx" folder in "ShieldActionEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
+		};
+		604971C62E27CFFC00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "limber" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ShieldConfigurationExtension.swift,
+			);
+			target = 6076C9F02E09664B0068E676 /* limber */;
+		};
+		604971CA2E27D0BC00AB2731 /* Exceptions for "limber" folder in "limber_ActivityMonitor" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Colors.xcassets,
+			);
+			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
+		};
+		604971CB2E27D0BC00AB2731 /* Exceptions for "limber" folder in "ShieldConfigurationEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Colors.xcassets,
+			);
+			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
+		};
+		604971CC2E27D0BC00AB2731 /* Exceptions for "limber" folder in "ShieldActionEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Colors.xcassets,
+			);
+			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
 		};
 		6076CA152E0969290068E676 /* Exceptions for "limber_ActivityMonitor" folder in "limber_ActivityMonitor" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -140,16 +192,28 @@
 		604971732E1AAF3900AB2731 /* ShieldConfigurationEx */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				604971C62E27CFFC00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "limber" target */,
 				6049717E2E1AAF3A00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "ShieldConfigurationEx" target */,
 			);
 			path = ShieldConfigurationEx;
+			sourceTree = "<group>";
+		};
+		604971B62E27CB1900AB2731 /* ShieldActionEx */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				604971C12E27CB1900AB2731 /* Exceptions for "ShieldActionEx" folder in "ShieldActionEx" target */,
+			);
+			path = ShieldActionEx;
 			sourceTree = "<group>";
 		};
 		6076C9F32E09664B0068E676 /* limber */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6076CADC2E141B5A0068E676 /* Exceptions for "limber" folder in "limber" target */,
+				604971CA2E27D0BC00AB2731 /* Exceptions for "limber" folder in "limber_ActivityMonitor" target */,
 				6076CAAF2E12C8C80068E676 /* Exceptions for "limber" folder in "limber_ActivityReport" target */,
+				604971CB2E27D0BC00AB2731 /* Exceptions for "limber" folder in "ShieldConfigurationEx" target */,
+				604971CC2E27D0BC00AB2731 /* Exceptions for "limber" folder in "ShieldActionEx" target */,
 			);
 			path = limber;
 			sourceTree = "<group>";
@@ -182,6 +246,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		604971B12E27CB1900AB2731 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6076C9EE2E09664B0068E676 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -210,6 +282,7 @@
 		6076C9E82E09664B0068E676 = {
 			isa = PBXGroup;
 			children = (
+				604971F32E27ED3900AB2731 /* UnlockReasonView.swift */,
 				604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */,
 				604971A82E26612F00AB2731 /* CircularTimerView.swift */,
 				604971A02E22278500AB2731 /* HomeView.swift */,
@@ -218,6 +291,7 @@
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
 				6076CA1F2E0969560068E676 /* limber_ActivityReport */,
 				604971732E1AAF3900AB2731 /* ShieldConfigurationEx */,
+				604971B62E27CB1900AB2731 /* ShieldActionEx */,
 				6076CA0A2E0969280068E676 /* Frameworks */,
 				6076C9F22E09664B0068E676 /* Products */,
 			);
@@ -230,6 +304,7 @@
 				6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */,
 				6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */,
 				6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */,
+				604971B42E27CB1900AB2731 /* ShieldActionEx.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -269,6 +344,28 @@
 			productReference = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		604971B32E27CB1900AB2731 /* ShieldActionEx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 604971BE2E27CB1900AB2731 /* Build configuration list for PBXNativeTarget "ShieldActionEx" */;
+			buildPhases = (
+				604971B02E27CB1900AB2731 /* Sources */,
+				604971B12E27CB1900AB2731 /* Frameworks */,
+				604971B22E27CB1900AB2731 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				604971B62E27CB1900AB2731 /* ShieldActionEx */,
+			);
+			name = ShieldActionEx;
+			packageProductDependencies = (
+			);
+			productName = ShieldActionEx;
+			productReference = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		6076C9F02E09664B0068E676 /* limber */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6076C9FF2E09664D0068E676 /* Build configuration list for PBXNativeTarget "limber" */;
@@ -285,6 +382,7 @@
 				6076CA132E0969290068E676 /* PBXTargetDependency */,
 				6076CA292E0969570068E676 /* PBXTargetDependency */,
 				604971792E1AAF3900AB2731 /* PBXTargetDependency */,
+				604971BC2E27CB1900AB2731 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6076C9F32E09664B0068E676 /* limber */,
@@ -354,6 +452,9 @@
 					6049716D2E1AAF3900AB2731 = {
 						CreatedOnToolsVersion = 16.1;
 					};
+					604971B32E27CB1900AB2731 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					6076C9F02E09664B0068E676 = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -383,12 +484,20 @@
 				6076CA082E0969280068E676 /* limber_ActivityMonitor */,
 				6076CA1D2E0969560068E676 /* limber_ActivityReport */,
 				6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */,
+				604971B32E27CB1900AB2731 /* ShieldActionEx */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6049716C2E1AAF3900AB2731 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		604971B22E27CB1900AB2731 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -426,6 +535,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		604971B02E27CB1900AB2731 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6076C9ED2E09664B0068E676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,6 +550,7 @@
 				604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
 				604971A92E26612F00AB2731 /* CircularTimerView.swift in Sources */,
 				604971682E1AADBC00AB2731 /* SharedData.swift in Sources */,
+				604971F42E27ED3900AB2731 /* UnlockReasonView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +567,7 @@
 			files = (
 				604971A22E22278B00AB2731 /* HomeView.swift in Sources */,
 				604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
+				604971F52E27ED3900AB2731 /* UnlockReasonView.swift in Sources */,
 				604971AA2E26612F00AB2731 /* CircularTimerView.swift in Sources */,
 				604971692E1AADBC00AB2731 /* SharedData.swift in Sources */,
 			);
@@ -462,6 +580,11 @@
 			isa = PBXTargetDependency;
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
 			targetProxy = 604971782E1AAF3900AB2731 /* PBXContainerItemProxy */;
+		};
+		604971BC2E27CB1900AB2731 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
+			targetProxy = 604971BB2E27CB1900AB2731 /* PBXContainerItemProxy */;
 		};
 		6076CA132E0969290068E676 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -487,6 +610,7 @@
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShieldConfigurationEx;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -513,6 +637,7 @@
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShieldConfigurationEx;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -520,6 +645,60 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		604971BF2E27CB1900AB2731 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YH4A87H8M4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldActionEx/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldActionEx;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldActionEx;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		604971C02E27CB1900AB2731 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YH4A87H8M4;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldActionEx/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldActionEx;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldActionEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -659,6 +838,7 @@
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "림버";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -692,6 +872,7 @@
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "림버";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -724,6 +905,7 @@
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = limber_ActivityMonitor;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -750,6 +932,7 @@
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = limber_ActivityMonitor;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -776,6 +959,7 @@
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = limber_ActivityReport;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -802,6 +986,7 @@
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = limber_ActivityReport;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -825,6 +1010,15 @@
 			buildConfigurations = (
 				6049717C2E1AAF3A00AB2731 /* Debug */,
 				6049717D2E1AAF3A00AB2731 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		604971BE2E27CB1900AB2731 /* Build configuration list for PBXNativeTarget "ShieldActionEx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				604971BF2E27CB1900AB2731 /* Debug */,
+				604971C02E27CB1900AB2731 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

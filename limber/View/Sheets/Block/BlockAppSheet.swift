@@ -87,8 +87,6 @@ struct BlockAppsSheet: View {
                                 .labelStyle(textLabelStyle())
                                 .scaleEffect(CGSize(width: 0.6, height: 0.6))
 
-
-
                                 
                         }
                         .cornerRadius(8)
@@ -140,7 +138,7 @@ struct BlockAppsSheet: View {
                 blockVM.setShieldRestrictions()
                 dismiss()
                 }
-                .padding(.bottom, 16)
+                .padding(20)
         }
         .frame(height: 515)
         .background(Color.white)
@@ -201,7 +199,6 @@ struct textLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
             configuration.title
             .frame(height: 40)
-            .frame(maxWidth: 50)
     }
 }
 

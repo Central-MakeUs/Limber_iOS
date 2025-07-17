@@ -126,7 +126,7 @@ struct TimerView: View {
                         self.showModal = true
                         
                     })
-                    .padding()
+                    .padding(20)
                     .disabled(!timerVM.btnEnable)
                     
                 } else {

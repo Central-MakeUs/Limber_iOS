@@ -14,15 +14,7 @@ struct AccessScreenTimeView: View {
     @State var isEnable = true
     
     var body: some View {
-        HStack {
-            Button {
-            } label: {
-                Image("backBtn")
-            }
-            Spacer()
-            
-        }
-        .padding()
+
         
         VStack() {
             
@@ -70,16 +62,32 @@ struct AccessScreenTimeView: View {
                     let status = await ScreenTimeManager.shared.requestPermission()
                     ScreenTimeManager.shared.setStatus(status: status)
                     if ScreenTimeManager.shared.currentStatus() == .approved {
-                        step = 1
+                        requestNotificationPermission()
                     }
                 }
             }
-            Spacer()
-                .frame(height: 10)
-            
+            .padding(20)
+
         }
         .padding(.horizontal)
         
+    }
+    
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            if granted {
+                Task {
+                    await MainActor.run {
+                        self.step = 1
+                    }
+                }
+            } else {
+                print("알림 권한 거부됨")
+            }
+            if let error = error {
+                print("알림 권한 요청 에러: \(error)")
+            }
+        }
     }
 }
 

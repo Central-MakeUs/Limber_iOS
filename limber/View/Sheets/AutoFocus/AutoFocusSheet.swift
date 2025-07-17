@@ -24,7 +24,7 @@ struct AutoFocusSheet: View {
                 .textFieldStyle(.roundedBorder)
                 .focused($isFocused)
                 .padding()
-                .onChange(of: isFocused) { focused in
+                .onChange(of: isFocused) { _, focused in
                     if !focused {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             isFocused = true

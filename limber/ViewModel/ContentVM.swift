@@ -11,8 +11,6 @@ import ManagedSettings
 
 class ContentVM: ObservableObject {
     
-    
-    
     let center = AuthorizationCenter.shared
     let store = ManagedSettingsStore()
     

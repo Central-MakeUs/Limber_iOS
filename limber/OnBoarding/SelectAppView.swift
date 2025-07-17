@@ -38,7 +38,8 @@ struct SelectAppView: View {
             Spacer()
             BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
                 showPicker = true
-            }.padding()
+            }
+            .padding(20)
                 .sheet(isPresented: $showPicker) {
                     BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
                 }

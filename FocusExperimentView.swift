@@ -79,8 +79,8 @@ struct FocusExperimentView: View {
                     ZStack(alignment: .trailing) {
                         Slider(value: Binding(
                             get: { Double(selectedFocus) },
-                            set: { selectedFocus = 50 == $0 ? 50 : 0 }
-                        ), in: 0...100, step: 1)
+                            set: { selectedFocus = Int(round($0)) }
+                        ), in: 0...2, step: 1)
                         .accentColor(Color.purple)
                         .frame(width: 260)
                         

@@ -7,6 +7,7 @@
 
 import Combine
 import SwiftUI
+import ManagedSettings
 
 class AppRouter: ObservableObject {
     @Published var path = NavigationPath()
@@ -60,15 +61,14 @@ extension AppRouter {
         someRoutes = [route]
         path.removeLast(path.count)
         path.append(route)
-        
-
-        print("newPath \(path.count)")
+ 
     }
 }
 
 enum SomeRoute: Hashable {
     case main
     case home
+    case unlock(token: ApplicationToken)
     
 
 }
