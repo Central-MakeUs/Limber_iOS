@@ -69,6 +69,7 @@ enum SomeRoute: Hashable {
     case main
     case home
     case unlock(token: ApplicationToken)
+    case circularTimer(hour: Double)
     
 
 }

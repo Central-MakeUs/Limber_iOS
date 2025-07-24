@@ -14,7 +14,8 @@ struct FocusExperimentView: View {
     @State private var selectedFocus: Int = 2
     @State private var focusDetail: String = ""
     @State private var isEnable: Bool = false
-    
+    @State private var sliderValue: Double = 0.5
+
     var body: some View {
         ZStack {
             
@@ -77,21 +78,23 @@ struct FocusExperimentView: View {
                 // 슬라이더 + 값 표시
                 VStack(spacing: 8) {
                     ZStack(alignment: .trailing) {
-                        Slider(value: Binding(
-                            get: { Double(selectedFocus) },
-                            set: { selectedFocus = Int(round($0)) }
-                        ), in: 0...2, step: 1)
-                        .accentColor(Color.purple)
-                        .frame(width: 260)
+                        VStack {
+                                  CustomStepSlider(
+                                      value: $sliderValue,
+                                      steps: [0, 50, 100], // 원하는 스텝 배열
+                                      trackHeight: 8
+                                  )
+                               }
                         
-                        if selectedFocus == 2 {
-                            // 오른쪽 끝 100% 표시
-                            Text("100%")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.white)
-                                .offset(x: 36)
-                        }
+//                        if selectedFocus == 2 {
+//                            // 오른쪽 끝 100% 표시
+//                            Text("100%")
+//                                .font(.system(size: 14, weight: .bold))
+//                                .foregroundColor(.white)
+//                                .offset(x: 36)
+//                        }
                     }
+                    .padding(.horizontal, 70)
                     .padding(.vertical, 12)
                     
                     // 세 가지 선택 텍스트
@@ -132,5 +135,67 @@ struct FocusExperimentView: View {
 struct FocusExperimentView_Previews: PreviewProvider {
     static var previews: some View {
         FocusExperimentView()
+    }
+}
+
+struct CustomStepSlider: View {
+    @Binding var value: Double
+    let steps: [Double]
+    var trackHeight: CGFloat = 8
+
+    private func nearestStep(to rawValue: Double) -> Double {
+        steps.min(by: { abs($0 - rawValue) < abs($1 - rawValue) }) ?? rawValue
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            let thumbSize: CGFloat = 22
+            let availableWidth = geo.size.width - thumbSize
+            let percent = CGFloat((value - steps.first!) / (steps.last! - steps.first!))
+            let x = percent * availableWidth
+
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.gray)
+                    .frame(height: trackHeight)
+                Capsule()
+                    .fill(Color.LimberPurple)
+                    .frame(width: x + thumbSize / 2, height: trackHeight)
+                ForEach(steps, id: \.self) { step in
+
+                    let stepPercent = CGFloat((step - steps.first!) / (steps.last! - steps.first!))
+                    let stepX = stepPercent * availableWidth
+                    let isActive = value >= step
+                                 
+                    let circle = Circle()
+                        .fill(isActive ? Color.LimberPurple : Color.gray)
+                        .frame(width: thumbSize, height: thumbSize)
+                        .offset(x: stepX)
+                    circle
+                    
+                }
+                Circle()
+                    .fill(Color.white)
+                    .overlay(Circle().stroke(Color.LimberPurple, lineWidth: 4))
+                    .frame(width: thumbSize + 8, height: thumbSize + 8)
+                    .offset(x: x)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { gesture in
+                                let loc = min(max(0, gesture.location.x - thumbSize / 2), availableWidth)
+                                let rawPercent = Double(loc / availableWidth)
+                                let rawValue = steps.first! + rawPercent * (steps.last! - steps.first!)
+                                value = nearestStep(to: rawValue) // snap
+                            }
+                            .onEnded { _ in
+                                value = nearestStep(to: value) // 최종적으로도 snap
+                            }
+                    )
+            }
+            .frame(height: max(thumbSize, trackHeight))
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: max(28, trackHeight))
+
     }
 }

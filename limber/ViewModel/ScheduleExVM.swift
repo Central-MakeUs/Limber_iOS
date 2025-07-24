@@ -10,6 +10,7 @@ import SwiftUI
 
 class ScheduleExVM: ObservableObject {
     
+    private var cancellables = Set<AnyCancellable>()
     
     @Published var textFieldName: String = ""
     @Published var selectedCategory: String = ""
@@ -50,6 +51,8 @@ class ScheduleExVM: ObservableObject {
     @Published var timeBtnEnable = false
     @Published var repeatBtnEnable = false
     
+    
+    
     //Binding
     init() {
         $allTime.allSatisfy { !(!$0.isEmpty) }
@@ -70,6 +73,35 @@ class ScheduleExVM: ObservableObject {
                 !category.isEmpty && !text.isEmpty && !allTime.isEmpty
             }.assign(to: &$scheduleExBtnEnable)
         
+       
+        
+        //TODO: 각 array 로 관리
+        $selectedOption
+            .dropFirst()
+            .sink { [weak self] newValue in
+                guard let self else {return}
+                selectedDays.removeAll()
+                if newValue == "매일" {
+                    selectedDays.insert("월")
+                    selectedDays.insert("화")
+                    selectedDays.insert("수")
+                    selectedDays.insert("목")
+                    selectedDays.insert("금")
+                    selectedDays.insert("토")
+                    selectedDays.insert("일")
+                } else if newValue == "평일" {
+                    selectedDays.insert("월")
+                    selectedDays.insert("화")
+                    selectedDays.insert("수")
+                    selectedDays.insert("목")
+                    selectedDays.insert("금")
+                    
+                } else if newValue == "주말" {
+                    selectedDays.insert("토")
+                    selectedDays.insert("일")
+                }
+                   }
+                   .store(in: &cancellables)
         
         //TODO: 시간 쪽 bottomBtn 이랑 월~일 sort
     }
@@ -152,4 +184,41 @@ class ScheduleExVM: ObservableObject {
         }
     }
     
+}
+
+extension ScheduleExVM {
+    func onBottomSheet() {
+        textFieldName = ""
+        selectedCategory = ""
+        categorys = ["학습", "업무", "회의", "직업", "기타"]
+        
+        timeSelect = ["시작", "종료", "반복"]
+        allTime = ["", "", ""]
+        
+        changeSheet = false
+        bottomSheetTitle = "시작"
+        isStartTime = false
+        isTime = false
+
+        selectedMinute = 0
+        selectedHour = 0
+        selectedAMPM = ""
+        
+        startTime = ""
+        finishTime = ""
+        repeatTime = ""
+        
+        detents = .height(700)
+        heights = [.height(700)]
+        
+        repeatOptions = ["매일", "평일", "주말"]
+        selectedDays = []
+        weekdays = ["월", "화", "수", "목", "금", "토", "일"]
+        selectedOption = nil
+
+        scheduleExBtnEnable = false
+        timeBtnEnable = false
+        repeatBtnEnable = false
+    }
+
 }

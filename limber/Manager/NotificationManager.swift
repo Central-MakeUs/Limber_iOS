@@ -28,9 +28,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         if let tokenString = response.notification.request.content.userInfo["appToken"] as? String,
            let tokenData = tokenString.data(using: .utf8),
-           let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {
-            NSLog("nmanger")
-            
+           let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {            
             self.appToken = appToken
             self.currentViewId = .unlock(token: appToken)
         }

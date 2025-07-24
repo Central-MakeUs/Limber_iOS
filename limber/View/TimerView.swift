@@ -75,7 +75,7 @@ struct CellAllChecker: View {
     
 }
 struct TimerView: View {
-    @ObservedObject var exampleVM: ExampleVM
+    @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
     @ObservedObject var timerVM: TimerVM
     @ObservedObject var schedulExVM: ScheduleExVM
     
@@ -85,6 +85,8 @@ struct TimerView: View {
     
     //TODO: 없애기
     @State var selectedAMPM = 0
+    
+    
     
     var body: some View {
         VStack {
@@ -137,7 +139,7 @@ struct TimerView: View {
             }.background(Color.gray100)
         }
         .fullScreenCover(isPresented: $showModal) {
-            BlockAppsSheet(vm: exampleVM, showModal: $showModal)
+            BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, showModal: $showModal)
                 .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
                 .background(Color.black.opacity(0.3))
                 .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
@@ -353,6 +355,14 @@ struct TimerView: View {
                     .presentationDragIndicator(.hidden)
                     .presentationCornerRadius(24)
                     .interactiveDismissDisabled()
+                    .ignoresSafeArea(.keyboard)
+
+            }
+            .onChange(of: showSheet) { newValue in
+                if newValue == false {
+                    schedulExVM.onBottomSheet()
+                    
+                }
             }
     }
     
@@ -417,9 +427,6 @@ struct TimerView: View {
     
 }
 
-#Preview {
-    TimerView(exampleVM: ExampleVM(), timerVM: TimerVM(), schedulExVM: ScheduleExVM())
-}
 
 
 

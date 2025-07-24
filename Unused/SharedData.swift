@@ -9,13 +9,15 @@ import Foundation
 
 
 class SharedData {
-    static let defaultsGroup: UserDefaults? = UserDefaults(suiteName: "group.com.limber.sharedData")
+    static let defaultsGroup: UserDefaults? = UserDefaults(suiteName: "group.com.limber")
     
     enum Keys: String {
         case isUserPremium = "isUserPremiumKey"
+        case totalAppsDopamineDuration = "totalAppsDopamineDuration"
         
         var key: String {
             switch self {
+            
             default: self.rawValue
             }
         }

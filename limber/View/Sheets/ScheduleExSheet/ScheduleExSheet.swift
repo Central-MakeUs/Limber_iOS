@@ -10,13 +10,13 @@ import SwiftUI
 
 struct ScheduleExSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var vm = ScheduleExVM()
+    @StateObject var vm: ScheduleExVM
     
     
     @State var showSheet = false
-
+    
     var body: some View {
-        VStack(alignment: .center) {
+        GeometryReader { _ in
             ZStack {
                 if vm.changeSheet {
                     BottomSheet4320H(vm: vm)
@@ -36,11 +36,11 @@ struct ScheduleExSheet: View {
                                     Image("xmark")
                                 }.padding(.trailing)
                             }
-
+                            
                         }.frame(height: 24)
                         Spacer()
                             .frame(height: 30)
-
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $vm.textFieldName)
                                 .padding()
@@ -48,7 +48,8 @@ struct ScheduleExSheet: View {
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(.gray300, lineWidth: 1)
                                 )
-
+                            
+                            
                             Text("50자 이내로 입력해주세요.")
                                 .font(.suitBody3)
                                 .foregroundColor(.gray500)
@@ -57,32 +58,38 @@ struct ScheduleExSheet: View {
                         .padding(.bottom, 52)
                         
                         category
-                        .padding(.bottom, 48)
+                            .padding(.bottom, 48)
                         
                         bottom
-
+                        
                         Spacer()
-
+                        
                         BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
                             
                         })
                         .padding(20)
-
+                        
                     }
-                }
-
-            }
-            .background(Color.white)
-            .cornerRadius(24)
-            
-                    }
-        .ignoresSafeArea(.keyboard)
-        .hideKeyboardOnTap()
                     
-
+                    
+                }
+                
+            }
+        }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .background(Color.white)
+        .cornerRadius(24)
+        .hideKeyboardOnTap()
+        
+        
+        
+        
+        
+        
+        
     }
-
-
+    
+    
     @ViewBuilder
     var category: some View {
         
@@ -90,7 +97,7 @@ struct ScheduleExSheet: View {
             HStack {
                 Text("무엇에 집중하고 싶으신가요?")
                     .font(.suitHeading3Small)
-                    
+                
                 
                 Spacer()
             }
@@ -115,58 +122,58 @@ struct ScheduleExSheet: View {
                             }
                     }
                     
-//                    Label("직접추가", systemImage: "plus")
-//                        .foregroundStyle(Color.gray500)
-//                        .frame(width: 112)
-//                        .frame(maxHeight: .infinity)
-//                        .background(Color.gray200)
-//                        .cornerRadius(100)
-//                        .onTapGesture {
-//                            showSheet = true
-//                        }
-//                        .sheet(isPresented: $showSheet) {
-//                            AutoFocusSheet()
-//                                .presentationDetents([.height(700), ])
-//                                .presentationCornerRadius(24)
-//                                .interactiveDismissDisabled(true)
-//                            
-//                        }
+                    //                    Label("직접추가", systemImage: "plus")
+                    //                        .foregroundStyle(Color.gray500)
+                    //                        .frame(width: 112)
+                    //                        .frame(maxHeight: .infinity)
+                    //                        .background(Color.gray200)
+                    //                        .cornerRadius(100)
+                    //                        .onTapGesture {
+                    //                            showSheet = true
+                    //                        }
+                    //                        .sheet(isPresented: $showSheet) {
+                    //                            AutoFocusSheet()
+                    //                                .presentationDetents([.height(700), ])
+                    //                                .presentationCornerRadius(24)
+                    //                                .interactiveDismissDisabled(true)
+                    //
+                    //                        }
                 }
             }
             .frame(height: 38)
-
-
+            
+            
         }
         .padding(.horizontal, 20)
-
+        
     }
-
+    
     @ViewBuilder
     var bottom: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("얼마동안 집중하시겠어요?")
                 .font(.suitHeading3Small)
                 .foregroundColor(.gray800)
-
+            
             ForEach(0..<vm.timeSelect.count, id: \.self) { i in
                 HStack {
-
+                    
                     Text(vm.timeSelect[i])
                         .foregroundStyle(.gray600)
                         .font(.suitBody1)
                     Spacer()
-
+                    
                     Text(vm.allTime[i])
                         .foregroundStyle(.gray800)
                         .font(.suitHeading3Small)
-
+                    
                     Button {
                         vm.focusCategoryTapped(idx: i)
                     } label: {
-                            Image("chevron")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .padding(.leading, 8)
+                        Image("chevron")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .padding(.leading, 8)
                         
                         
                     }
@@ -178,15 +185,15 @@ struct ScheduleExSheet: View {
             }
         }
         .padding(.horizontal)
-      
-           
-         
-    
+        
+        
+        
+        
         
     }
-
-        
-
+    
+    
+    
 }
 
 

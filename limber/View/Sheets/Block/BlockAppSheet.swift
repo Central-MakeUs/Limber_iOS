@@ -13,7 +13,7 @@ struct BlockAppsSheet: View {
     @EnvironmentObject var router: AppRouter
     @Environment(\.dismiss) private var dismiss
     @StateObject var blockVM: BlockVM = BlockVM()
-    @ObservedObject var vm: ExampleVM
+    @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
 
     @State private var showPicker = false
     @Binding var showModal: Bool
@@ -21,9 +21,7 @@ struct BlockAppsSheet: View {
     
 
     var body: some View {
-        
         VStack {
-            
         VStack(spacing: 0) {
             VStack(spacing: 0) {
                 HStack {
@@ -36,7 +34,6 @@ struct BlockAppsSheet: View {
                     }
                 }
                 .padding([.top, .trailing], 20)
-                
                 
                 ZStack {
                     Circle()
@@ -77,32 +74,17 @@ struct BlockAppsSheet: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center) {
                     ForEach(Array(blockVM.applicationTokens.sorted { $0.hashValue < $1.hashValue }), id: \.self) { token in
-
                         VStack {
-                            
                             Label(token)
                                 .labelStyle(iconLabelStyle())
-                                .scaleEffect(CGSize(width: 1.6, height: 1.6))
+//                                .scaleEffect(CGSize(width: 1.6, height: 1.6))
                             Label(token)
                                 .labelStyle(textLabelStyle())
-                                .scaleEffect(CGSize(width: 0.6, height: 0.6))
-
-                                
                         }
                         .cornerRadius(8)
                         .frame(width: 100, height: 76, alignment: .center)
                         .background(Color.gray100)
-
-
-
-
-
-                    
-                            
-        
                     }
-              
-
                 }
             }
             .frame(height: 76)
@@ -167,15 +149,16 @@ struct BlockedApp: Identifiable {
 struct ClearBackground: UIViewRepresentable {
     
     public func makeUIView(context: Context) -> UIView {
-        
         let view = ClearBackgroundView()
         DispatchQueue.main.async {
             view.superview?.superview?.backgroundColor = .clear
         }
         return view
     }
-
-    public func updateUIView(_ uiView: UIView, context: Context) {}
+    public func updateUIView(_ uiView: UIView, context: Context) {
+        
+        
+    }
 }
 
 class ClearBackgroundView: UIView {
@@ -189,9 +172,7 @@ class ClearBackgroundView: UIView {
 struct iconLabelStyle: LabelStyle {
         
     func makeBody(configuration: Configuration) -> some View {
-
             configuration.icon
-            
     }
 }
 struct textLabelStyle: LabelStyle {
@@ -202,9 +183,3 @@ struct textLabelStyle: LabelStyle {
     }
 }
 
-
-#Preview {
-    BlockAppsSheet(vm: ExampleVM(), showModal: .init(get: {
-        true
-    }, set: {_ in }))
-}

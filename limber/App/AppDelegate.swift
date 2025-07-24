@@ -11,11 +11,11 @@ import UserNotifications
 import ManagedSettings
 import FamilyControls
 
+
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, ObservableObject {
     
     @Published var currentViewId: SomeRoute?
     var appToken: ApplicationToken?
-    var router: AppRouter?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {

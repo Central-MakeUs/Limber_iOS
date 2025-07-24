@@ -37,7 +37,12 @@ struct RepeatSelectorView: View {
                         Spacer()
                     }
                     .onTapGesture {
-                        vm.selectedOption = option
+                        if vm.selectedOption == option {
+                            vm.selectedOption = nil
+                        } else {
+                            vm.selectedOption = option
+                        }
+                        
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 20)

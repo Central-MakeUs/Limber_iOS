@@ -6,24 +6,30 @@
 //
 
 import DeviceActivity
+import Foundation
+import ManagedSettings
+
+extension ManagedSettingsStore.Name {
+    static let new = Self("new")
+}
 
 // Optionally override any of the functions below.
 // Make sure that your class name matches the NSExtensionPrincipalClass in your Info.plist.
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     
-    
 
     
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
-        
-        // Handle the start of the interval.
+        let newStore = ManagedSettingsStore(named: .new)
+        newStore.clearAllSettings()
     }
     
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
+        let store = ManagedSettingsStore(named: .init(activity.rawValue))
+        store.shield.applications = []
         
-        // Handle the end of the interval.
     }
     
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {

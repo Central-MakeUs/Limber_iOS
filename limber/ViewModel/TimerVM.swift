@@ -25,7 +25,6 @@ struct ExperimentModel: Hashable {
 }
 
 class TimerVM: ObservableObject {
-    @EnvironmentObject var router: AppRouter
     
     @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
 

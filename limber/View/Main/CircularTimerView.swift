@@ -10,7 +10,15 @@ import SwiftUI
 
 struct CircularTimerView: View {
     let totalTime: TimeInterval = 24 * 60 * 60 // 24시간 (예시)
-    @State var elapsed: TimeInterval = 60 * 60 * 12 // 3시간 경과(예시)
+    @State var hour: Double
+    @State var elapsed: TimeInterval
+    @State var isFinished: Bool = false
+    
+    
+    init(hour: Double = 12) {
+        self.hour = hour
+        self.elapsed = 60 * 60 * hour
+    }
 
     let gradient = AngularGradient(
         gradient: Gradient(colors: [.white, .white, .white, .limberPurple, .limberPurple, .limberPurple, .limberPurple ]),
@@ -64,11 +72,14 @@ struct CircularTimerView: View {
                         .background(
                             LinearGradient(
                                 stops: [
-                                    Gradient.Stop(color: .limberPurple, location: 0.00),
-                                    Gradient.Stop(color: .primaryDark, location: 1.00),
+                                    Gradient.Stop(color: .primaryDark, location: 0.00),
+                                    Gradient.Stop(color: .primaryMiddleDark, location: 0.6),
+                                
+                                    Gradient.Stop(color: .white, location: 1.00),
+                                    
                                 ],
-                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                endPoint: UnitPoint(x: 0.5, y: 1)
+                                startPoint: UnitPoint(x: 0, y: 0.7),
+                                endPoint: UnitPoint(x: 1.2, y: 0)
                             )
                         )
                         .cornerRadius(300)
@@ -107,7 +118,7 @@ struct CircularTimerView: View {
                         let radius = size / 2
                         let angle = Angle(degrees: -90 + (progress * 360))
                    
-                        Image("star") // 별 이미지 넣기(Asset에 star 넣어야 함)
+                        Image("star")
                             .resizable()
                             .frame(width: 44, height: 44)
                             .position(
@@ -121,7 +132,7 @@ struct CircularTimerView: View {
                     
                     VStack(spacing: 0) {
                         
-                        Image("보류")
+                        Image("mainCharactor_1")
                             .resizable()
                             .frame(width: 125, height: 125)
                         Text(timeString(from: totalTime - elapsed))
@@ -145,9 +156,16 @@ struct CircularTimerView: View {
                         Image("note")
                     })
      
-                    Text("실험이 종료되었어요!")
-                        .font(.suitHeading3Small)
-                        .foregroundStyle(.white)
+                    if isFinished {
+                        Text("실험이 종료되었어요!")
+                            .font(.suitHeading3Small)
+                            .foregroundStyle(.white)
+                    } else {
+                        Text("실험이 진행중이에요!")
+                            .font(.suitHeading3Small)
+                            .foregroundStyle(.white)
+                    }
+                   
                 }
                 .frame(width: 220, height: 50)
                 .background(Color.primaryDark)
@@ -176,6 +194,7 @@ struct CircularTimerView: View {
                 } label: {
                     Text("홈으로 가기")
                         .font(.suitHeading3Small)
+                        .foregroundStyle(Color.gray800)
                 }
                 .frame(maxWidth: .infinity, minHeight: 54)
                 .background(.white)

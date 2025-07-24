@@ -11,7 +11,12 @@ import ManagedSettings
 
 import SwiftUI
 import DeviceActivity
-
+extension ManagedSettingsStore.Name {
+    static let new = Self("new")
+}
+extension DeviceActivityName {
+    static let new = Self("new")
+}
 struct BlockedModel {
     let token: String
     let displayName: String
@@ -19,15 +24,26 @@ struct BlockedModel {
 
 class BlockVM: ObservableObject {
     
-    let store = ManagedSettingsStore()
+    let store = ManagedSettingsStore(named: .new)
     
     @Published var appSelection = FamilyActivitySelection(includeEntireCategory: true)
     @Published var applicationTokens = Set<ApplicationToken>()
     
-    var context: DeviceActivityReport.Context = .init(rawValue: "Total Activity")
-
     func setShieldRestrictions() {
+        let deviceActivityCenter = DeviceActivityCenter()
+        
         store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
+        let schedule = DeviceActivitySchedule(
+            intervalStart: DateComponents(hour: 22,minute: 00, weekday: 0),
+            intervalEnd: DateComponents(hour: 22, minute: 40),
+            repeats: true)
+        
+        do {
+            try deviceActivityCenter.startMonitoring(.new , during: schedule)
+            
+        } catch {
+            print("err \(error)")
+        }
     }
     
     func removeForShieldRestrictions(appToken: ApplicationToken) {
@@ -38,15 +54,16 @@ class BlockVM: ObservableObject {
         applicationTokens = appSelection.applicationTokens
     }
     
-
+    
     func reset() {
-   
+        
         appSelection.applicationTokens = store.shield.applications ?? []
         _ = appSelection.applicationTokens.map {
             print($0.hashValue)
         }
+        
         applicationTokens = store.shield.applications ?? []
         
     }
-  
+    
 }

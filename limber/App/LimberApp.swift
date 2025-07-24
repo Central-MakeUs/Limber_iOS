@@ -11,8 +11,6 @@ import ManagedSettings
 
 @main
 struct LimberApp: App {
-//    private let notificationManager = NotificationManager()
-
     @AppStorage("hasSeenMain") var hasSeenMain: Bool = false
     @Environment(\.scenePhase) var scenePhase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -20,7 +18,7 @@ struct LimberApp: App {
     @StateObject var blockVM = BlockVM()
     @StateObject var contentVM = ContentVM()
     @StateObject var timerVM = TimerVM()
-    @StateObject var exampleVM = ExampleVM()
+    @StateObject var deviceActiveReportVM = DeviceActivityReportVM()
     @StateObject var scheduleExVM = ScheduleExVM()
     @State var non = ""
     
@@ -30,16 +28,18 @@ struct LimberApp: App {
             
           if hasSeenMain {
                 NavigationStack(path: $router.path) {
-                    MainView(contentVM: contentVM, timerVM: timerVM, exampleVM: exampleVM, scheduleExVM: scheduleExVM)
+                    MainView(contentVM: contentVM, timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
                         .navigationDestination(for: SomeRoute.self) { route in
                         switch route {
                         case .home:
-                            HomeView()
+                            HomeView(homeVM: HomeVM())
                         case .main:
-                            MainView(contentVM: contentVM, timerVM: timerVM, exampleVM: exampleVM, scheduleExVM: scheduleExVM)
+                            MainView(contentVM: contentVM, timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
                         case .unlock(let token):
                             UnlockReasonView(blockVM: blockVM, token: token)
                      
+                        case .circularTimer(let hour):
+                            CircularTimerView(hour: hour)
                         }
                     }
                     .environmentObject(appDelegate)

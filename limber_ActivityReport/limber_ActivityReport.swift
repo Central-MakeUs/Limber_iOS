@@ -11,14 +11,12 @@ import SwiftUI
 @main
 struct limber_ActivityReport: DeviceActivityReportExtension {
     var body: some DeviceActivityReportScene {
-         TotalActivityReport { totalActivity in
-             return TotalActivityView(activityReport: totalActivity)
+        
+         TotalActivityScene { totalActivity in
+             let vm = TotalActivityVM(activityReport: totalActivity)
+             return TotalActivityView(vm: vm)
          }
         
-        TotalTextScene { totalText in
-            return TotalActivityLabel(activityReport: totalText)
-            
-        }
         
      }
 }
