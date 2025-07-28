@@ -24,7 +24,7 @@ class ShieldActionExtension: ShieldActionDelegate {
         case .primaryButtonPressed:
             let content = UNMutableNotificationContent()
             content.title = "림버"
-            content.body = "알림을 눌러 림버로 이동해주세요.\n림버에서 앱 잠긍을 해제할 수 있어요!"
+            content.body = "알림을 눌러 림버로 이동해주세요.\n림버에서 앱 잠금을 해제할 수 있어요!"
             content.interruptionLevel = .timeSensitive
             content.relevanceScore = 1.0
 
@@ -35,12 +35,12 @@ class ShieldActionExtension: ShieldActionDelegate {
 
             let request = UNNotificationRequest(identifier: "urgent", content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request)
-            
+
             defaults?.set(true, forKey: "changeView")
-            defaults?.synchronize()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: {
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 defaults?.set(false, forKey: "changeView")
-            })
+            }
             completionHandler(.defer)
         @unknown default:
             fatalError()

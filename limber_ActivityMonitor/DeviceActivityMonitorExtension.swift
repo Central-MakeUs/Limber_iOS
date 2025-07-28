@@ -8,27 +8,74 @@
 import DeviceActivity
 import Foundation
 import ManagedSettings
+import UserNotifications
 
 extension ManagedSettingsStore.Name {
-    static let new = Self("new")
+    static let total = Self("total")
 }
 
 // Optionally override any of the functions below.
 // Make sure that your class name matches the NSExtensionPrincipalClass in your Info.plist.
-class DeviceActivityMonitorExtension: DeviceActivityMonitor {
-    
 
+struct PickedAppModel: Codable, Hashable, Equatable {
+    static func == (lhs: PickedAppModel, rhs: PickedAppModel) -> Bool {
+        return lhs.token == rhs.token
+    }
+    
+    init(displayName: String, token: ApplicationToken?) {
+        self.displayName = displayName
+        self.token = token
+    }
+    let displayName: String
+    let token: ApplicationToken?
+}
+
+class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
-        let newStore = ManagedSettingsStore(named: .new)
+        let newStore = ManagedSettingsStore(named: .init(activity.rawValue))
         newStore.clearAllSettings()
+
+        if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
+            let decoder = JSONDecoder()
+            if let apps = try? decoder.decode([PickedAppModel].self, from: data) {
+                var set = Set<ApplicationToken>()
+                apps.forEach {
+                    if let token = $0.token {
+                        set.insert(token)
+                    }
+                }
+                newStore.shield.applications = set
+            }
+        }
+//        let store = ManagedSettingsStore(named: .init(activity.rawValue))
+        SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
+
     }
     
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
+        let defaults = UserDefaults(suiteName: "group.com.limber")
         let store = ManagedSettingsStore(named: .init(activity.rawValue))
         store.shield.applications = []
+        
+        let content = UNMutableNotificationContent()
+        content.title = "림버"
+        content.body = "타이머가 종료되었어요!\n앱에서 회고를 진행해주세요!"
+        content.interruptionLevel = .timeSensitive
+        content.relevanceScore = 1.0
+
+        let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
+        
+        SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
+
+//        defaults?.set(true, forKey: "changeView")
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+//            defaults?.set(false, forKey: "changeView")
+//        }
         
     }
     

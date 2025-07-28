@@ -8,20 +8,29 @@
 import Combine
 import SwiftUI
 
+
+import Foundation
+import SwiftData
+import DeviceActivity
+
+
+
 class ScheduleExVM: ObservableObject {
+    
+    @EnvironmentObject var urlSessionManage: URLSessionManager
     
     private var cancellables = Set<AnyCancellable>()
     
     @Published var textFieldName: String = ""
     @Published var selectedCategory: String = ""
     @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
-
+    
     @Published var timeSelect: [String] = ["시작", "종료", "반복"]
     @Published var allTime: [String] = [
         "",
         "",
         ""]
-
+    
     @Published var changeSheet = false
     @Published var bottomSheetTitle = "시작"
     @Published var isStartTime = false
@@ -29,7 +38,7 @@ class ScheduleExVM: ObservableObject {
     
     @Published var selectedMinute = 0
     @Published var selectedHour = 0
-    @Published var selectedAMPM = ""
+    @Published var selectedAMPM = "오전"
     
     @Published var startTime = ""
     @Published var finishTime = ""
@@ -45,12 +54,14 @@ class ScheduleExVM: ObservableObject {
     @Published var selectedDays: Set<String> = []
     @Published var weekdays = ["월", "화", "수", "목", "금", "토", "일"]
     @Published var selectedOption: String? = nil
-
+    
     //MARK: BottomBtn
     @Published var scheduleExBtnEnable = false
     @Published var timeBtnEnable = false
     @Published var repeatBtnEnable = false
     
+    
+    private let daysDic: [String: [Int]] = ["평일": [0,1,2,3,4], "주말": [5,6] , "매일" : [0,1,2,3,4,5,6]]
     
     
     //Binding
@@ -59,8 +70,8 @@ class ScheduleExVM: ObservableObject {
             .assign(to: &$scheduleExBtnEnable)
         
         $selectedDays
-              .map { !$0.isEmpty }
-              .assign(to: &$repeatBtnEnable)
+            .map { !$0.isEmpty }
+            .assign(to: &$repeatBtnEnable)
         
         Publishers.CombineLatest($selectedMinute, $selectedHour)
             .map { m, h in
@@ -73,59 +84,48 @@ class ScheduleExVM: ObservableObject {
                 !category.isEmpty && !text.isEmpty && !allTime.isEmpty
             }.assign(to: &$scheduleExBtnEnable)
         
-       
         
-        //TODO: 각 array 로 관리
+        
         $selectedOption
             .dropFirst()
             .sink { [weak self] newValue in
                 guard let self else {return}
-                selectedDays.removeAll()
-                if newValue == "매일" {
-                    selectedDays.insert("월")
-                    selectedDays.insert("화")
-                    selectedDays.insert("수")
-                    selectedDays.insert("목")
-                    selectedDays.insert("금")
-                    selectedDays.insert("토")
-                    selectedDays.insert("일")
-                } else if newValue == "평일" {
-                    selectedDays.insert("월")
-                    selectedDays.insert("화")
-                    selectedDays.insert("수")
-                    selectedDays.insert("목")
-                    selectedDays.insert("금")
-                    
-                } else if newValue == "주말" {
-                    selectedDays.insert("토")
-                    selectedDays.insert("일")
+                if let newValue, newValue.isEmpty {
+                    return
                 }
-                   }
-                   .store(in: &cancellables)
+                selectedDays.removeAll()
+                if let newValue {
+                    for val in daysDic[newValue]! {
+                        selectedDays.insert(weekdays[val])
+                    }
+                }
+               
+            }
+            .store(in: &cancellables)
         
         //TODO: 시간 쪽 bottomBtn 이랑 월~일 sort
     }
-
+    
     func on432() {
         heights = [.height(700),.height(432)]
         detents = .height(432)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
             self.heights = [.height(432)]
-
+            
         })
     }
-      
+    
     func on700() {
         self.allTime[2] = selectedDays.reduce("") { $0 + " " + $1 }
         heights = [.height(700), .height(432)]
         detents = .height(700)
-  
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
             self.heights = [.height(700)]
-
+            
         })
-
+        
     }
     func onReset() {
         heights = [.height(700)]
@@ -162,9 +162,9 @@ class ScheduleExVM: ObservableObject {
     func timePicked() {
         if isTime {
             if isStartTime {
-                allTime[0] = "\(selectedHour) 시 \(selectedMinute) 분"
+                allTime[0] = "\(selectedAMPM) \(selectedHour) 시 \(selectedMinute) 분"
             } else {
-                allTime[1] = "\(selectedHour) 시 \(selectedMinute) 분"
+                allTime[1] = "\(selectedAMPM) \(selectedHour) 시 \(selectedMinute) 분"
             }
         }
         
@@ -184,6 +184,58 @@ class ScheduleExVM: ObservableObject {
         }
     }
     
+    func tapReservingBtn() {
+        let deviceActivityCenter = DeviceActivityCenter()
+        let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
+        let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
+        
+        let intervalStart = timeStringToDateComponents(startTimeStr) ?? DateComponents()
+        let intervalEnd = timeStringToDateComponents(endTimeStr) ?? DateComponents()
+        
+            let schedule = DeviceActivitySchedule(
+                intervalStart: intervalStart,
+                intervalEnd: intervalEnd,
+                repeats: true)
+        
+        
+            do {
+                try deviceActivityCenter.startMonitoring(.new , during: schedule)
+                
+            } catch {
+                print("err \(error)")
+            }
+    }
+    
+    func timeStringToDateComponents(_ timeString: String) -> DateComponents? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "ah시m분" // 공백 주의 (예: "오후 2시 10분")
+        
+        guard let date = formatter.date(from: timeString) else {
+            return nil
+        }
+        
+        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return components
+    }
+    
+    func checkDays() {
+        // 인덱스 세팅
+        let weekdaysSet: Set<String> = ["월", "화", "수", "목", "금"]
+        let weekendSet: Set<String> = ["토", "일"]
+        let allSet: Set<String> = ["월", "화", "수", "목", "금", "토", "일"]
+        
+        if selectedDays == allSet {
+            selectedOption = "매일"
+        } else if selectedDays == weekdaysSet {
+            selectedOption = "평일"
+        } else if selectedDays == weekendSet {
+            selectedOption = "주말"
+        } else {
+            selectedOption = ""
+        }
+    }
+    
 }
 
 extension ScheduleExVM {
@@ -199,10 +251,10 @@ extension ScheduleExVM {
         bottomSheetTitle = "시작"
         isStartTime = false
         isTime = false
-
+        
         selectedMinute = 0
         selectedHour = 0
-        selectedAMPM = ""
+        selectedAMPM = "오전"
         
         startTime = ""
         finishTime = ""
@@ -215,10 +267,19 @@ extension ScheduleExVM {
         selectedDays = []
         weekdays = ["월", "화", "수", "목", "금", "토", "일"]
         selectedOption = nil
-
+        
         scheduleExBtnEnable = false
         timeBtnEnable = false
         repeatBtnEnable = false
     }
+    
+}
 
+extension ScheduleExVM {
+    func saveFocusSessions(_ sessions: [FocusSessionDTO]) {
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(sessions) {
+            SharedData.defaultsGroup?.set(data, forKey: "focusSessions")
+        }
+    }
 }

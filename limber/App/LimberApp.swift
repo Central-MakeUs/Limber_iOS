@@ -16,7 +16,6 @@ struct LimberApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var router = AppRouter()
     @StateObject var blockVM = BlockVM()
-    @StateObject var contentVM = ContentVM()
     @StateObject var timerVM = TimerVM()
     @StateObject var deviceActiveReportVM = DeviceActivityReportVM()
     @StateObject var scheduleExVM = ScheduleExVM()
@@ -25,26 +24,27 @@ struct LimberApp: App {
 
     var body: some Scene {
         WindowGroup {
-            
           if hasSeenMain {
                 NavigationStack(path: $router.path) {
-                    MainView(contentVM: contentVM, timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
+                    MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
                         .navigationDestination(for: SomeRoute.self) { route in
                         switch route {
                         case .home:
                             HomeView(homeVM: HomeVM())
                         case .main:
-                            MainView(contentVM: contentVM, timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
+                            MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM)
                         case .unlock(let token):
                             UnlockReasonView(blockVM: blockVM, token: token)
                      
                         case .circularTimer(let hour):
-                            CircularTimerView(hour: hour)
+
+                            CircularTimerView(startHour: 0, startMinute: 0, endHour: 0, endMinute: 0)
                         }
                     }
                     .environmentObject(appDelegate)
                  
                 }
+                .modelContainer(for: [FocusSession.self])
                 .environmentObject(router)
                 .background(Color.white)
          

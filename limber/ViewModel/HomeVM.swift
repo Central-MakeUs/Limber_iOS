@@ -20,7 +20,9 @@ class HomeVM: ObservableObject {
     }
     
     func onAppear() {
-        //
+        SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
+
+        
         
         isTimering = true
 

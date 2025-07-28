@@ -10,7 +10,8 @@ import UIKit
 import UserNotifications
 import ManagedSettings
 import FamilyControls
-
+import FirebaseFirestore
+import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, ObservableObject {
     
@@ -20,6 +21,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+        FirebaseApp.configure()
+
         return true
     }
     

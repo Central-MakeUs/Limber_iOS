@@ -11,12 +11,15 @@ struct CustomTimePickerView: UIViewRepresentable {
     @Binding var selectedHour: Int
     @Binding var selectedMinute: Int
     
+
     var hourText: String
 
     
-    let hourRange = Array(0...24)
-    let minuteRange = Array(0...60)
+    var hourRange = Array(0...23)
+    let minuteRange = Array(0...59)
     
+   
+
     func makeUIView(context: Context) -> UIView {
         
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 200))
@@ -73,6 +76,7 @@ struct CustomTimePickerView: UIViewRepresentable {
         
         func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
             if component == 0 {
+                
                 parent.selectedHour = parent.hourRange[row]
             } else {
                 parent.selectedMinute = parent.minuteRange[row]
@@ -82,9 +86,15 @@ struct CustomTimePickerView: UIViewRepresentable {
             if #available(iOS 14.0, *) {
                 pickerView.subviews[1].backgroundColor = .clear
             }
-            let label = UILabel()
             
-            label.text = "\(row)"
+            let label = UILabel()
+            if component == 0 {
+                label.text = "\(parent.hourRange[row])"
+            } else {
+                label.text = "\(parent.minuteRange[row])"
+
+            }
+    
             label.textAlignment = .center
             label.backgroundColor = .clear
             

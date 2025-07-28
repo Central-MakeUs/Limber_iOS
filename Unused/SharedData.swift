@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 class SharedData {
@@ -13,7 +14,9 @@ class SharedData {
     
     enum Keys: String {
         case isUserPremium = "isUserPremiumKey"
-        case totalAppsDopamineDuration = "totalAppsDopamineDuration"
+        case totalAppsDuration = "totalAppsDuration"
+        case pickedApps = "pickedApps"
+        case isTimering = "isTimering"
         
         var key: String {
             switch self {
@@ -22,4 +25,8 @@ class SharedData {
             }
         }
     }
+}
+//TODO: remove
+func getDeviceUUID() -> String {
+    return UIDevice.current.identifierForVendor!.uuidString
 }

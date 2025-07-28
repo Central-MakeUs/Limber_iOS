@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import _SwiftData_SwiftUI
 
 struct CellChecker: View {
     @ObservedObject var timerVM: TimerVM
-    let model: ExperimentModel
+
+    let model: FocusSession
     var action: () -> Void
     var body: some View {
         // 체크
@@ -75,6 +77,7 @@ struct CellAllChecker: View {
     
 }
 struct TimerView: View {
+    @Query var staticModels: [FocusSession]
     @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
     @ObservedObject var timerVM: TimerVM
     @ObservedObject var schedulExVM: ScheduleExVM
@@ -82,9 +85,7 @@ struct TimerView: View {
     @State var showSheet = false
     @State var showModal = false
     @State var topPick = 0
-    
-    //TODO: 없애기
-    @State var selectedAMPM = 0
+
     
     
     
@@ -251,7 +252,7 @@ struct TimerView: View {
                 if !timerVM.isEdit {
                     Text("진행 예정인 실험")
                         .font(.suitHeading3Small)
-                    Text("\(timerVM.staticModels.count)")
+                    Text("\(staticModels.count)")
                         .foregroundStyle(.limberPurple)
                         .font(.suitHeading3Small)
                     Spacer()
@@ -259,9 +260,8 @@ struct TimerView: View {
                     editBtn
 
                 } else {
-                    
                     CellAllChecker(timerVM: timerVM, action: {
-                        timerVM.allCheckerTapped()
+                        allCheckerTapped()
                                          })
                     Text("전체선택")
                         .font(.suitHeading3Small)
@@ -275,7 +275,7 @@ struct TimerView: View {
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     VStack(spacing: 12) {
-                        ForEach(timerVM.staticModels, id: \.self) { model in
+                        ForEach(staticModels, id: \.id) { model in
                             HStack(alignment: .top) {
                                 if timerVM.isEdit {
                                     CellChecker(timerVM: timerVM, model: model, action: {
@@ -286,8 +286,9 @@ struct TimerView: View {
                                         }
                                     })
                                 }
+
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text("\(model.category)")
+                                    Text("\(model.focusTitle)")
                                         .font(Font.suitBody2)
                                         .frame(width: 49, height: 28)
                                         .background(
@@ -301,13 +302,13 @@ struct TimerView: View {
                                         .cornerRadius(100)
                                         .padding(.bottom, 12)
                                     
-                                    Text("\(model.title)")
+                                    Text("\(model.name)")
                                         .lineLimit(2)
                                         .padding(.bottom, 6)
                                         .foregroundStyle(model.isOn
-                                                         ? Color.Gray800
+                                                         ? Color.gray800
                                                          : Color.gray600)
-                                    Text("\(model.timer)")
+                                    Text("\(model.repeatType) \(model.startTime)-\(model.endTime)")
                                         .foregroundStyle(model.isOn
                                                          ? Color.gray600
                                                          : Color.gray400)
@@ -318,7 +319,7 @@ struct TimerView: View {
                                     Toggle("", isOn: Binding(
                                         get: { model.isOn },
                                         set: { newValue in
-                                            timerVM.toggleChanged(id: model.id, newValue: newValue)
+                                            toggleChanged(id: model.id, newValue: newValue)
                                         }
                                     ))
                                     .labelsHidden()
@@ -423,6 +424,29 @@ struct TimerView: View {
 
         }
        
+    }
+    
+    
+    //TODO: 백엔드 도입 후 다시 ViewModel 로 이동
+    func toggleChanged(id: PersistentIdentifier, newValue: Bool) {
+        if let index = staticModels.firstIndex(where: { $0.id == id }) {
+               
+               staticModels[index].isOn = newValue
+               
+           }
+       }
+    
+
+
+    func allCheckerTapped() {
+        timerVM.isAllChecker.toggle()
+        if timerVM.isAllChecker {
+            _ = staticModels.map {
+                timerVM.checkedModels.insert($0)
+            }
+        } else {
+            timerVM.checkedModels.removeAll()
+        }
     }
     
 }

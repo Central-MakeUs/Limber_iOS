@@ -7,14 +7,20 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
+
 
 struct ScheduleExSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject var vm: ScheduleExVM
+    @Environment(\.modelContext) private var context
+    @Query var staticModels: [FocusSession]
     
+    
+    @ObservedObject var vm: ScheduleExVM
     
     @State var showSheet = false
-    
+    @FocusState private var isFocused: Bool  // ← 여기!
+
     var body: some View {
         GeometryReader { _ in
             ZStack {
@@ -43,13 +49,12 @@ struct ScheduleExSheet: View {
                         
                         VStack(alignment: .leading, spacing: 8) {
                             TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $vm.textFieldName)
+                                .focused($isFocused)
                                 .padding()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(.gray300, lineWidth: 1)
                                 )
-                            
-                            
                             Text("50자 이내로 입력해주세요.")
                                 .font(.suitBody3)
                                 .foregroundColor(.gray500)
@@ -66,11 +71,37 @@ struct ScheduleExSheet: View {
                         
                         BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
                             
+                            vm.tapReservingBtn()
+                            
+                            let newSession = FocusSession(
+                                name: vm.textFieldName,
+                                focusTitle: vm.selectedCategory,
+                                startTime: vm.allTime[0].replacingOccurrences(of: " ", with: ""),
+                                endTime:  vm.allTime[1].replacingOccurrences(of: " ", with: ""),
+                                repeatType: {
+                                    if let option = vm.selectedOption, !option.isEmpty {
+                                        return option
+                                    } else {
+                                        var all = ""
+                                        _ = vm.selectedDays.map {
+                                            all += $0
+                                        }
+                                        return all
+                                    }
+                                }(), isOn: false
+                            )
+                            
+                            context.insert(newSession)
+                            
+                            let sessions = staticModels.map { FocusSessionDTO(name: $0.name, focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn) }
+                            
+                            vm.saveFocusSessions(sessions)
+                            dismiss()
+                            
                         })
                         .padding(20)
                         
                     }
-                    
                     
                 }
                 
@@ -81,14 +112,7 @@ struct ScheduleExSheet: View {
         .cornerRadius(24)
         .hideKeyboardOnTap()
         
-        
-        
-        
-        
-        
-        
     }
-    
     
     @ViewBuilder
     var category: some View {
@@ -98,28 +122,30 @@ struct ScheduleExSheet: View {
                 Text("무엇에 집중하고 싶으신가요?")
                     .font(.suitHeading3Small)
                 
-                
                 Spacer()
             }
             .padding(.bottom, 20)
             ScrollView(.horizontal) {
-                
                 HStack(spacing: 8) {
                     ForEach(vm.categorys, id: \.self) { text in
-                        Text(text)
-                            .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
-                            .frame(width: 68)
-                            .frame(maxHeight: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 100)
-                                    .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
-                                                vm.selectedCategory == text ? 2 : 1.2)
-                            )
-                            .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
-                            .cornerRadius(100)
-                            .onTapGesture {
-                                vm.selectedCategory = text
-                            }
+                        Button {
+                            vm.selectedCategory = text
+                            isFocused = false
+                            
+                        } label: {
+                            Text(text)
+                                .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
+                                .frame(width: 68)
+                                .frame(maxHeight: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                                                    vm.selectedCategory == text ? 2 : 1.2)
+                                )
+                                .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
+                                .cornerRadius(100)
+                        }
+                        
                     }
                     
                     //                    Label("직접추가", systemImage: "plus")
@@ -142,7 +168,6 @@ struct ScheduleExSheet: View {
             }
             .frame(height: 38)
             
-            
         }
         .padding(.horizontal, 20)
         
@@ -156,54 +181,49 @@ struct ScheduleExSheet: View {
                 .foregroundColor(.gray800)
             
             ForEach(0..<vm.timeSelect.count, id: \.self) { i in
-                HStack {
-                    
-                    Text(vm.timeSelect[i])
-                        .foregroundStyle(.gray600)
-                        .font(.suitBody1)
-                    Spacer()
-                    
-                    Text(vm.allTime[i])
-                        .foregroundStyle(.gray800)
-                        .font(.suitHeading3Small)
-                    
-                    Button {
-                        vm.focusCategoryTapped(idx: i)
-                    } label: {
+                
+                Button {
+                    vm.focusCategoryTapped(idx: i)
+                } label: {
+                    HStack {
+                        Text(vm.timeSelect[i])
+                            .foregroundStyle(.gray600)
+                            .font(.suitBody1)
+                        Spacer()
+                        
+                        Text(vm.allTime[i])
+                            .foregroundStyle(.gray800)
+                            .font(.suitHeading3Small)
+                        
                         Image("chevron")
                             .resizable()
                             .frame(width: 24, height: 24)
                             .padding(.leading, 8)
-                        
-                        
+                            .frame(width: 32, height: 32)
                     }
-                    .frame(width: 32, height: 32)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(12)
                 }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(12)
             }
         }
         .padding(.horizontal)
-        
-        
-        
-        
-        
     }
-    
-    
-    
 }
+
 
 
 extension View {
     func hideKeyboardOnTap() -> some View {
         self.onTapGesture {
-            UIApplication.shared.sendAction(
-                #selector(UIResponder.resignFirstResponder),
-                to: nil, from: nil, for: nil
-            )
+            unfocused()
         }
+    }
+    
+    func unfocused() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil, from: nil, for: nil
+        )
     }
 }

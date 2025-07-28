@@ -68,6 +68,8 @@ struct RepeatSelectorView: View {
                             } else {
                                 vm.selectedDays.insert(day)
                             }
+                            
+                            vm.checkDays()
                         }
                 }
             }

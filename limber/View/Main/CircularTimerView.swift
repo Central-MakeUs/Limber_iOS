@@ -7,17 +7,44 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
+
+
+
 
 struct CircularTimerView: View {
-    let totalTime: TimeInterval = 24 * 60 * 60 // 24시간 (예시)
-    @State var hour: Double
+    
+    @Query var staticModels: [FocusSession]
+    
+    @State var totalTime: TimeInterval
     @State var elapsed: TimeInterval
     @State var isFinished: Bool = false
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     
-    
-    init(hour: Double = 12) {
-        self.hour = hour
-        self.elapsed = 60 * 60 * hour
+    init(startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) {
+        
+        let calendar = Calendar.current
+
+        var startComponents = calendar.dateComponents([.year, .month, .day], from: Date())
+        startComponents.hour = startHour
+        startComponents.minute = startMinute
+        startComponents.second = 0
+
+        var endComponents = calendar.dateComponents([.year, .month, .day], from: Date())
+        endComponents.hour = endHour
+        endComponents.minute = endMinute
+        endComponents.second = 0
+
+        guard let startDate = calendar.date(from: startComponents),
+              let endDate = calendar.date(from: endComponents) else {
+            fatalError("Date 변환 실패")
+        }
+
+        let timeInterval = endDate.timeIntervalSince(startDate)
+
+        self.totalTime = timeInterval
+        self.elapsed = 0
     }
 
     let gradient = AngularGradient(
@@ -170,8 +197,6 @@ struct CircularTimerView: View {
                 .frame(width: 220, height: 50)
                 .background(Color.primaryDark)
                 .cornerRadius(100, corners: .allCorners)
-
-       
                 
                 Spacer()
 
@@ -206,6 +231,14 @@ struct CircularTimerView: View {
             
             
         }
+        .onReceive(timer) { _ in
+            if elapsed < totalTime {
+                elapsed += 1
+            } else {
+                isFinished = true
+                timer.upstream.connect().cancel() // 타이머 정지
+            }
+        }
         
     
     }
@@ -216,10 +249,23 @@ struct CircularTimerView: View {
         let sec = Int(interval) % 60
         return String(format: "%02d:%02d:%02d", hr, min, sec)
     }
-}
-
-struct CircularTimerView_Previews: PreviewProvider {
-    static var previews: some View {
-        CircularTimerView()
+    
+    func timeStringToDateComponents(_ timeString: String) -> DateComponents? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "ah시m분" // 공백 주의 (예: "오후 2시 10분")
+        
+        guard let date = formatter.date(from: timeString) else {
+            return nil
+        }
+        
+        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return components
     }
 }
+
+//struct CircularTimerView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CircularTimerView()
+//    }
+//}

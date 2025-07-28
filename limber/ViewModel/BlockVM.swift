@@ -11,59 +11,79 @@ import ManagedSettings
 
 import SwiftUI
 import DeviceActivity
+
+struct PickedAppModel: Codable, Hashable, Equatable {
+    static func == (lhs: PickedAppModel, rhs: PickedAppModel) -> Bool {
+        return lhs.token == rhs.token
+    }
+    
+    init(displayName: String, token: ApplicationToken?) {
+        self.displayName = displayName
+        self.token = token
+    }
+    let displayName: String
+    let token: ApplicationToken?
+}
+
 extension ManagedSettingsStore.Name {
-    static let new = Self("new")
+    static let total = Self("total")
 }
 extension DeviceActivityName {
     static let new = Self("new")
 }
-struct BlockedModel {
-    let token: String
-    let displayName: String
-}
 
 class BlockVM: ObservableObject {
     
-    let store = ManagedSettingsStore(named: .new)
+    let store = ManagedSettingsStore(named: .total)
     
     @Published var appSelection = FamilyActivitySelection(includeEntireCategory: true)
     @Published var applicationTokens = Set<ApplicationToken>()
+    @Published var pickedApps: [PickedAppModel] = []
     
     func setShieldRestrictions() {
-        let deviceActivityCenter = DeviceActivityCenter()
+//        store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
         
-        store.shield.applications = appSelection.applicationTokens.isEmpty ? nil : appSelection.applicationTokens
-        let schedule = DeviceActivitySchedule(
-            intervalStart: DateComponents(hour: 22,minute: 00, weekday: 0),
-            intervalEnd: DateComponents(hour: 22, minute: 40),
-            repeats: true)
-        
-        do {
-            try deviceActivityCenter.startMonitoring(.new , during: schedule)
-            
-        } catch {
-            print("err \(error)")
+        let models = appSelection.applications
+            .map { PickedAppModel(displayName: $0.localizedDisplayName ?? "", token: $0.token)}
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(models) {
+            SharedData.defaultsGroup?.set(data, forKey: SharedData.Keys.pickedApps.key)
         }
     }
-    
+
     func removeForShieldRestrictions(appToken: ApplicationToken) {
         store.shield.applications = store.shield.applications?.filter { $0 != appToken }
+        SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.pickedApps.key)
+
     }
     
     func finishPick() {
         applicationTokens = appSelection.applicationTokens
+        pickedApps = appSelection.applications.map { PickedAppModel(displayName: $0.localizedDisplayName ?? "", token: $0.token) }
     }
-    
     
     func reset() {
-        
-        appSelection.applicationTokens = store.shield.applications ?? []
-        _ = appSelection.applicationTokens.map {
-            print($0.hashValue)
+        if let alreadyShield = store.shield.applications {
+            appSelection.applicationTokens = alreadyShield
+            applicationTokens = alreadyShield
+        } else {
+            setPicked()
         }
-        
-        applicationTokens = store.shield.applications ?? []
-        
     }
     
+    func setPicked() {
+        if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
+            let decoder = JSONDecoder()
+            if let apps = try? decoder.decode([PickedAppModel].self, from: data) {
+                pickedApps = apps
+                var set = Set<ApplicationToken>()
+                apps.forEach {
+                    if let token = $0.token {
+                        set.insert(token)
+                    }
+                }
+                self.appSelection.applicationTokens = set
+            }
+        }
+    }
 }

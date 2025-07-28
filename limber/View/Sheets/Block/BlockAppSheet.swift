@@ -73,17 +73,22 @@ struct BlockAppsSheet: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center) {
-                    ForEach(Array(blockVM.applicationTokens.sorted { $0.hashValue < $1.hashValue }), id: \.self) { token in
+                    ForEach(blockVM.pickedApps, id: \.self) { app in
+                        if let token = app.token {
                         VStack {
                             Label(token)
                                 .labelStyle(iconLabelStyle())
 //                                .scaleEffect(CGSize(width: 1.6, height: 1.6))
-                            Label(token)
-                                .labelStyle(textLabelStyle())
+//                            Text(app.displayName)
+//                                .foregroundStyle(Color.red)
+//
+//                            Label(app.displayName)
+//                                .labelStyle(textLabelStyle())
                         }
                         .cornerRadius(8)
                         .frame(width: 100, height: 76, alignment: .center)
                         .background(Color.gray100)
+                        }
                     }
                 }
             }
@@ -114,10 +119,10 @@ struct BlockAppsSheet: View {
                 .foregroundColor(.gray500)
                 .font(.system(size: 15))
                 .padding(.bottom, 8)
-            
                 
             BottomBtn(isEnable: $isEnable, title: "시작하기") {
                 blockVM.setShieldRestrictions()
+                
                 dismiss()
                 }
                 .padding(20)
@@ -135,7 +140,7 @@ struct BlockAppsSheet: View {
                 .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 4)
         }
         .onAppear {
-            blockVM.reset()
+            blockVM.setPicked()
         }
     }
         

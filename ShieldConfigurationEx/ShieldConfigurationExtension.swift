@@ -16,7 +16,6 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         let defaults = UserDefaults(suiteName: "group.com.limber")
             let isUnlockRequested = defaults?.bool(forKey: "changeView") ?? false
-
             
             if isUnlockRequested {
                 let image = UIImage(named: "앱임시아이콘")
@@ -28,12 +27,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             }
     
     }
-    
-    override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for applications shielded because of their category.
-        ShieldConfiguration()
-    }
-    
+
     override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
         // Customize the shield as needed for web domains.
         ShieldConfiguration()

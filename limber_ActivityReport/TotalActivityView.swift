@@ -7,11 +7,25 @@
 
 import SwiftUI
 import ManagedSettings
+import SwiftData
+import FirebaseCore
 
 struct TotalActivityView: View {
     
-    @ObservedObject var vm: TotalActivityVM
+    var activityReport: ActivityReport
+    var focusTotalDuration: TimeInterval
+    var dopaminePer: Double
+    var focusPer: Double
     
+    init(activityReport: ActivityReport, focusTotalDuration: Double, dopaminePer: Double, focusPer: Double) {
+        self.activityReport = activityReport
+        self.focusTotalDuration = focusTotalDuration
+        self.dopaminePer = dopaminePer
+        self.focusPer = focusPer
+        
+        
+    }
+
     var body: some View {
         VStack(spacing: 16) {
             HStack {
@@ -20,7 +34,7 @@ struct TotalActivityView: View {
                         .font(.suitBody2)
                         .foregroundColor(.limberPurple)
                     
-                    Text(vm.focusTotalDuration.toString())
+                    Text(activityReport.focusTotalDuration.toString())
                         .font(.suitHeading2)
                         .frame( height: 30 )
                 }
@@ -32,7 +46,7 @@ struct TotalActivityView: View {
                     
                     HStack {
                         Spacer()
-                        Text(vm.activityReport.totalDuration.toString())
+                        Text(activityReport.totalDuration.toString())
                             .font(.suitHeading2)
                             .foregroundColor(.black)
                             .frame( height: 30 )
@@ -48,12 +62,12 @@ struct TotalActivityView: View {
                 HStack(spacing: 0) {
                     Rectangle()
                         .fill(Color.limberPurple)
-                        .frame(width: geometry.size.width * vm.focusPer - 0.001, height: 24)
+                        .frame(width: geometry.size.width * (1 - dopaminePer) - 0.001, height: 24)
                         .padding(.trailing, 1)
                     
                     Rectangle()
                         .fill(Color.limberOrange)
-                        .frame(width: geometry.size.width * vm.dopaminePer - 0.001, height: 24)
+                        .frame(width: geometry.size.width * dopaminePer - 0.001, height: 24)
                         .padding(.leading, 1)
                 }
                 .cornerRadius(12)
@@ -79,11 +93,10 @@ struct TotalActivityView: View {
                         VStack(alignment: .leading) {
                             
                             ForEach(
-                                vm.focusTimeModels.sorted { $0.duration > $1.duration }.prefix(3), id: \.self ) { model in
-                                    ActivityRow(name: model.name , time: model.duration.toString(), icon: nil)
+                                activityReport.focuses.sorted {  $0.totalDuration ?? 0.0 > $1.totalDuration ?? 0.0 }.prefix(3), id: \.id ) { model in
+                                    ActivityRow(name: model.focusTitle , time: (model.totalDuration ?? 0.0).toString(), icon: nil)
                                 }
                         }
-                        
                         Spacer()
                     }
                     .padding(.horizontal)
@@ -106,7 +119,7 @@ struct TotalActivityView: View {
                     VStack {
                         VStack(alignment: .leading) {
                             ForEach(
-                                vm.activityReport.apps.sorted { $0.duration > $1.duration }.prefix(3), id: \.id ) { eachApp in
+                                activityReport.apps.sorted { $0.duration > $1.duration }.prefix(3), id: \.id ) { eachApp in
                                     ActivityRow(name: eachApp.displayName, time: eachApp.duration.toString(), icon: eachApp.token)
                                 }
                         }
@@ -140,9 +153,10 @@ struct TotalActivityView: View {
         .padding(.horizontal, 20)
         .padding(.top, 14)
         .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 2)
-        .onAppear {
-            vm.getData()
-        }
+
+
         
     }
+
 }
+ 

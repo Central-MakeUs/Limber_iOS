@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AlertSheet: View {
     @ObservedObject var timerVM: TimerVM
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) var context
+    
     var body: some View {
         VStack {
             Spacer()
@@ -39,7 +42,11 @@ struct AlertSheet: View {
 
                     
                     Button {
-                        timerVM.setDeleteSheet()
+                        timerVM.checkedModels.forEach {
+                            context.delete($0)
+                            }
+                        dismiss()
+                        
                     } label: {
                         Text("삭제하기")
                             .font(.suitHeading3Small)

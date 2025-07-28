@@ -20,7 +20,7 @@ extension TimeInterval {
     
     func toMinute() -> Double {
         let time = NSInteger(self)
-        let minutes = (time / 60) % 60
+        let minutes = (time / 60) + (time / 60) % 60
         return Double(minutes)
     }
 }
@@ -32,6 +32,9 @@ extension DeviceActivityReport.Context {
 struct ActivityReport {
     let totalDuration: TimeInterval
     let apps: [AppDeviceActivity]
+    
+    var focusTotalDuration: TimeInterval
+    var focuses: [FocusSession]
 }
 
 struct AppDeviceActivity: Identifiable {

@@ -61,7 +61,7 @@ struct TimeSelectView: View {
                                 .frame(width: 20, height: 20)
                             Spacer()
                                 .frame(width: 30)
-                            CustomTimePickerView(selectedHour: $vm.selectedHour, selectedMinute: $vm.selectedMinute, hourText: "시 ")
+                            CustomTimePickerView(selectedHour: $vm.selectedHour, selectedMinute: $vm.selectedMinute, hourText: "시 ", hourRange: Array(1...12))
                                 .frame(width: 200, height: 200)
                                 .offset(x: -10)
                         }
@@ -73,6 +73,6 @@ struct TimeSelectView: View {
         }
     }
 }
-#Preview {
-    TimeSelectView(vm: ScheduleExVM())
-}
+//#Preview {
+//    TimeSelectView(vm: ScheduleExVM())
+//}

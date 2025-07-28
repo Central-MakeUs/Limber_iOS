@@ -8,8 +8,10 @@
 import SwiftUI
 import DeviceActivity
 import ManagedSettings
+import SwiftData
 
 struct HomeView: View {
+    @Query var sessions: [FocusSession]
     @ObservedObject var homeVM: HomeVM
     @ObservedObject var deviceActivityReportVM = DeviceActivityReportVM()
     @EnvironmentObject var router: AppRouter
@@ -61,9 +63,10 @@ struct HomeView: View {
                     if !homeVM.isTimering {
                         router.push(.circularTimer(hour: 12.0))
                     } else {
-                        router.selectedTab = .timer
+                        router.push(.circularTimer(hour: 12.0))
+
+//                        router.selectedTab = .timer
                     }
-                    
                 }) {
                     if homeVM.isTimering {
                         HStack(spacing: 0) {
@@ -89,10 +92,6 @@ struct HomeView: View {
                             .padding(.horizontal, 52)
                             .padding(.vertical, 16)
                     }
-                  
-                                
-                    
-                    
                 }
                 .frame(width: 200, height: 56)
                 .background(
@@ -114,9 +113,9 @@ struct HomeView: View {
                     .cornerRadius(100)
                     .padding(.horizontal, 33)
                     .padding(.top, 34)
-                
 
                 DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
+                    .modelContainer(for: [FocusSession.self])
                 
                 Spacer()
             }
