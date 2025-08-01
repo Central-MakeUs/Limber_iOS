@@ -9,21 +9,6 @@ import Foundation
 import SwiftUI
 import Combine
 import SwiftData
-struct ExperimentModel: Hashable {
-    let category: String
-    let title: String
-    let timer: String
-    let id: UUID = UUID()
-    var isOn: Bool
-    
-    init(category: String, timer: String, title: String, isOn: Bool) {
-        self.category = category
-        self.timer = timer
-        self.title = title
-        self.isOn = isOn
-    }
-    
-}
 
 class TimerVM: ObservableObject {
     
@@ -60,9 +45,6 @@ class TimerVM: ObservableObject {
     
     @Published var delAlert = false
     
-
-
-    
     func focusCategoryTapped(idx: Int) {
         switch idx {
         case 0:
@@ -98,7 +80,6 @@ class TimerVM: ObservableObject {
         }
     }
     
-//
 //    func deleteModels() {
 //        staticModels.enumerated().forEach { _,_ in
 //            if checkedModels.contains($0) {

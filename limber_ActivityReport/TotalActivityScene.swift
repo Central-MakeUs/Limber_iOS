@@ -59,7 +59,7 @@ struct TotalActivityScene: DeviceActivityReportScene {
             let sortedList = list.sorted { $0.duration > $1.duration }
  
             
-            let focuses = loadFocusSessions().map { FocusSession(name: $0.name, focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn) }
+          let focuses = FocusSessionManager.shared.loadFocusSessions().map { FocusSession(name: $0.name, focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn) }
             
             var focusTotalDuration = 0.0
             focuses.forEach {
@@ -69,15 +69,85 @@ struct TotalActivityScene: DeviceActivityReportScene {
         }
     
     
-    //TODO: 불러올때 넣어줄떄 따로 파일로 뺴샘~
-    func loadFocusSessions() -> [FocusSessionDTO] {
-        if let data = SharedData.defaultsGroup?.data(forKey: "focusSessions") {
-            let decoder = JSONDecoder()
-            if let sessions = try? decoder.decode([FocusSessionDTO].self, from: data) {
-                return sessions
+ 
+    
+}
+
+
+struct BlockedScrollView: View {
+  
+  @State var pickedApps: [PickedAppModel]
+  
+  var body: some View {
+    ScrollView(.horizontal, showsIndicators: false) {
+      HStack(alignment: .center) {
+        ForEach(pickedApps, id: \.self) { app in
+          if let token = app.token {
+            VStack {
+              Label(token)
+                .labelStyle(iconLabelStyle())
+              Text("\(app.displayName)")
+              //                                .scaleEffect(CGSize(width: 1.6, height: 1.6))
+              //                            Text(app.displayName)
+              //                                .foregroundStyle(Color.red)
+              //
+              //                            Label(app.displayName)
+              //                                .labelStyle(textLabelStyle())
             }
+            .cornerRadius(8)
+            .frame(width: 100, height: 76, alignment: .center)
+            .background(Color.gray100)
+          }
         }
-        return []
+      }
     }
+    .frame(height: 76)
+    .padding([.bottom, .horizontal], 16)
+  }
+}
+
+
+struct BlockedAppsScene: DeviceActivityReportScene {
+    
+  let context: DeviceActivityReport.Context = .blockedActivity
+    
+    let content: ([PickedAppModel]) -> BlockedScrollView
+    
+    
+    func makeConfiguration(
+      representing data: DeviceActivityResults<DeviceActivityData>) async -> [PickedAppModel] {
+        
+        var list: [PickedAppModel] = []
+        
+        if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
+          let decoder = JSONDecoder()
+          if let apps = try? decoder.decode([PickedAppModel].self, from: data) {
+            list = apps
+          }
+          
+        }
+        let tokens = list.map { $0.token }
+        /// DeviceActivityResults 데이터에서 화면에 보여주기 위해 필요한 내용을 추출해줍니다.
+        for await eachData in data {
+          for await activitySegment in eachData.activitySegments {
+            for await categoryActivity in activitySegment.categories {
+              for await applicationActivity in categoryActivity.applications {
+                let appName = (applicationActivity.application.localizedDisplayName ?? "nil")
+                guard let token = applicationActivity.application.token else { continue }
+                NSLog("TOTAL :::: \(applicationActivity.application.localizedDisplayName)")
+                if let index = tokens.firstIndex(of: token) {
+                  list[index].displayName = appName
+                }
+                
+                
+              }
+            }
+            
+          }
+        }
+       
+        return list
+      }
+ 
     
 }

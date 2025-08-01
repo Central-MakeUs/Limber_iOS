@@ -10,7 +10,6 @@ import SwiftUI
 struct BottomBtn: View {
     
     @Binding var isEnable: Bool
-    
     var title: String
     var action: () -> Void
     let gradient = LinearGradient(
@@ -43,5 +42,7 @@ struct BottomBtn: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
+        .disabled(!isEnable)
+
     }
 }

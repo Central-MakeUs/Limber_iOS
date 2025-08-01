@@ -9,47 +9,47 @@ import SwiftUI
 import FamilyControls
 
 struct SelectAppView: View {
-    @EnvironmentObject var vm: BlockVM
-    @EnvironmentObject var router: AppRouter
-    @State var onComplete: () -> Void
-    @State var showPicker = false
+  @EnvironmentObject var vm: BlockVM
+  @EnvironmentObject var router: AppRouter
+  @State var onComplete: () -> Void
+  @State var showPicker = false
+  
+  @State var isEnable = true
+  
+  var body: some View {
     
-    @State var isEnable = true
-    
-    var body: some View {
-
-        VStack {
-            Spacer()
-                .frame(height: 20)
-            
-            Text("림버를 통해\n관리할 앱을 등록해주세요")
-                .font(
-                    Font.suitHeading1
-                )
-                .multilineTextAlignment(.center)
-            
-            Spacer()
-                .frame(height: 20)
-            
-            Text("최대 10개의 앱을 등록할 수 있으며 추후에 변경할 수 있어요")
-                .font(
-                    Font.suitBody2
-                )
-            Spacer()
-            BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
-                showPicker = true
-            }
-            .padding(20)
-                .sheet(isPresented: $showPicker) {
-                    BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
-                }
-                .presentationDetents([.height(700),])
-                .presentationCornerRadius(24)
-        }
-        .toolbar(.hidden, for: .navigationBar)
-     
+    VStack {
+      Spacer()
+        .frame(height: 20)
+      
+      Text("림버를 통해\n관리할 앱을 등록해주세요")
+        .font(
+          Font.suitHeading1
+        )
+        .multilineTextAlignment(.center)
+      
+      Spacer()
+        .frame(height: 20)
+      
+      Text("최대 10개의 앱을 등록할 수 있으며 추후에 변경할 수 있어요")
+        .font(
+          Font.suitBody2
+        )
+      Spacer()
+      BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
+        showPicker = true
+      }
+      .padding(20)
+      .sheet(isPresented: $showPicker) {
+        BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
+      }
+      .presentationDetents([.height(700)])
+      .presentationCornerRadius(24)
     }
+    .toolbar(.hidden, for: .navigationBar)
     
+  }
+  
 }
 
 

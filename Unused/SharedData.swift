@@ -10,23 +10,26 @@ import UIKit
 
 
 class SharedData {
-    static let defaultsGroup: UserDefaults? = UserDefaults(suiteName: "group.com.limber")
+  static let defaultsGroup: UserDefaults? = UserDefaults(suiteName: "group.com.limber")
+  
+  enum Keys: String {
+    case isUserPremium = "isUserPremiumKey"
+    case totalAppsDuration = "totalAppsDuration"
+    case pickedApps = "pickedApps"
+    case isTimering = "isTimering"
+    case timeringName = "timeringName"
+    case allApps = "allApps"
+    case schedules = "schedules"
+    case focusSessions = "focusSessions"
     
-    enum Keys: String {
-        case isUserPremium = "isUserPremiumKey"
-        case totalAppsDuration = "totalAppsDuration"
-        case pickedApps = "pickedApps"
-        case isTimering = "isTimering"
+    var key: String {
+      switch self {
         
-        var key: String {
-            switch self {
-            
-            default: self.rawValue
-            }
-        }
+      default: self.rawValue
+      }
     }
+  }
 }
-//TODO: remove
 func getDeviceUUID() -> String {
-    return UIDevice.current.identifierForVendor!.uuidString
+  return UIDevice.current.identifierForVendor!.uuidString
 }

@@ -9,42 +9,26 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-
-
-
 struct CircularTimerView: View {
     
-    @Query var staticModels: [FocusSession]
-    
+    @Query var sessions: [FocusSession]
+    @EnvironmentObject var router: AppRouter
+    @Environment(\.dismiss) var dismiss
     @State var totalTime: TimeInterval
     @State var elapsed: TimeInterval
     @State var isFinished: Bool = false
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
     
-    init(startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) {
-        
-        let calendar = Calendar.current
+    init(startDate: Date, endDate: Date) {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "ah시m분ss"
+        let nowDate = TimeManager.shared.parseTimeString(formatter.string(from: .now))!
+        let totalTime = endDate.timeIntervalSince(startDate)
+        let nowtime = nowDate.timeIntervalSince(startDate)
 
-        var startComponents = calendar.dateComponents([.year, .month, .day], from: Date())
-        startComponents.hour = startHour
-        startComponents.minute = startMinute
-        startComponents.second = 0
-
-        var endComponents = calendar.dateComponents([.year, .month, .day], from: Date())
-        endComponents.hour = endHour
-        endComponents.minute = endMinute
-        endComponents.second = 0
-
-        guard let startDate = calendar.date(from: startComponents),
-              let endDate = calendar.date(from: endComponents) else {
-            fatalError("Date 변환 실패")
-        }
-
-        let timeInterval = endDate.timeIntervalSince(startDate)
-
-        self.totalTime = timeInterval
-        self.elapsed = 0
+        self.totalTime = totalTime
+        self.elapsed = nowtime
     }
 
     let gradient = AngularGradient(
@@ -62,7 +46,6 @@ struct CircularTimerView: View {
     )
     
     var progress: Double {
-        // 진행률 (0~1)
         elapsed / totalTime
     }
     
@@ -78,7 +61,7 @@ struct CircularTimerView: View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        
+                        dismiss()
                     }) {
                         Image("xmark")
                     }
@@ -91,8 +74,6 @@ struct CircularTimerView: View {
                     .frame(height: 120)
 
                 ZStack {
-                  
-                    // 배경 원
                     Rectangle()
                         .foregroundColor(.clear)
                         .frame(width: 300, height: 300)
@@ -111,8 +92,6 @@ struct CircularTimerView: View {
                         )
                         .cornerRadius(300)
                         .padding(10)
-                    
-                    
                     
                     Circle()
                         .trim(from: 0, to: 360)
@@ -152,8 +131,6 @@ struct CircularTimerView: View {
                                 x: radius + radius * CGFloat(cos(angle.radians)),
                                 y: radius + radius * CGFloat(sin(angle.radians))
                             )
-                        
-                   
                     }
                     .allowsHitTesting(false)
                     
@@ -162,7 +139,8 @@ struct CircularTimerView: View {
                         Image("mainCharactor_1")
                             .resizable()
                             .frame(width: 125, height: 125)
-                        Text(timeString(from: totalTime - elapsed))
+                      Text(TimeManager.shared
+                        .timeString(from: totalTime - elapsed))
                             .font(.suitDisplay1)
                             .foregroundColor(.white)
                     }
@@ -215,7 +193,7 @@ struct CircularTimerView: View {
                     .frame(height: 30)
                 
                 Button {
-                    
+                    router.poptoRoot()
                 } label: {
                     Text("홈으로 가기")
                         .font(.suitHeading3Small)
@@ -226,9 +204,7 @@ struct CircularTimerView: View {
                 .cornerRadius(10, corners: .allCorners)
                 .padding(.horizontal, 20)
                 .padding(.bottom)
-                
             }
-            
             
         }
         .onReceive(timer) { _ in
@@ -239,29 +215,8 @@ struct CircularTimerView: View {
                 timer.upstream.connect().cancel() // 타이머 정지
             }
         }
-        
-    
     }
-    
-    func timeString(from interval: TimeInterval) -> String {
-        let hr = Int(interval) / 3600
-        let min = (Int(interval) % 3600) / 60
-        let sec = Int(interval) % 60
-        return String(format: "%02d:%02d:%02d", hr, min, sec)
-    }
-    
-    func timeStringToDateComponents(_ timeString: String) -> DateComponents? {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "ah시m분" // 공백 주의 (예: "오후 2시 10분")
-        
-        guard let date = formatter.date(from: timeString) else {
-            return nil
-        }
-        
-        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
-        return components
-    }
+  
 }
 
 //struct CircularTimerView_Previews: PreviewProvider {

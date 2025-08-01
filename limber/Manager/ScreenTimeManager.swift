@@ -20,7 +20,6 @@ final class ScreenTimeManager {
         do {
             try await authCenter.requestAuthorization(for: .individual)
         } catch {
-            print("❌ 권한 요청 실패: \(error)")
             return "err"
         }
 

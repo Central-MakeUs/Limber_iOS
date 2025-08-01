@@ -15,7 +15,7 @@ class DeviceActivityReportVM: ObservableObject {
     var filter = DeviceActivityFilter(
         segment: .daily(
             during: Calendar.current.dateInterval(
-                of: .day,
+              of: .day,
                 for: .now
             ) ?? DateInterval()
         )

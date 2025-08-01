@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import DeviceActivity
 
 struct AlertSheet: View {
     @ObservedObject var timerVM: TimerVM
@@ -43,9 +44,12 @@ struct AlertSheet: View {
                     
                     Button {
                         timerVM.checkedModels.forEach {
+                          let deviceActivityCenter = DeviceActivityCenter()
+                          deviceActivityCenter.stopMonitoring([.init($0.uuid)])
                             context.delete($0)
                             }
                         dismiss()
+                      timerVM.isEdit = false
                         
                     } label: {
                         Text("삭제하기")

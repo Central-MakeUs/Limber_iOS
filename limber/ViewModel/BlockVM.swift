@@ -21,7 +21,7 @@ struct PickedAppModel: Codable, Hashable, Equatable {
         self.displayName = displayName
         self.token = token
     }
-    let displayName: String
+    var displayName: String
     let token: ApplicationToken?
 }
 

@@ -127,6 +127,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
@@ -136,6 +137,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
@@ -145,6 +147,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
@@ -174,6 +177,7 @@
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
+				View/HomeView.swift,
 				View/Main/MainView.swift,
 				View/RootView.swift,
 				View/Sheets/AlertSheet.swift,

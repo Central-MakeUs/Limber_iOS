@@ -35,13 +35,16 @@ extension AppRouter {
         case laboratory
         case more
     }
+    func poptoRoot() {
+        let newPath = NavigationPath()
+        path = newPath
+        someRoutes = []
+    }
     
     func popTo(_ target: SomeRoute) {
-        guard let index = someRoutes.firstIndex(of: target) else { return }
         
-        // 스택 자르기
+        guard let index = someRoutes.firstIndex(of: target) else { return }
         let newStack = someRoutes.prefix(through: index)
-        // 새로운 Path 생성 -> 이후에 self.path 를 이 값으로 바꿔줌
         var newPath = NavigationPath()
         
         for route in newStack {
@@ -69,9 +72,7 @@ enum SomeRoute: Hashable {
     case main
     case home
     case unlock(token: ApplicationToken)
-    case circularTimer(hour: Double)
-    
-
+    case circularTimer(startDate: Date, endDate: Date)
 }
 
 

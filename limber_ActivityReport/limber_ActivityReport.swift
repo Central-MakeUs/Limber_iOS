@@ -23,6 +23,11 @@ struct limber_ActivityReport: DeviceActivityReportExtension {
             let focusTotalDuration = focus
             return TotalActivityView(activityReport: totalActivity, focusTotalDuration: focusTotalDuration, dopaminePer: dopaminePer, focusPer: focusPer)
         }
+      
+      BlockedAppsScene { pickedApps in
+        
+        return BlockedScrollView(pickedApps: pickedApps)
+      }
     }
 }
 
