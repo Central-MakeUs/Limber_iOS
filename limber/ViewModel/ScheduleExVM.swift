@@ -201,7 +201,6 @@ class ScheduleExVM: ObservableObject {
       intervalEnd: intervalEnd,
       repeats: true)
 
-    SharedData.defaultsGroup?.set(focusSession.uuid, forKey: SharedData.Keys.timeringName.key)
     
     do {
 

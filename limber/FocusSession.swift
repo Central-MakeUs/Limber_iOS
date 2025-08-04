@@ -20,14 +20,16 @@ class FocusSession {
   var endTime: String
   var repeatType: String
   var isOn: Bool
+  var days: [Int]
   
-  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool) {
+  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, days: [Int]) {
     self.name = name
     self.focusTitle = focusTitle
     self.startTime = startTime
     self.endTime = endTime
     self.repeatType = repeatType
     self.isOn = isOn
+    self.days = days
   }
   var totalDuration: TimeInterval? {
     guard
@@ -46,7 +48,7 @@ class FocusSession {
   }
 }
 
-class FocusSessionDTO: Codable {
+struct FocusSessionDTO: Codable {
   var uuid: String
   var name: String
   var focusTitle: String
@@ -55,7 +57,9 @@ class FocusSessionDTO: Codable {
   var repeatType: String
   var isOn: Bool
   
-  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, uuid: String) {
+  var days: [Int]
+  
+  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, uuid: String, days: [Int]) {
     self.name = name
     self.focusTitle = focusTitle
     self.startTime = startTime
@@ -63,5 +67,6 @@ class FocusSessionDTO: Codable {
     self.repeatType = repeatType
     self.isOn = isOn
     self.uuid = uuid
+    self.days = days
   }
 }

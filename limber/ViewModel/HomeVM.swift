@@ -41,9 +41,6 @@ class HomeVM: ObservableObject {
         endTimeStr = $0.endTime
       }
     }
-    print("\(startTimeStr), :::: \(endTimeStr)")
-    
- 
     
     if let nowDate = TimeManager.shared.parseTimeString(formatter.string(from: .now)), let startDate = TimeManager.shared.parseTimeString(startTimeStr+"00") , let endDate = TimeManager.shared.parseTimeString(endTimeStr+"00") {
       
@@ -61,7 +58,7 @@ class HomeVM: ObservableObject {
     
     
     if let isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) {
-      self.isTimering = true
+      self.isTimering = isTimering
     }
     
     if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {

@@ -8,8 +8,15 @@
 import Foundation
 import SwiftUI
 import SwiftData
-
-
+let weekdayTextToNumber: [String: Int] = [
+    "일": 1,
+    "월": 2,
+    "화": 3,
+    "수": 4,
+    "목": 5,
+    "금": 6,
+    "토": 7
+]
 struct ScheduleExSheet: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var context
@@ -69,7 +76,9 @@ struct ScheduleExSheet: View {
             Spacer()
             
             BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
-              
+              let days = vm.selectedDays.compactMap {
+                weekdayTextToNumber[$0]
+              }
               let newSession = FocusSession(
                 name: vm.textFieldName,
                 focusTitle: vm.selectedCategory,
@@ -85,21 +94,20 @@ struct ScheduleExSheet: View {
                     }
                     return all
                   }
-                }(), isOn: false
+                }(), isOn: false, days: days
               )
               
               context.insert(newSession)
               
-              let sessions = sessions.map { FocusSessionDTO(name: $0.name , focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, uuid: $0.uuid)}
+              let sessions = sessions.map { FocusSessionDTO(name: $0.name , focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, uuid: $0.uuid, days: [])}
               
-              vm.tapReservingBtn(FocusSessionDTO(name: newSession.name, focusTitle: newSession.focusTitle, startTime: newSession.startTime, endTime: newSession.endTime, repeatType: newSession.repeatType, isOn: newSession.isOn, uuid: newSession.uuid))
+              vm.tapReservingBtn(FocusSessionDTO(name: newSession.name, focusTitle: newSession.focusTitle, startTime: newSession.startTime, endTime: newSession.endTime, repeatType: newSession.repeatType, isOn: newSession.isOn, uuid: newSession.uuid, days: newSession.days))
               
               FocusSessionManager.shared.saveFocusSessions(sessions)
               dismiss()
               
             })
             .padding(20)
-            
           }
           
         }

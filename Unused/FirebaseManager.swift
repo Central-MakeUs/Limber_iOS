@@ -58,7 +58,6 @@ class FirebaseManager {
                     completion(nil, error)
                     return
                 }
-
                 guard let data = documentSnapshot?.data(),
                       let sessionDicts = data["focuses"] as? [[String: Any]] else {
                     completion([], nil)

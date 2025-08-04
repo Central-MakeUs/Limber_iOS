@@ -23,7 +23,6 @@ struct LimberApp: App {
   @StateObject var labVM = LabVM()
   @StateObject var settingVM = SettingVM()
   
-  
   var body: some Scene {
     WindowGroup {
       if hasSeenMain {
@@ -32,7 +31,8 @@ struct LimberApp: App {
             .navigationDestination(for: SomeRoute.self) { route in
               switch route {
               case .home:
-                HomeView(homeVM: homeVM)
+                HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActiveReportVM)
+                
               case .main:
                 MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
               case .unlock(let token):

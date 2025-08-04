@@ -22,8 +22,6 @@ struct TotalActivityView: View {
         self.focusTotalDuration = focusTotalDuration
         self.dopaminePer = dopaminePer
         self.focusPer = focusPer
-        
-        
     }
 
     var body: some View {
@@ -57,7 +55,6 @@ struct TotalActivityView: View {
             .padding(.horizontal, 24)
             .padding(.top, 20)
             
-            
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     Rectangle()
@@ -75,8 +72,7 @@ struct TotalActivityView: View {
             .frame(height: 24)
             .padding(.horizontal, 24)
             
-            Spacer()
-                .frame(height: 16)
+ 
             
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -132,20 +128,19 @@ struct TotalActivityView: View {
                 .padding(.trailing)
             }
             .frame(maxHeight: 140)
-           
-            
-            Button {
-                
-            } label: {
-                HStack(spacing: 0) {
-                    Text("분석 더보기")
-                        .foregroundStyle(.gray700)
-                    Image("chevron")
-                        .foregroundStyle(.gray300)
-                }
-                .font(.suitBody2)
-            }
-            .padding()
+            .padding(.vertical)
+//            Button {
+//                
+//            } label: {
+//                HStack(spacing: 0) {
+//                    Text("분석 더보기")
+//                        .foregroundStyle(.gray700)
+//                    Image("chevron")
+//                        .foregroundStyle(.gray300)
+//                }
+//                .font(.suitBody2)
+//            }
+//            .padding()
             
         }
         .background(Color.gray50)
@@ -159,4 +154,3 @@ struct TotalActivityView: View {
     }
 
 }
- 

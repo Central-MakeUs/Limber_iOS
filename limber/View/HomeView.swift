@@ -49,14 +49,14 @@ struct HomeView: View {
             .clipShape(Capsule())
           }
           
-          Button(action: {
-            
-            
-          }) {
-            Image("bell")
-              .foregroundColor(.white)
-              .padding(.leading, 10)
-          }
+//          Button(action: {
+//            
+//            
+//          }) {
+//            Image("bell")
+//              .foregroundColor(.white)
+//              .padding(.leading, 10)
+//          }
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 18)
@@ -138,11 +138,6 @@ struct HomeView: View {
     .presentationCornerRadius(24)
   }
 }
-
-
-
-
-
 
 struct mainViewTopLabel: View {
   @State var text1 = "도파민 노출"

@@ -88,24 +88,24 @@ struct TimerView: View {
   
   @State var showSheet = false
   @State var showModal = false
-  @State var topPick = 0
+  @State var topPick = 1
   
   var body: some View {
     VStack {
       HStack(spacing: 0) {
-        Button {
-          topPick = 0
-        } label: {
-          Text("지금 시작")
-            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-            .font(.suitHeading3Small)
-        }
-        .frame(maxWidth: .infinity, maxHeight: 40)
-        .overlay(
-          Rectangle()
-            .frame(height: topPick == 0 ? 2: 1 )
-            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
-        )
+//        Button {
+//          topPick = 0
+//        } label: {
+//          Text("지금 시작")
+//            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+//            .font(.suitHeading3Small)
+//        }
+//        .frame(maxWidth: .infinity, maxHeight: 40)
+//        .overlay(
+//          Rectangle()
+//            .frame(height: topPick == 0 ? 2: 1 )
+//            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+//        )
         
         Button {
           topPick = 1
@@ -390,16 +390,12 @@ struct TimerView: View {
     .background(.gray200)
     .cornerRadius(100)
   }
-  
-  
+    
   @ViewBuilder
   var buttons: some View {
     HStack(spacing: 8) {
       Button {
         timerVM.setDeleteSheet()
-        
-   
-        
       } label: {
         HStack {
           Text("삭제")

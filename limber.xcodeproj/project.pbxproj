@@ -115,13 +115,6 @@
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
 		};
-		604971C62E27CFFC00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "limber" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				ShieldConfigurationExtension.swift,
-			);
-			target = 6076C9F02E09664B0068E676 /* limber */;
-		};
 		604971CA2E27D0BC00AB2731 /* Exceptions for "limber" folder in "limber_ActivityMonitor" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -227,7 +220,6 @@
 		604971732E1AAF3900AB2731 /* ShieldConfigurationEx */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				604971C62E27CFFC00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "limber" target */,
 				6049717E2E1AAF3A00AB2731 /* Exceptions for "ShieldConfigurationEx" folder in "ShieldConfigurationEx" target */,
 			);
 			path = ShieldConfigurationEx;
@@ -677,7 +669,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -704,7 +696,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

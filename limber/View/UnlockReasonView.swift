@@ -97,7 +97,6 @@ struct UnlockReasonView: View {
       }
       .padding(.horizontal, 20)
       
-      
       Spacer()
       BottomBtn(isEnable: $isEnable, title: "잠금 풀기", action: {
         blockVM.removeForShieldRestrictions(appToken: self.token)

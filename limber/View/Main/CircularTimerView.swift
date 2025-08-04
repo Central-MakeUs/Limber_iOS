@@ -178,17 +178,17 @@ struct CircularTimerView: View {
                 
                 Spacer()
 
-                Button {
-                    
-                } label: {
-                    HStack(spacing: 0) {
-                        Text("차단 중인 앱 보기")
-                            .font(.suitBody2)
-                        Image("chevron")
-
-                    }
-                    .foregroundStyle(.gray300)
-                }
+//                Button {
+//                    
+//                } label: {
+//                    HStack(spacing: 0) {
+//                        Text("차단 중인 앱 보기")
+//                            .font(.suitBody2)
+//                        Image("chevron")
+//
+//                    }
+//                    .foregroundStyle(.gray300)
+//                }
                 Spacer()
                     .frame(height: 30)
                 
@@ -219,8 +219,8 @@ struct CircularTimerView: View {
   
 }
 
-//struct CircularTimerView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CircularTimerView()
-//    }
-//}
+struct CircularTimerView_Previews: PreviewProvider {
+    static var previews: some View {
+      CircularTimerView(startDate: Date(), endDate: Date())
+    }
+}

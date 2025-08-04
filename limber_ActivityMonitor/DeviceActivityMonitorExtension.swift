@@ -36,7 +36,6 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
     
-    NSLog(":::: intervalDidStart \(activity.rawValue)_")
     let newStore = ManagedSettingsStore(named: .init(activity.rawValue))
     newStore.clearAllSettings()
     
@@ -53,9 +52,26 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
       }
     }
     //        let store = ManagedSettingsStore(named: .init(activity.rawValue))
-    SharedData.defaultsGroup?.set(activity, forKey: SharedData.Keys.timeringName.key)
-    SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
-    
+    if let sessions = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.focusSessions.key) {
+      let decoder = JSONDecoder()
+      do {
+        let focusSession = try decoder.decode([FocusSessionDTO].self, from: sessions)
+        if let idx = focusSession.map({ $0.uuid }).firstIndex(of: activity.rawValue) {
+          
+          let today = Date()
+          let calendar = Calendar.current
+          let weekdayNumber = calendar.component(.weekday, from: today)
+          
+          if focusSession[idx].days.contains(weekdayNumber) {
+            SharedData.defaultsGroup?.set(activity, forKey: SharedData.Keys.timeringName.key)
+            SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
+          }
+          
+        }
+      } catch {
+        
+      }
+    }
   }
   
   override func intervalDidEnd(for activity: DeviceActivityName) {
