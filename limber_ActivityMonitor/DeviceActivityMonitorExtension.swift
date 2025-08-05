@@ -51,7 +51,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
         newStore.shield.applications = set
       }
     }
-    //        let store = ManagedSettingsStore(named: .init(activity.rawValue))
+
     if let sessions = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.focusSessions.key) {
       let decoder = JSONDecoder()
       do {
@@ -61,9 +61,9 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
           let today = Date()
           let calendar = Calendar.current
           let weekdayNumber = calendar.component(.weekday, from: today)
-          
-          if focusSession[idx].days.contains(weekdayNumber) {
-            SharedData.defaultsGroup?.set(activity, forKey: SharedData.Keys.timeringName.key)
+          NSLog("weekdayNumber \(weekdayNumber)" )
+          if focusSession[idx].getDays().contains("\(weekdayNumber)") {
+            SharedData.defaultsGroup?.set(activity.rawValue, forKey: SharedData.Keys.timeringName.key)
             SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
           }
           

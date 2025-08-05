@@ -32,6 +32,8 @@ class HomeVM: ObservableObject {
     let sessions =  FocusSessionManager.shared.loadFocusSessions()
     let timeringName = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.timeringName.key)
     
+    
+    
     var startTimeStr = ""
     var endTimeStr = ""
     
@@ -60,7 +62,6 @@ class HomeVM: ObservableObject {
     if let isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) {
       self.isTimering = isTimering
     }
-    
     if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
       let decoder = JSONDecoder()
       if let apps = try? decoder.decode([PickedAppModel].self, from: data) {

@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  MainView.swift
 //  limber
 //
 //  Created by 양승완 on 6/26/25.

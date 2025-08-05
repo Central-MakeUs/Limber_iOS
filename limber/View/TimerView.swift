@@ -93,19 +93,19 @@ struct TimerView: View {
   var body: some View {
     VStack {
       HStack(spacing: 0) {
-//        Button {
-//          topPick = 0
-//        } label: {
-//          Text("지금 시작")
-//            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-//            .font(.suitHeading3Small)
-//        }
-//        .frame(maxWidth: .infinity, maxHeight: 40)
-//        .overlay(
-//          Rectangle()
-//            .frame(height: topPick == 0 ? 2: 1 )
-//            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
-//        )
+        Button {
+          topPick = 0
+        } label: {
+          Text("지금 시작")
+            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+            .font(.suitHeading3Small)
+        }
+        .frame(maxWidth: .infinity, maxHeight: 40)
+        .overlay(
+          Rectangle()
+            .frame(height: topPick == 0 ? 2: 1 )
+            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+        )
         
         Button {
           topPick = 1
@@ -435,7 +435,6 @@ struct TimerView: View {
         let deviceActivityCenter = DeviceActivityCenter()
 
         if !newValue {
-          print("newValue ::: stopMonitoring")
           deviceActivityCenter.stopMonitoring([.init(sessions[index].uuid)])
         } else {
           let intervalStart = TimeManager.shared.timeStringToDateComponents(sessions[index].startTime) ?? DateComponents()

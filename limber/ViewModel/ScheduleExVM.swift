@@ -200,16 +200,15 @@ class ScheduleExVM: ObservableObject {
       intervalStart: intervalStart,
       intervalEnd: intervalEnd,
       repeats: true)
-
     
     do {
+      SharedData.defaultsGroup?.set(focusSession.uuid, forKey: SharedData.Keys.timeringName.key)
 
       try deviceActivityCenter.startMonitoring(.init(focusSession.uuid) , during: schedule)
     } catch {
       print("err \(error)")
     }
   }
-  
   
   
   func checkDays() {

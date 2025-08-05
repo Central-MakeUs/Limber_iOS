@@ -8,14 +8,14 @@
 import Foundation
 import SwiftUI
 import SwiftData
-let weekdayTextToNumber: [String: Int] = [
-    "일": 1,
-    "월": 2,
-    "화": 3,
-    "수": 4,
-    "목": 5,
-    "금": 6,
-    "토": 7
+let weekdayTextToNumber: [String: String] = [
+    "일": "1",
+    "월": "2",
+    "화": "3",
+    "수": "4",
+    "목": "5",
+    "금": "6",
+    "토": "7"
 ]
 struct ScheduleExSheet: View {
   @Environment(\.dismiss) private var dismiss
@@ -79,6 +79,7 @@ struct ScheduleExSheet: View {
               let days = vm.selectedDays.compactMap {
                 weekdayTextToNumber[$0]
               }
+              let daysText = days.reduce("") { $0 + "," + $1 }
               let newSession = FocusSession(
                 name: vm.textFieldName,
                 focusTitle: vm.selectedCategory,
@@ -94,12 +95,12 @@ struct ScheduleExSheet: View {
                     }
                     return all
                   }
-                }(), isOn: false, days: days
+                }(), isOn: false, days: daysText
               )
               
               context.insert(newSession)
               
-              let sessions = sessions.map { FocusSessionDTO(name: $0.name , focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, uuid: $0.uuid, days: [])}
+              let sessions = sessions.map { FocusSessionDTO(name: $0.name , focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, uuid: $0.uuid, days: $0.days)}
               
               vm.tapReservingBtn(FocusSessionDTO(name: newSession.name, focusTitle: newSession.focusTitle, startTime: newSession.startTime, endTime: newSession.endTime, repeatType: newSession.repeatType, isOn: newSession.isOn, uuid: newSession.uuid, days: newSession.days))
               

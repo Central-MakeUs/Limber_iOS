@@ -20,9 +20,9 @@ class FocusSession {
   var endTime: String
   var repeatType: String
   var isOn: Bool
-  var days: [Int]
+  var days: String
   
-  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, days: [Int]) {
+  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, days: String) {
     self.name = name
     self.focusTitle = focusTitle
     self.startTime = startTime
@@ -57,9 +57,13 @@ struct FocusSessionDTO: Codable {
   var repeatType: String
   var isOn: Bool
   
-  var days: [Int]
+  var days: String
   
-  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, uuid: String, days: [Int]) {
+  func getDays() -> [String] {
+    return days.components(separatedBy: ",")
+  }
+  
+  init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, uuid: String, days: String) {
     self.name = name
     self.focusTitle = focusTitle
     self.startTime = startTime

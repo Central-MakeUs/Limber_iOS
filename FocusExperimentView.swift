@@ -87,6 +87,7 @@ struct FocusExperimentView: View {
                 trackHeight: 8
               )
             }
+            
 //            if selectedFocus == 2 {
 //              // 오른쪽 끝 100% 표시
 //              Text("100%")
