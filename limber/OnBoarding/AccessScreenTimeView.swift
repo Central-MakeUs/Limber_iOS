@@ -14,10 +14,7 @@ struct AccessScreenTimeView: View {
     @State var isEnable = true
     
     var body: some View {
-
-        
-        VStack() {
-            
+        VStack {
             Spacer()
                 .frame(height: 20)
             

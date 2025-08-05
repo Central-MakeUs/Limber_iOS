@@ -49,8 +49,6 @@ struct FocusExperimentView: View {
         
         Spacer().frame(height: 22)
         
-        
-        
         Text("작은 회고가 쌓여 나만의 집중 루틴을 만들어줄거예요")
           .font(.suitBody3)
           .foregroundColor(.limberPurple)
