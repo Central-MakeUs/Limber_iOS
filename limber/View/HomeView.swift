@@ -18,9 +18,9 @@ struct HomeView: View {
   @ObservedObject var deviceActivityReportVM = DeviceActivityReportVM()
   @EnvironmentObject var router: AppRouter
   @EnvironmentObject var blockVM: BlockVM
-  
   @State var showPicker = false
-  
+  @EnvironmentObject var timerObserver: TimerObserver
+
   var body: some View {
     ZStack {
       Image("mainBackground")
@@ -69,12 +69,7 @@ struct HomeView: View {
           
           Button(action: {
             if homeVM.isTimering {
-              if let startDate = homeVM.startDate, let endDate = homeVM.endDate {
-                router.push(.circularTimer(startDate: startDate, endDate: endDate))
-              } else {
-                homeVM.isTimering = false
-                router.selectedTab = .timer
-              }
+              router.push(.circularTimer)
             } else {
               router.selectedTab = .timer
             }
@@ -88,7 +83,8 @@ struct HomeView: View {
                   .cornerRadius(100, corners: .allCorners)
                 Spacer()
                   .frame(width: 20)
-                Text(homeVM.timerStr)
+                Text(TimeManager.shared
+                  .timeString(from: timerObserver.totalTime - timerObserver.elapsed))
                   .foregroundStyle(.white)
                   .font(.suitHeading3Small)
                 Spacer()
@@ -127,9 +123,7 @@ struct HomeView: View {
           
           
           DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
-            .frame(height: 500)
-            .contentShape(Rectangle())
-             .allowsHitTesting(false)
+            .frame(height: 400)
           
           Spacer()
         }
@@ -138,7 +132,35 @@ struct HomeView: View {
       }
     }
     .onAppear {
+      
+      let timeringName = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.timeringName.key)
+
+      var startTimeStr = ""
+      var endTimeStr = ""
+      
+      sessions.forEach {
+        if $0.uuid == timeringName {
+          startTimeStr = $0.startTime
+          endTimeStr = $0.endTime
+        }
+      }
+      
+      
+      if let startDate = TimeManager.shared.parseTimeString(startTimeStr+"00") , let endDate = TimeManager.shared.parseTimeString(endTimeStr+"00") {
+        
+        if endDate < startDate {
+          homeVM.endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
+        } else {
+          homeVM.endDate = endDate
+        }
+        
+        timerObserver.startDate = startDate
+        timerObserver.endDate = endDate
+        timerObserver.startTimer()
+      }
+      
       homeVM.onAppear()
+      
     }
     .sheet(isPresented: $showPicker) {
       BlockBottomSheet(isOnboarding: true, vm: blockVM, onComplete: {})

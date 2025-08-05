@@ -22,6 +22,7 @@ struct LimberApp: App {
   @StateObject var scheduleExVM = ScheduleExVM()
   @StateObject var labVM = LabVM()
   @StateObject var settingVM = SettingVM()
+  @StateObject var timerObserver = TimerObserver()
   
   var body: some Scene {
     WindowGroup {
@@ -32,13 +33,12 @@ struct LimberApp: App {
               switch route {
               case .home:
                 HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActiveReportVM)
-                
               case .main:
                 MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
               case .unlock(let token):
                 UnlockReasonView(blockVM: blockVM, token: token)
-              case .circularTimer(let startDate, let endDate):
-                CircularTimerView(startDate: startDate, endDate: endDate)
+              case .circularTimer:
+                CircularTimerView()
                   .toolbar(.hidden, for: .navigationBar)
                 
               }
@@ -49,6 +49,7 @@ struct LimberApp: App {
         .modelContainer(for: [FocusSession.self])
         .environmentObject(router)
         .environmentObject(blockVM)
+        .environmentObject(timerObserver)
         .background(Color.white)
         
         

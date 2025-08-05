@@ -16,11 +16,8 @@ struct CircularTimerView: View {
   @Environment(\.dismiss) var dismiss
 
   @State var isFinished: Bool = false
-  let timerManager: TimerManager1
-  
-  init(startDate: Date, endDate: Date) {
-    timerManager = TimerManager1(startDate: startDate, endDate: endDate)
-  }
+  @EnvironmentObject var timer: TimerObserver
+
   
   let gradient = AngularGradient(
     gradient: Gradient(colors: [.white, .white, .white, .limberPurple, .limberPurple, .limberPurple, .limberPurple ]),
@@ -37,7 +34,8 @@ struct CircularTimerView: View {
   )
   
   var progress: Double {
-    timerManager.elapsed / timerManager.totalTime
+    
+    timer.elapsed / timer.totalTime
   }
   
   var body: some View {
@@ -131,7 +129,7 @@ struct CircularTimerView: View {
               .resizable()
               .frame(width: 125, height: 125)
             Text(TimeManager.shared
-              .timeString(from: timerManager.totalTime - timerManager.elapsed))
+              .timeString(from: timer.totalTime - timer.elapsed))
             .font(.suitDisplay1)
             .foregroundColor(.white)
           }
@@ -205,6 +203,6 @@ struct CircularTimerView: View {
 
 struct CircularTimerView_Previews: PreviewProvider {
   static var previews: some View {
-    CircularTimerView(startDate: Date(), endDate: Date())
+    CircularTimerView()
   }
 }

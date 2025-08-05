@@ -19,10 +19,8 @@ struct TotalActivityScene: DeviceActivityReportScene {
   
   func makeConfiguration(
     representing data: DeviceActivityResults<DeviceActivityData>) async -> ActivityReport {
-      
       var totalActivityDuration: Double = 0
       var list: [AppDeviceActivity] = []
-      
       /// DeviceActivityResults 데이터에서 화면에 보여주기 위해 필요한 내용을 추출해줍니다.
       for await eachData in data {
         /// 특정 시간 간격 동안 사용자의 활동

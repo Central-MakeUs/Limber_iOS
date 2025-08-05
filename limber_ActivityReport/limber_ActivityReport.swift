@@ -15,9 +15,7 @@ struct limber_ActivityReport: DeviceActivityReportExtension {
         TotalActivityScene { totalActivity in
             let focus = totalActivity.focusTotalDuration.toMinute()
             let dopamine = totalActivity.totalDuration.toMinute()
-            
             let total = focus + dopamine
-            
             let dopaminePer = dopamine / total
             let focusPer = 1 - dopamine
             let focusTotalDuration = focus
@@ -25,12 +23,7 @@ struct limber_ActivityReport: DeviceActivityReportExtension {
         }
       
       BlockedAppsScene { pickedApps in
-        
         return BlockedScrollView(pickedApps: pickedApps)
       }
     }
 }
-
-
-
-

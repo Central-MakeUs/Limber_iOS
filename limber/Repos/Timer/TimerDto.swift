@@ -12,9 +12,9 @@ struct TimerRequestDto: Codable {
     let title: String
     let focusTypeId: Int
     let repeatCycleCode: RepeatCycleCode
-    let repeatDays: String       // ex: "MON,TUE,WED"
-    let startTime: String        // "HH:mm:ss"
-    let endTime: String          // "HH:mm:ss"
+    let repeatDays: String
+    let startTime: String
+    let endTime: String
 }
 
 struct TimerResponseDto: Codable {
@@ -23,8 +23,8 @@ struct TimerResponseDto: Codable {
     let focusTypeId: Int
     let repeatCycleCode: RepeatCycleCode
     let repeatDays: String
-    let startTime: String        // "HH:mm:ss"
-    let endTime: String          // "HH:mm:ss"
+    let startTime: String
+    let endTime: String
     let status: TimerStatus
 }
 

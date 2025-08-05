@@ -9,74 +9,6 @@ import SwiftUI
 import _SwiftData_SwiftUI
 import DeviceActivity
 
-struct CellChecker: View {
-  @ObservedObject var timerVM: TimerVM
-  
-  let model: FocusSession
-  var action: () -> Void
-  var body: some View {
-    // 체크
-    Button(action: {
-      action()
-    }, label: {
-      ZStack {
-        Circle()
-          .fill(timerVM.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
-        if timerVM.checkedModels.contains(model) {
-          Image(systemName: "checkmark")
-            .foregroundColor(.white)
-        }
-      }
-      .frame(width: 24, height: 24)
-      .overlay(
-        Circle()
-          .stroke(Color.gray300, lineWidth: 1)
-      )
-      .contentShape(Circle())
-      .padding(8)
-      
-      
-    })
-    .frame(width: 24, height: 24)
-    
-    
-    
-  }
-  
-}
-struct CellAllChecker: View {
-  @ObservedObject var timerVM: TimerVM
-  var action: () -> Void
-  var body: some View {
-    // 체크
-    Button(action: {
-      action()
-    }, label: {
-      ZStack {
-        Circle()
-          .fill(timerVM.isAllChecker ? Color.LimberPurple : Color.white)
-        if timerVM.isAllChecker {
-          Image(systemName: "checkmark")
-            .foregroundColor(.white)
-        }
-      }
-      .frame(width: 24, height: 24)
-      .overlay(
-        Circle()
-          .stroke(Color.gray300, lineWidth: 1)
-      )
-      .contentShape(Circle())
-      .padding(8)
-      
-      
-    })
-    .frame(width: 24, height: 24)
-    
-    
-    
-  }
-  
-}
 struct TimerView: View {
   @Query var sessions: [FocusSession]
   @Environment(\.modelContext) private var modelContext
@@ -104,7 +36,7 @@ struct TimerView: View {
         .overlay(
           Rectangle()
             .frame(height: topPick == 0 ? 2: 1 )
-            .foregroundColor(topPick == 0 ? Color.limberPurple : Color.gray300), alignment: .bottom
+            .foregroundColor(topPick == 0 ? .limberPurple : .gray300), alignment: .bottom
         )
         
         Button {
@@ -121,24 +53,32 @@ struct TimerView: View {
             .frame(height: topPick == 1 ? 2: 1 )
             .foregroundColor(topPick == 1 ? Color.limberPurple : Color.gray300), alignment: .bottom)
       }
-      VStack(spacing: 0) {
-        if topPick == 0 {
-          main
-          Spacer()
-          
-          BottomBtn(isEnable: $timerVM.btnEnable, title: "시작하기", action:  {
-            self.showModal = true
+        VStack(spacing: 0) {
+          if topPick == 0 {
+            if !timerVM.isTimering {
+              main
+              Spacer()
+              
+              BottomBtn(isEnable: $timerVM.btnEnable, title: "시작하기", action:  {
+                self.showModal = true
+                
+              })
+              .padding(20)
+              .disabled(!timerVM.btnEnable)
+              .background(Color.gray100)
+            } else {
+              alreadyTimer
+            }
+        
             
-          })
-          .padding(20)
-          .disabled(!timerVM.btnEnable)
+          } else {
+            setting
+          }
           
-        } else {
-          setting
+          
         }
-        
-        
-      }.background(Color.gray100)
+
+     
     }
     .fullScreenCover(isPresented: $showModal) {
       BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, showModal: $showModal)
@@ -154,94 +94,114 @@ struct TimerView: View {
         .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
         .ignoresSafeArea(.all)
     }
+    .onAppear {
+      timerVM.onAppear()
+    }
     
     
   }
   
+  @ViewBuilder
+  var alreadyTimer: some View {
+    Spacer().frame(minHeight: 80)
+
+    VStack(alignment: .center, spacing: 12) {
+      Image("alreadyLab")
+      Text("현재 진행 중인 실험이 있어요")
+        .font(.suitHeading1)
+      Text("실험이 종료된 후에\n새로운 실험을 시작할 수 있어요")
+        .font(.suitBody2)
+        .foregroundStyle(.gray600)
+    }
+    Spacer()
+      .frame(minHeight: 152)
+
+  }
   
   @ViewBuilder
   var main: some View {
-    Spacer()
-      .frame(height: 60)
-    HStack {
-      Text("무엇에 집중하고 싶으신가요?")
-        .font(.suitHeading3Small)
-        .padding(.horizontal, 20)
+      Spacer()
+        .frame(height: 60)
+      HStack {
+        Text("무엇에 집중하고 싶으신가요?")
+          .font(.suitHeading3Small)
+          .padding(.horizontal, 20)
+        
+        Spacer()
+      }
+      ScrollView(.horizontal) {
+        
+        HStack(spacing: 8) {
+          ForEach(timerVM.categorys, id: \.self) { text in
+            Text(text)
+              .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
+              .frame(width: 68)
+              .frame(maxHeight: .infinity)
+              .overlay(
+                RoundedRectangle(cornerRadius: 100)
+                  .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                            timerVM.selectedCategory == text ? 2 : 1.2)
+              )
+              .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
+              .cornerRadius(100)
+              .onTapGesture {
+                timerVM.selectedCategory = text
+              }
+          }
+          
+          //TODO: 직접 추가
+          //                Label("직접추가", systemImage: "plus")
+          //                    .foregroundStyle(Color.gray500)
+          //                    .frame(width: 112)
+          //                    .frame(maxHeight: .infinity)
+          //                    .background(Color.gray200)
+          //                    .cornerRadius(100)
+          //                    .onTapGesture {
+          //                        showSheet = true
+          //                    }
+          //                    .sheet(isPresented: $showSheet) {
+          //                        AutoFocusSheet()
+          //                            .presentationDetents([.height(700), ])
+          //                            .presentationCornerRadius(24)
+          //                            .interactiveDismissDisabled(true)
+          //
+          //                    }
+        }
+      }
+      .frame(height: 38)
+      .padding()
       
       Spacer()
-    }
-    ScrollView(.horizontal) {
+        .frame(height: 48)
       
-      HStack(spacing: 8) {
-        ForEach(timerVM.categorys, id: \.self) { text in
-          Text(text)
-            .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
-            .frame(width: 68)
-            .frame(maxHeight: .infinity)
-            .overlay(
-              RoundedRectangle(cornerRadius: 100)
-                .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
-                          timerVM.selectedCategory == text ? 2 : 1.2)
-            )
-            .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
-            .cornerRadius(100)
-            .onTapGesture {
-              timerVM.selectedCategory = text
-            }
+      HStack {
+        Text("얼마나 집중하시겠어요?")
+          .font(.suitHeading3Small)
+          .padding(.horizontal, 20)
+        Spacer()
+      }
+      
+      ZStack {
+        Rectangle()
+          .frame(width: 320, height: 44)
+          .cornerRadius(10)
+          .foregroundStyle(
+            Color.gray200.opacity(0.6))
+        
+        VStack {
+          Spacer()
+          HStack {
+            CustomTimePickerView(selectedHour: $timerVM.selectingH, selectedMinute: $timerVM.selectingM, hourText: "시간")
+              .frame(width: 200, height: 200)
+              .offset(x: -10)
+          }
+          .offset( x: -10, y: -2)
         }
         
-        //TODO: 직접 추가
-        //                Label("직접추가", systemImage: "plus")
-        //                    .foregroundStyle(Color.gray500)
-        //                    .frame(width: 112)
-        //                    .frame(maxHeight: .infinity)
-        //                    .background(Color.gray200)
-        //                    .cornerRadius(100)
-        //                    .onTapGesture {
-        //                        showSheet = true
-        //                    }
-        //                    .sheet(isPresented: $showSheet) {
-        //                        AutoFocusSheet()
-        //                            .presentationDetents([.height(700), ])
-        //                            .presentationCornerRadius(24)
-        //                            .interactiveDismissDisabled(true)
-        //
-        //                    }
-      }
-    }
-    .frame(height: 38)
-    .padding()
+      }.frame(maxWidth: .infinity, maxHeight: 200)
+ 
     
-    Spacer()
-      .frame(height: 48)
-    
-    HStack {
-      Text("얼마나 집중하시겠어요?")
-        .font(.suitHeading3Small)
-        .padding(.horizontal, 20)
-      Spacer()
-    }
-    
-    ZStack {
-      Rectangle()
-        .frame(width: 320, height: 44)
-        .cornerRadius(10)
-        .foregroundStyle(
-          Color.gray200.opacity(0.6))
-      
-      VStack {
-        Spacer()
-        HStack {
-          CustomTimePickerView(selectedHour: $timerVM.selectingH, selectedMinute: $timerVM.selectingM, hourText: "시간")
-            .frame(width: 200, height: 200)
-            .offset(x: -10)
-        }
-        .offset( x: -10, y: -2)
-      }
-      
-    }.frame(maxWidth: .infinity, maxHeight: 200)
   }
-  
   
   //MARK: 예약설정, 예약 설정
   @ViewBuilder
@@ -360,7 +320,7 @@ struct TimerView: View {
           .ignoresSafeArea(.keyboard)
         
       }
-      .onChange(of: showSheet) { newValue in
+      .onChange(of: showSheet) { _, newValue in
         if newValue == false {
           schedulExVM.onBottomSheet()
           
