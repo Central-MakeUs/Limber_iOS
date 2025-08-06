@@ -12,7 +12,7 @@ struct AccessScreenTimeView: View {
     @Binding var step: Int
     @EnvironmentObject var router: AppRouter
     @State var isEnable = true
-    
+    @State var isAlert = false
     var body: some View {
         VStack {
             Spacer()
@@ -64,6 +64,18 @@ struct AccessScreenTimeView: View {
             .padding(20)
 
         }
+        .onAppear {
+          self.isAlert = false
+        }
+        .fullScreenCover(isPresented: $isAlert) {
+          NotiAlertSheet(action: {
+            self.step = 1
+          }, isAlert: $isAlert)
+            .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+            .background(Color.black.opacity(0.3))
+            .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+            .ignoresSafeArea(.all)
+        }
         .padding(.horizontal)
         
     }
@@ -72,12 +84,12 @@ struct AccessScreenTimeView: View {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
                 Task {
-                    await MainActor.run {
-                        self.step = 1
-                    }
+                  await MainActor.run {
+                      self.step = 1
+                  }
                 }
             } else {
-                print("알림 권한 거부됨")
+              self.isAlert = true
             }
             if let error = error {
                 print("알림 권한 요청 에러: \(error)")

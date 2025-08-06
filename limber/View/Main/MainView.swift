@@ -30,12 +30,12 @@ struct MainView: View {
       TimerView(deviceReportActivityVM: deviceActivityReportVM, timerVM: timerVM, schedulExVM: scheduleExVM)
         .tag(AppRouter.Tab.timer)
         .tabItem { Label("타이머", image: "timer" )}
-      LabView(labVM: labVM)
-        .tag(AppRouter.Tab.laboratory)
-        .tabItem {Label("실험실", image: "laboratory")}
-      SettingView(vm: settingVM)
-        .tag(AppRouter.Tab.more)
-        .tabItem { Label("더보기", image: "more") }
+//      LabView(labVM: labVM)
+//        .tag(AppRouter.Tab.laboratory)
+//        .tabItem {Label("실험실", image: "laboratory")}
+//      SettingView(vm: settingVM)
+//        .tag(AppRouter.Tab.more)
+//        .tabItem { Label("더보기", image: "more") }
       
       
     }

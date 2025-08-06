@@ -17,7 +17,6 @@ struct AlertSheet: View {
   var body: some View {
     VStack {
       Spacer()
-      
       VStack {
         Spacer()
           .frame(height: 32)
@@ -42,7 +41,6 @@ struct AlertSheet: View {
           .foregroundStyle(.gray800)
           .background(.gray200)
           .cornerRadius(10)
-          
           
           Button {
             timerVM.checkedModels.forEach {
@@ -88,3 +86,58 @@ struct AlertSheet: View {
 
 
 
+struct NotiAlertSheet: View {
+  var action: () -> ()
+  
+  @Binding var isAlert: Bool
+ 
+  
+  var body: some View {
+    VStack {
+      Spacer()
+      VStack {
+        Spacer()
+          .frame(height: 32)
+        Text("알림권한을 설정하지 않았어요.")
+          .font(.suitHeading3)
+          .foregroundStyle(.gray800)
+        Text("설정 > 림버에서 알림 권한을 꼭 설정해주세요")
+          .font(.suitHeading3)
+          .foregroundStyle(.gray800)
+        Spacer()
+        HStack(spacing: 8) {
+        
+          Button {
+            action()
+
+          } label: {
+            Text("확인")
+              .font(.suitHeading3Small)
+              .frame(maxWidth: .infinity , maxHeight: .infinity)
+            
+          }
+          .frame(maxWidth: .infinity)
+          .background(.limberPurple)
+          .cornerRadius(10)
+          
+        }
+        .foregroundStyle(.white)
+        .frame(height: 54)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 12)
+        
+        
+      }
+      .frame(height: 180)
+      .background(.white)
+      .cornerRadius(16)
+      .padding(.horizontal, 20)
+      Spacer()
+      
+    }
+    .background(ClearBackground())
+    
+    
+  }
+  
+}

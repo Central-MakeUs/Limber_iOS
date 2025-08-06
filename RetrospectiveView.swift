@@ -5,7 +5,6 @@
 //  Created by 양승완 on 7/15/25.
 //
 
-
 import SwiftUI
 
 class RetrospectiveVM: ObservableObject {
@@ -25,8 +24,6 @@ struct RetrospectiveView: View {
   @State private var focusDetail: String = ""
   @State private var isEnable: Bool = false
   @State private var sliderValue: Double = 0.5
-
-  
   
   @StateObject var vm: RetrospectiveVM
   
@@ -147,11 +144,9 @@ struct RetrospectiveView: View {
         Text("회고를 다 완성해야 저장할 수 있어요")
           .font(.suitBody2)
           .foregroundStyle(.gray500)
-  
-
         
         BottomBtn(isEnable: $isEnable, title: "저장하기", action: {
-          
+          dismiss()
           
         })
         .padding(20)
