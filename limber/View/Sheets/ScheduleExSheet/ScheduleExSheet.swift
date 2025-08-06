@@ -95,16 +95,16 @@ struct ScheduleExSheet: View {
                     }
                     return all
                   }
-                }(), isOn: false, days: daysText
+                }(), isOn: true, days: daysText
               )
+
+              let newDto = newSession.getDto()
+              var dtos = sessions.map {$0.getDto()} + [newDto]
+              FocusSessionManager.shared.saveFocusSessions(dtos)
               
+              vm.tapReservingBtn(newDto)
               context.insert(newSession)
               
-              let sessions = sessions.map { FocusSessionDTO(name: $0.name , focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, uuid: $0.uuid, days: $0.days)}
-              
-              vm.tapReservingBtn(FocusSessionDTO(name: newSession.name, focusTitle: newSession.focusTitle, startTime: newSession.startTime, endTime: newSession.endTime, repeatType: newSession.repeatType, isOn: newSession.isOn, uuid: newSession.uuid, days: newSession.days))
-              
-              FocusSessionManager.shared.saveFocusSessions(sessions)
               dismiss()
               
             })

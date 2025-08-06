@@ -36,7 +36,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
     
-    let newStore = ManagedSettingsStore(named: .init(activity.rawValue))
+    let newStore = ManagedSettingsStore(named: .total)
     newStore.clearAllSettings()
     
     if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
@@ -51,33 +51,27 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
         newStore.shield.applications = set
       }
     }
+    SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
 
-    if let sessions = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.focusSessions.key) {
-      let decoder = JSONDecoder()
-      do {
-        let focusSession = try decoder.decode([FocusSessionDTO].self, from: sessions)
-        if let idx = focusSession.map({ $0.uuid }).firstIndex(of: activity.rawValue) {
-          
+      let focusSession = FocusSessionManager.shared.loadFocusSessions()
+    NSLog("focusSesssion ::: \(focusSession)")
+        if let idx = focusSession.map({ $0.id.description }).firstIndex(of: activity.rawValue) {
           let today = Date()
           let calendar = Calendar.current
           let weekdayNumber = calendar.component(.weekday, from: today)
-          NSLog("weekdayNumber \(weekdayNumber)" )
           if focusSession[idx].getDays().contains("\(weekdayNumber)") {
-            SharedData.defaultsGroup?.set(activity.rawValue, forKey: SharedData.Keys.timeringName.key)
-            SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
+            NSLog("fddccc::::focusSession[idx] \(focusSession[idx])")
+            FocusSessionManager.shared.saveTimeringSession(focusSession[idx])
           }
           
         }
-      } catch {
-        
-      }
-    }
+  
+    
   }
   
   override func intervalDidEnd(for activity: DeviceActivityName) {
     super.intervalDidEnd(for: activity)
-    let defaults = UserDefaults(suiteName: "group.com.limber")
-    let store = ManagedSettingsStore(named: .init(activity.rawValue))
+    let store = ManagedSettingsStore(named: .total)
     store.shield.applications = []
     
     let content = UNMutableNotificationContent()
@@ -85,6 +79,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     content.body = "타이머가 종료되었어요!\n앱에서 회고를 진행해주세요!"
     content.interruptionLevel = .timeSensitive
     content.relevanceScore = 1.0
+    content.userInfo = ["endedActivityName":activity.rawValue]
     
     let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
     UNUserNotificationCenter.current().add(request)

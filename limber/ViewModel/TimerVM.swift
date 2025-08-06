@@ -16,7 +16,7 @@ class TimerVM: ObservableObject {
     $selectedCategory.map { !$0.isEmpty }
       .assign(to: &$btnEnable)
   }
-  
+
   @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
   @Published var btnEnable = false
   @Published var isTimering = false
@@ -78,9 +78,7 @@ class TimerVM: ObservableObject {
   
   
   func setDeleteSheet() {
-    if !checkedModels.isEmpty {
-      delAlert = true
-    }
+      delAlert = !checkedModels.isEmpty
   }
   
   //    func deleteModels() {

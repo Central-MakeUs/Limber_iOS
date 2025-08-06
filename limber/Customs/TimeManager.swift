@@ -65,10 +65,23 @@ class TimeManager: ObservableObject {
   var startTime: Date?
   var timer: Timer?
   
-  func parseTimeString(_ timeString: String) -> Date? {
+  let formatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "ko_KR")
     formatter.dateFormat = "ah시m분ss"
+    return formatter
+  }()
+  
+  let dateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "ko_KR")
+    formatter.dateFormat = "M'월' d'일'"
+    return formatter
+  }()
+
+  
+  func parseTimeString(_ timeString: String) -> Date? {
+
     // 오늘 날짜 기준으로 시간 설정
     let calendar = Calendar.current
     let today = Date()

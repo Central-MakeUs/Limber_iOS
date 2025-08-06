@@ -36,14 +36,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             
             self.appToken = appToken
             self.currentViewId = .unlock(token: appToken)
-        }
-      else if let finString = response.notification.request.content.userInfo["appToken"] as? String,
-         let tokenData = finString.data(using: .utf8),
-         let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {
           
-          self.appToken = appToken
-          self.currentViewId = .unlock(token: appToken)
-      }
+        }
+      else if
+        let endedActivityName = response.notification.request.content.userInfo["endedActivityName"] as? String {
+        self.currentViewId = .retrospective(id: endedActivityName)
+        }
+                  
         
         completionHandler()
     }

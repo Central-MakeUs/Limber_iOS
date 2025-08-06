@@ -69,10 +69,11 @@ extension AppRouter {
 }
 
 enum SomeRoute: Hashable {
-    case main
-    case home
-    case unlock(token: ApplicationToken)
-    case circularTimer
+  case main
+  case home
+  case unlock(token: ApplicationToken)
+  case circularTimer
+  case retrospective(id: String)
 }
 
 

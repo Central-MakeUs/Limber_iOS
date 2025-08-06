@@ -47,7 +47,8 @@ struct AlertSheet: View {
           Button {
             timerVM.checkedModels.forEach {
               let deviceActivityCenter = DeviceActivityCenter()
-              deviceActivityCenter.stopMonitoring([.init($0.uuid)])
+              deviceActivityCenter.stopMonitoring([.init($0.id.description)])
+              FocusSessionManager.shared.deleteTimerSession(timerSessionId: $0.id)
               context.delete($0)
             }
             dismiss()

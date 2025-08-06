@@ -51,9 +51,7 @@ struct AccessScreenTimeView: View {
                         .inset(by: 0.5)
                         .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
                 )
-            
             Spacer()
-            
             BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
                 Task {
                     let status = await ScreenTimeManager.shared.requestPermission()

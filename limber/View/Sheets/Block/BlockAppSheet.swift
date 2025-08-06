@@ -24,7 +24,12 @@ struct BlockAppsSheet: View {
   var body: some View {
     VStack {
       VStack(spacing: 0) {
-        VStack(spacing: 0) {
+        ZStack {
+          Image("topLimber")
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea()
+          
           HStack {
             Spacer()
             Button(action: {
@@ -35,23 +40,11 @@ struct BlockAppsSheet: View {
             }
           }
           .padding([.top, .trailing], 20)
-          
-          ZStack {
-            Circle()
-              .fill(Color.gray.opacity(0.15))
-              .frame(width: 100, height: 100)
-            Text("실험 그래픽")
-              .font(.title3)
-              .foregroundColor(.gray)
-          }
-          Spacer().frame(height: 16)
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.gray200)
-        
         Spacer().frame(height: 28)
         
         VStack(spacing: 0) {
+          
           HStack(spacing: 0) {
             Text("1시간 4분")
               .foregroundColor(Color.limberPurple)

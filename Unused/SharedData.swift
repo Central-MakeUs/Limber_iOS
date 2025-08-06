@@ -17,7 +17,7 @@ class SharedData {
     case totalAppsDuration = "totalAppsDuration"
     case pickedApps = "pickedApps"
     case isTimering = "isTimering"
-    case timeringName = "timeringName"
+    case timeringObject = "timeringObject"
     case allApps = "allApps"
     case schedules = "schedules"
     case focusSessions = "focusSessions"

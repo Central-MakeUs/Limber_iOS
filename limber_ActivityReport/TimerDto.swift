@@ -17,7 +17,7 @@ struct TimerRequestDto: Codable {
     let endTime: String
 }
 
-struct TimerResponseDto: Codable {
+struct TimerResponseDto: Codable, Hashable {
     let id: Int
     let title: String
     let focusTypeId: Int
@@ -29,10 +29,6 @@ struct TimerResponseDto: Codable {
   
   func getDays() -> [String] {
     return repeatDays.components(separatedBy: ",")
-  }
-  func getFocusTitle() -> String {
-    let idDic: [Int: String] = [0: "학습",1: "업무", 2: "회의", 3: "직업",4: "기타"]
-    return idDic[self.id] ?? ""
   }
 }
 

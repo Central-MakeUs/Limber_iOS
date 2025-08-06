@@ -188,7 +188,7 @@ class ScheduleExVM: ObservableObject {
   
 
   
-  func tapReservingBtn(_ focusSession : FocusSessionDTO) {
+  func tapReservingBtn(_ focusSession : TimerResponseDto) {
     let deviceActivityCenter = DeviceActivityCenter()
     let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
     let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
@@ -202,9 +202,9 @@ class ScheduleExVM: ObservableObject {
       repeats: true)
     
     do {
-      SharedData.defaultsGroup?.set(focusSession.uuid, forKey: SharedData.Keys.timeringName.key)
-
-      try deviceActivityCenter.startMonitoring(.init(focusSession.uuid) , during: schedule)
+      FocusSessionManager.shared.saveTimeringSession(focusSession)
+      
+      try deviceActivityCenter.startMonitoring(.init(focusSession.id.description) , during: schedule)
     } catch {
       print("err \(error)")
     }

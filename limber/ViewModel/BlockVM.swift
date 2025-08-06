@@ -52,8 +52,17 @@ class BlockVM: ObservableObject {
     }
 
     func removeForShieldRestrictions(appToken: ApplicationToken) {
-        store.shield.applications = store.shield.applications?.filter { $0 != appToken }
-        SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.pickedApps.key)
+      store.shield.applications = []
+      SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.isTimering.key)
+      let timeringName = FocusSessionManager.shared.getTimeringSession()
+      
+      
+      
+      //tore.shield.applications?.filter { $0 != appToken }
+      
+
+      
+      //        SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.pickedApps.key)
 
     }
     

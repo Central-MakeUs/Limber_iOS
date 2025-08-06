@@ -10,8 +10,8 @@
 		604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */; };
 		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
-		604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */; };
+		604971AC2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */; };
+		604971AD2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */; };
 		604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
@@ -92,7 +92,7 @@
 		6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfigurationEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
 		604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = System/Library/Frameworks/ManagedSettingsUI.framework; sourceTree = SDKROOT; };
-		604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusExperimentView.swift; sourceTree = "<group>"; };
+		604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetrospectiveView.swift; sourceTree = "<group>"; };
 		604971B42E27CB1900AB2731 /* ShieldActionEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldActionEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076C9F12E09664B0068E676 /* limber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = limber_ActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +122,7 @@
 				Colors.xcassets,
 				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
+				Manager/FocusSessionManager.swift,
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
 		};
@@ -170,6 +171,8 @@
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
+				Repos/Timer/TimerDto.swift,
+				Repos/Timer/Types.swift,
 				View/HomeView.swift,
 				View/Main/MainView.swift,
 				View/RootView.swift,
@@ -333,7 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				609EF2182E2FC8E50029D990 /* Unused */,
-				604971AB2E2699EE00AB2731 /* FocusExperimentView.swift */,
+				604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */,
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
 				6076CA1F2E0969560068E676 /* limber_ActivityReport */,
@@ -609,7 +612,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				604971AD2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
+				604971AD2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,7 +627,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				604971AC2E2699EE00AB2731 /* FocusExperimentView.swift in Sources */,
+				604971AC2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

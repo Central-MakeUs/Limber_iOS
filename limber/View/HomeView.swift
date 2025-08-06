@@ -115,11 +115,17 @@ struct HomeView: View {
           )
           .clipShape(Capsule())
           
-          mainViewTopLabel()
-            .background(Color.lightYellow)
-            .cornerRadius(100)
-            .padding(.horizontal, 33)
-            .padding(.top, 34)
+          HStack {
+            Spacer().frame(maxWidth: 33)
+            mainViewTopLabel()
+              .background(Color.lightYellow)
+              .cornerRadius(100)
+              .padding(.top, 34)
+            Spacer().frame(maxWidth: 33)
+
+          }
+
+     
           
           
           DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
@@ -133,13 +139,13 @@ struct HomeView: View {
     }
     .onAppear {
       
-      let timeringName = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.timeringName.key)
+      let session = FocusSessionManager.shared.getTimeringSession()
 
       var startTimeStr = ""
       var endTimeStr = ""
       
       sessions.forEach {
-        if $0.uuid == timeringName {
+        if $0.id == session?.id {
           startTimeStr = $0.startTime
           endTimeStr = $0.endTime
         }
@@ -184,9 +190,12 @@ struct mainViewTopLabel: View {
       Text(text1)
         .foregroundStyle(Color(red: 1, green: 0.27, blue: 0.17))
       Text(text2)
+        .frame(maxWidth: .infinity)
+        .lineLimit(1)
       Spacer()
         .frame(width: 20)
     }
+    .minimumScaleFactor(0.5)
     .frame(height: 44)
     .font(.suitBody2)
   }

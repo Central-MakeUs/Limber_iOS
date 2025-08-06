@@ -65,7 +65,6 @@ struct TimerView: View {
               })
               .padding(20)
               .disabled(!timerVM.btnEnable)
-              .background(Color.gray100)
             } else {
               alreadyTimer
             }
@@ -77,6 +76,8 @@ struct TimerView: View {
           
           
         }
+        .background(Color.gray100)
+
 
      
     }
@@ -103,16 +104,26 @@ struct TimerView: View {
   
   @ViewBuilder
   var alreadyTimer: some View {
-    Spacer().frame(minHeight: 80)
+    Spacer().frame(minHeight: 70)
 
-    VStack(alignment: .center, spacing: 12) {
+    VStack(alignment: .center, spacing: 0) {
       Image("alreadyLab")
+        .padding(.bottom, 12)
+    
       Text("현재 진행 중인 실험이 있어요")
         .font(.suitHeading1)
-      Text("실험이 종료된 후에\n새로운 실험을 시작할 수 있어요")
+        .padding(.bottom, 12)
+
+      Text("실험이 종료된 후에")
+        .font(.suitBody2)
+        .foregroundStyle(.gray600)
+      
+      Text("새로운 실험을 시작할 수 있어요")
         .font(.suitBody2)
         .foregroundStyle(.gray600)
     }
+    .frame(maxWidth: .infinity)
+    
     Spacer()
       .frame(minHeight: 152)
 
@@ -292,7 +303,8 @@ struct TimerView: View {
               .padding(20)
               
             }
-            .background(Color.white)
+            .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 0)
+            .background(.white)
             .cornerRadius(10)
           }
         }
@@ -395,11 +407,11 @@ struct TimerView: View {
         let deviceActivityCenter = DeviceActivityCenter()
 
         if !newValue {
-          deviceActivityCenter.stopMonitoring([.init(sessions[index].uuid)])
+          deviceActivityCenter.stopMonitoring([.init(sessions[index].id.description)])
         } else {
           let intervalStart = TimeManager.shared.timeStringToDateComponents(sessions[index].startTime) ?? DateComponents()
           let intervalEnd = TimeManager.shared.timeStringToDateComponents(sessions[index].endTime) ?? DateComponents()
-          try deviceActivityCenter.startMonitoring(.init(sessions[index].uuid), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
+          try deviceActivityCenter.startMonitoring(.init(sessions[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
         }
     
       } catch {

@@ -52,7 +52,7 @@ struct TotalActivityScene: DeviceActivityReportScene {
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
       
-      let focuses = FocusSessionManager.shared.loadFocusSessions().map { FocusSession(name: $0.name, focusTitle: $0.focusTitle, startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatType, isOn: $0.isOn, days: $0.days) }
+      let focuses = FocusSessionManager.shared.loadFocusSessions().map { FocusSession(name: $0.title, focusTitle: "", startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatCycleCode.rawValue, isOn: $0.status == .running , days: $0.repeatDays) }
       
       var focusTotalDuration = 0.0
       focuses.forEach {
