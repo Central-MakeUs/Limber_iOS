@@ -163,7 +163,7 @@ struct CircularTimerView: View {
         }
         .frame(width: 220, height: 50)
         .background(Color.primaryDark)
-        .cornerRadius(100, corners: .allCorners)
+        .cornerRadius(100)
         
         Spacer()
         
@@ -190,7 +190,7 @@ struct CircularTimerView: View {
         }
         .frame(maxWidth: .infinity, minHeight: 54)
         .background(.white)
-        .cornerRadius(10, corners: .allCorners)
+        .cornerRadius(10)
         .padding(.horizontal, 20)
         .padding(.bottom)
       }

@@ -119,7 +119,6 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
-				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 				Manager/FocusSessionManager.swift,
 			);
@@ -130,7 +129,6 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
-				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
@@ -140,7 +138,6 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
-				"Customs/Extension/VIew+.swift",
 				FocusSession.swift,
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
@@ -164,6 +161,7 @@
 			membershipExceptions = (
 				App/AppDelegate.swift,
 				App/LimberApp.swift,
+				"Customs/Extension/VIew+.swift",
 				"GoogleService-Info.plist",
 				Info.plist,
 				"OnBoarding/나중.swift",
@@ -173,6 +171,11 @@
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/Types.swift,
 				View/HomeView.swift,
+				View/Laboratory/LabView.swift,
+				View/Laboratory/ReportView.swift,
+				View/Laboratory/StopReasonView.swift,
+				View/Laboratory/StudyInsightView.swift,
+				View/Laboratory/StudyProgressRow.swift,
 				View/Main/MainView.swift,
 				View/RootView.swift,
 				View/Sheets/AlertSheet.swift,
@@ -184,6 +187,7 @@
 				View/Timer/CellAllChecker.swift,
 				View/Timer/CellChecker.swift,
 				View/Timer/TimerView.swift,
+				View/UnlockReasonView.swift,
 				ViewModel/ScheduleExVM.swift,
 				ViewModel/TimerVM.swift,
 			);
@@ -660,7 +664,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -687,7 +691,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -715,7 +719,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -744,7 +748,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionExRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -894,7 +898,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -933,7 +937,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -970,7 +974,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -999,7 +1003,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1027,7 +1031,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
@@ -1054,7 +1058,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
