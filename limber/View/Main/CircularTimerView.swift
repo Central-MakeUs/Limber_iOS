@@ -187,12 +187,13 @@ struct CircularTimerView: View {
           Text("홈으로 가기")
             .font(.suitHeading3Small)
             .foregroundStyle(Color.gray800)
+            .frame(maxWidth: .infinity, minHeight: 54)
+            .background(.white)
+            .cornerRadius(10)
+            .padding(.horizontal, 20)
+            .padding(.bottom)
         }
-        .frame(maxWidth: .infinity, minHeight: 54)
-        .background(.white)
-        .cornerRadius(10)
-        .padding(.horizontal, 20)
-        .padding(.bottom)
+       
       }
       
     }

@@ -11,11 +11,18 @@ import SwiftUI
 class RetrospectiveVM: ObservableObject {
   @Published var date: String
   @Published var labName: String
-  
+  @Published var focusDetail: String = ""
+  @Published var isEnable: Bool = false
+  @Published var selectedFocus: Int = 2
+  @Published var sliderValue: Double = 0.5
   
   init(date: String, labName: String) {
     self.date = date
     self.labName = labName
+    
+    $focusDetail
+      .map { !$0.isEmpty }
+      .assign(to: &$isEnable)
   }
   
   func save() {
@@ -25,11 +32,6 @@ class RetrospectiveVM: ObservableObject {
 
 struct RetrospectiveView: View {
   @Environment(\.dismiss) var dismiss
-  
-  @State private var selectedFocus: Int = 2
-  @State private var focusDetail: String = ""
-  @State private var isEnable: Bool = false
-  @State private var sliderValue: Double = 0.5
   
   @StateObject var vm: RetrospectiveVM
   
@@ -96,7 +98,7 @@ struct RetrospectiveView: View {
           ZStack(alignment: .trailing) {
             VStack {
               CustomStepSlider(
-                value: $sliderValue,
+                value: $vm.sliderValue,
                 steps: [0, 50, 100], // 원하는 스텝 배열
                 trackHeight: 8
               )
@@ -132,7 +134,7 @@ struct RetrospectiveView: View {
         .padding(.bottom, 30)
         
         VStack {
-          TextField("", text: $focusDetail, prompt: Text("오늘 집중한 활동을 간단히 기록해보세요")
+          TextField("", text: $vm.focusDetail, prompt: Text("오늘 집중한 활동을 간단히 기록해보세요")
             .font(.suitBody2)
             .foregroundStyle(Color.gray400), axis: .vertical)
           .font(.suitBody2)
@@ -150,7 +152,7 @@ struct RetrospectiveView: View {
           .font(.suitBody2)
           .foregroundStyle(.gray500)
         
-        BottomBtn(isEnable: $isEnable, title: "저장하기", action: {
+        BottomBtn(isEnable: $vm.isEnable, title: "저장하기", action: {
           vm.save()
           dismiss()
           
@@ -232,6 +234,8 @@ struct RetrospectiveView: View {
 //  }
 //}
 
+
+
 struct CustomStepSlider: View {
     @Binding var value: Double
     let steps: [Double]
@@ -297,6 +301,6 @@ struct CustomStepSlider: View {
     }
 }
 
-//#Preview {
-//  RetrospectiveView(date: "3월2일", labName: "학습")
-//}
+#Preview {
+  RetrospectiveView(vm: RetrospectiveVM(date: "", labName: ""))
+}
