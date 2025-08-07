@@ -10,7 +10,6 @@
 		604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */; };
 		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		604971AC2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */; };
 		604971AD2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */; };
 		604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -627,7 +626,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				604971AC2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

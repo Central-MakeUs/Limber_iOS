@@ -35,7 +35,6 @@ struct RetrospectiveView: View {
   
   var body: some View {
     ZStack {
-      
       Color.primaryDark
         .ignoresSafeArea()
       Image("background")
@@ -63,18 +62,18 @@ struct RetrospectiveView: View {
         }
         
         Spacer().frame(height: 50)
-
-//        Text("작은 회고가 쌓여 나만의 집중 루틴을 만들어줄거예요")
-//          .font(.suitBody3)
-//          .foregroundColor(.limberPurple)
-//          .frame(height: 29 )
-//          .frame(maxWidth: .infinity)
-//          .background(.primaryDark)
-//          .cornerRadius(100, corners: .allCorners)
-//          .padding(.horizontal, 55)
-//        
-//        Spacer()
-//          .frame(height: 38)
+        
+        //        Text("작은 회고가 쌓여 나만의 집중 루틴을 만들어줄거예요")
+        //          .font(.suitBody3)
+        //          .foregroundColor(.limberPurple)
+        //          .frame(height: 29 )
+        //          .frame(maxWidth: .infinity)
+        //          .background(.primaryDark)
+        //          .cornerRadius(100, corners: .allCorners)
+        //          .padding(.horizontal, 55)
+        //        
+        //        Spacer()
+        //          .frame(height: 38)
         
         Text("이번 실험에 얼마나 몰입했나요?")
           .font(.suitHeading3)
@@ -82,7 +81,7 @@ struct RetrospectiveView: View {
           .frame(height: 32)
         
         Spacer().frame(height: 40)
-
+        
         
         Image("beaker")
           .resizable()
@@ -103,13 +102,13 @@ struct RetrospectiveView: View {
               )
             }
             
-//            if selectedFocus == 2 {
-//              // 오른쪽 끝 100% 표시
-//              Text("100%")
-//                .font(.system(size: 14, weight: .bold))
-//                .foregroundColor(.white)
-//                .offset(x: 36)
-//            }
+            //            if selectedFocus == 2 {
+            //              // 오른쪽 끝 100% 표시
+            //              Text("100%")
+            //                .font(.system(size: 14, weight: .bold))
+            //                .foregroundColor(.white)
+            //                .offset(x: 36)
+            //            }
           }
           .padding(.horizontal, 70)
           .padding(.vertical, 12)
@@ -124,7 +123,7 @@ struct RetrospectiveView: View {
             Spacer()
             Text("완전 몰입했어요")
               .frame(width: 100)
-
+            
           }
           .font(.system(size: 14, weight: .regular))
           .foregroundColor(.white.opacity(0.8))
@@ -161,10 +160,13 @@ struct RetrospectiveView: View {
       }
     }
     .toolbar(.hidden, for: .navigationBar)
-  }
-    
-}
+    .hideKeyboardOnTap()
 
+    
+  }
+  
+  
+}
 //#Preview {
 //  FocusExperimentView()
 //}
