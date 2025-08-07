@@ -50,7 +50,7 @@ struct BlockBottomSheet: View {
       }
       .padding(20)
       HStack {
-        Text("관리할 앱을 최대 10개까지 등록해주세요")
+        Text("방해되는 앱을\n최대 10개까지 등록해주세요")
           .font(.suitHeading3)
           .foregroundStyle(Color.gray800)
         Spacer()
