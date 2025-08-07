@@ -12,7 +12,6 @@ import DeviceActivity
 struct TimerView: View {
   @Query var sessions: [FocusSession]
   @Environment(\.modelContext) private var modelContext
-
   
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
   @ObservedObject var timerVM: TimerVM
@@ -58,9 +57,12 @@ struct TimerView: View {
             if !timerVM.isTimering {
               main
               Spacer()
-              
               BottomBtn(isEnable: $timerVM.btnEnable, title: "시작하기", action:  {
-                self.showModal = true
+                timerVM.nowStarting(completion: {
+                  self.showModal = true
+
+                }                
+                )
                 
               })
               .padding(20)
@@ -81,8 +83,9 @@ struct TimerView: View {
 
      
     }
+    .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "타이머는 15분 이상부터 시작할 수 있습니다.", duration: 2))
     .fullScreenCover(isPresented: $showModal) {
-      BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, showModal: $showModal)
+      BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: timerVM.categorys.firstIndex(of: timerVM.selectedCategory) ?? 0, showModal: $showModal)
         .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
         .background(Color.black.opacity(0.3))
         .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
@@ -141,7 +144,6 @@ struct TimerView: View {
         Spacer()
       }
       ScrollView(.horizontal) {
-        
         HStack(spacing: 8) {
           ForEach(timerVM.categorys, id: \.self) { text in
             Text(text)
@@ -213,6 +215,7 @@ struct TimerView: View {
  
     
   }
+  
   
   //MARK: 예약설정, 예약 설정
   @ViewBuilder

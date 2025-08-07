@@ -37,3 +37,8 @@ struct TimerResponseDto: Codable {
 }
 
 
+struct TimerNowDto: Codable {
+  let focusTypeId: Int
+  let startTime: String
+  let endTime: String
+}

@@ -30,6 +30,15 @@ struct TimerResponseDto: Codable {
   func getDays() -> [String] {
     return repeatDays.components(separatedBy: ",")
   }
+  func getFocusTitle() -> String {
+    let idDic: [Int: String] = [0: "학습",1: "업무", 2: "회의", 3: "직업",4: "기타"]
+    return idDic[self.id] ?? ""
+  }
 }
 
 
+struct TimerNowDto: Codable {
+  let focusTypeId: Int
+  let startTime: String
+  let endTime: String
+}

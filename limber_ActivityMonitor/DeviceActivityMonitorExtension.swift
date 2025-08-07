@@ -85,6 +85,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     UNUserNotificationCenter.current().add(request)
     
     SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
+    FocusSessionManager.shared.deleteTimerSession(timerSessionId: 0)
     
     //        defaults?.set(true, forKey: "changeView")
     //

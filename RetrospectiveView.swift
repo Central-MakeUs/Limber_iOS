@@ -5,15 +5,21 @@
 //  Created by 양승완 on 7/15/25.
 //
 
+
 import SwiftUI
 
 class RetrospectiveVM: ObservableObject {
   @Published var date: String
   @Published var labName: String
   
+  
   init(date: String, labName: String) {
     self.date = date
     self.labName = labName
+  }
+  
+  func save() {
+    
   }
 }
 
@@ -146,6 +152,7 @@ struct RetrospectiveView: View {
           .foregroundStyle(.gray500)
         
         BottomBtn(isEnable: $isEnable, title: "저장하기", action: {
+          vm.save()
           dismiss()
           
         })

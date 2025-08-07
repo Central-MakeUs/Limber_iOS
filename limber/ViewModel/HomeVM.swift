@@ -23,13 +23,9 @@ class HomeVM: ObservableObject {
   
   func onAppear() {
     
-    let formatter = DateFormatter()
-    formatter.locale = Locale(identifier: "ko_KR")
-    formatter.dateFormat = "ah시m분ss"
     
     
     let sessions =  FocusSessionManager.shared.loadFocusSessions()
-    
     
     if let isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) {
       self.isTimering = isTimering

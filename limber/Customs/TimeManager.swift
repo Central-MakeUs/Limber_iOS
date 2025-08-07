@@ -79,9 +79,18 @@ class TimeManager: ObservableObject {
     return formatter
   }()
 
+  func addTime(to date: Date = .now, hours: Int = 0, minutes: Int = 0) -> Date? {
+      var result = date
+      if let addedHours = Calendar.current.date(byAdding: .hour, value: hours, to: result) {
+          result = addedHours
+      }
+      if let addedMinutes = Calendar.current.date(byAdding: .minute, value: minutes, to: result) {
+          result = addedMinutes
+      }
+      return result
+  }
   
   func parseTimeString(_ timeString: String) -> Date? {
-
     // 오늘 날짜 기준으로 시간 설정
     let calendar = Calendar.current
     let today = Date()

@@ -21,6 +21,7 @@ class SharedData {
     case allApps = "allApps"
     case schedules = "schedules"
     case focusSessions = "focusSessions"
+    case nowTimer = "nowTimer"
     
     var key: String {
       switch self {

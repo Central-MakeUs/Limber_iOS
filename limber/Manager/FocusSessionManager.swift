@@ -30,9 +30,11 @@ class FocusSessionManager {
     }
   }
   
-  func saveTimeringSession(_ session: TimerResponseDto?) {
+  func saveTimeringSession(_ session: Any?) {
     let encoder = JSONEncoder()
-    if let data = try? encoder.encode(session) {
+    if let responseDto = session as? TimerResponseDto  ,let data = try? encoder.encode(responseDto) {
+      SharedData.defaultsGroup?.set(data, forKey: SharedData.Keys.timeringObject.key)
+    } else if let responseDto = session as? TimerNowDto ,let data = try? encoder.encode(responseDto) {
       SharedData.defaultsGroup?.set(data, forKey: SharedData.Keys.timeringObject.key)
     } else {
       SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.timeringObject.key)
@@ -65,5 +67,17 @@ class FocusSessionManager {
       $0.id.description == timerSessionId
     }.first
   }
+  
+  func getNowTimer() -> TimerNowDto? {
+    if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.timeringObject.key) {
+      let decoder = JSONDecoder()
+      if let reponse = try? decoder.decode(TimerNowDto.self, from: data) {
+        return reponse
+      }
+    }
+    return nil
+  }
+  
+
   
 }

@@ -16,15 +16,22 @@ struct BlockAppsSheet: View {
   
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
   
+  @State var untilHour: Int
+  @State var untilMinute: Int
+  @State var focusTypeId: Int
+  
   @State private var showPicker = false
-  @Binding var showModal: Bool
   @State private var isEnable = true
+  
+  @Binding var showModal: Bool
+
+  
   
   
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       VStack(spacing: 0) {
-        ZStack {
+        ZStack( alignment: .topTrailing) {
           Image("topLimber")
             .resizable()
             .scaledToFill()
@@ -46,7 +53,7 @@ struct BlockAppsSheet: View {
         VStack(spacing: 0) {
           
           HStack(spacing: 0) {
-            Text("1시간 4분")
+            Text("\(self.untilHour)시간 \(self.untilMinute)분")
               .foregroundColor(Color.limberPurple)
               .font(.suitHeading2)
             Text("동안")
@@ -54,7 +61,7 @@ struct BlockAppsSheet: View {
               .font(.suitHeading2)
           }
           HStack(spacing: 0) {
-            Text("\(blockVM.applicationTokens.count)개")
+            Text("\(blockVM.pickedApps.count)개")
               .foregroundColor(Color.limberPurple)
               .font(.suitHeading2)
             Text("의 앱이 차단돼요")
@@ -115,6 +122,22 @@ struct BlockAppsSheet: View {
           .padding(.bottom, 8)
         
         BottomBtn(isEnable: $isEnable, title: "시작하기") {
+          if let endDate = TimeManager.shared.addTime(hours: self.untilHour, minutes: self.untilMinute), let startDate = TimeManager.shared.addTime(),
+             let schedule = createSchedule(addHours: self.untilHour, addMinutes: self.untilMinute)
+          {
+            let deviceActivityCenter = DeviceActivityCenter()
+
+            let startTime = TimeManager.shared.formatter.string(from: startDate)
+            let endTime = TimeManager.shared.formatter.string(from: endDate)
+            let dto = TimerNowDto(focusTypeId: self.focusTypeId, startTime: startTime, endTime:           endTime)
+            do {
+              FocusSessionManager.shared.saveTimeringSession(dto)
+              try deviceActivityCenter.startMonitoring(.init("0") , during: schedule)
+            } catch {
+              print("err \(error)")
+            }
+          }
+        
           blockVM.setShieldRestrictions()
           
           dismiss()
@@ -137,7 +160,26 @@ struct BlockAppsSheet: View {
         blockVM.setPicked()
       }
   }
-  
+  func createSchedule(addHours: Int, addMinutes: Int) -> DeviceActivitySchedule? {
+      let now = Date()
+      let calendar = Calendar.current
+
+      // 현재 시와 분 구함
+      let nowComponents = calendar.dateComponents([.hour, .minute], from: now)
+      let nowHour = nowComponents.hour ?? 0
+      let nowMinute = nowComponents.minute ?? 0
+
+      // 종료 시간 계산
+      var endDate = calendar.date(byAdding: DateComponents(hour: addHours, minute: addMinutes), to: now)!
+      let endComponents = calendar.dateComponents([.hour, .minute], from: endDate)
+
+      // DeviceActivitySchedule 은 DateComponents 로 받음
+      return DeviceActivitySchedule(
+          intervalStart: DateComponents(hour: nowHour, minute: nowMinute),
+          intervalEnd: DateComponents(hour: endComponents.hour, minute: endComponents.minute),
+          repeats: false
+      )
+  }
 }
 
 struct BlockedApp: Identifiable {

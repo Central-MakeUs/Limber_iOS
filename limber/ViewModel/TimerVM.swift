@@ -21,8 +21,6 @@ class TimerVM: ObservableObject {
   @Published var btnEnable = false
   @Published var isTimering = false
   
-  
-  
   @Published var selectingH: Int = 0
   @Published var selectingM: Int = 0
   @Published var selectedCategory: String = ""
@@ -35,8 +33,6 @@ class TimerVM: ObservableObject {
     "오후 10시 32분",
     "2"]
   
-  
-  
   @Published var changeSheet = false
   @Published var bottomSheetTitle = "시작"
   @Published var isStartTime = false
@@ -47,6 +43,8 @@ class TimerVM: ObservableObject {
   @Published var isAllChecker = false
   
   @Published var delAlert = false
+  
+  @Published var toastOn = false
   
   func focusCategoryTapped(idx: Int) {
     switch idx {
@@ -94,6 +92,55 @@ class TimerVM: ObservableObject {
     isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) ?? false
   }
   
+  func nowStarting(completion: () -> ()) {
+    if selectingH > 0 || (selectingH <= 0 && selectingM > 15) {
+      completion()
+    } else {
+      if !toastOn {
+        toastOn = true
+      }
+    }
+
+  }
   
   
+}
+struct ToastModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    let message: String
+    let duration: TimeInterval
+
+    @State private var workItem: DispatchWorkItem?
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+
+            if isPresented {
+                VStack {
+                    Spacer()
+                    Text(message)
+                        .padding()
+                        .background(Color.black.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .padding(.bottom, 40)
+                }
+                .animation(.easeInOut, value: isPresented)
+            }
+        }
+        .onChange(of: isPresented) { newValue in
+            if newValue {
+                workItem?.cancel()
+                let task = DispatchWorkItem {
+                    withAnimation {
+                        isPresented = false
+                    }
+                }
+                workItem = task
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: task)
+            }
+        }
+    }
 }

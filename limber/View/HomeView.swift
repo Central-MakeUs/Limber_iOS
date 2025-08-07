@@ -27,7 +27,6 @@ struct HomeView: View {
         .resizable()
         .ignoresSafeArea()
         .background(Color.limberPurple)
-      
   
       VStack(spacing: 0) {
         HStack {
@@ -138,21 +137,24 @@ struct HomeView: View {
       }
     }
     .onAppear {
-      
-      let session = FocusSessionManager.shared.getTimeringSession()
-
       var startTimeStr = ""
       var endTimeStr = ""
       
-      sessions.forEach {
-        if $0.id == session?.id {
-          startTimeStr = $0.startTime
-          endTimeStr = $0.endTime
+      if let session = FocusSessionManager.shared.getTimeringSession() {
+        sessions.forEach {
+          if $0.id == session.id {
+            startTimeStr = $0.startTime + "00"
+            endTimeStr = $0.endTime + "00"
+          }
         }
+
+      } else if let nowTimer = FocusSessionManager.shared.getNowTimer() {
+        
+        startTimeStr = nowTimer.startTime
+        endTimeStr = nowTimer.endTime
       }
       
-      
-      if let startDate = TimeManager.shared.parseTimeString(startTimeStr+"00") , let endDate = TimeManager.shared.parseTimeString(endTimeStr+"00") {
+      if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , let endDate = TimeManager.shared.parseTimeString(endTimeStr) {
         
         if endDate < startDate {
           homeVM.endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
