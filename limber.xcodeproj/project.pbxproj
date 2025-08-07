@@ -10,7 +10,6 @@
 		604971702E1AAF3900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971722E1AAF3900AB2731 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */; };
 		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		604971AD2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */; };
 		604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
@@ -91,7 +90,6 @@
 		6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfigurationEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
 		604971712E1AAF3900AB2731 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = System/Library/Frameworks/ManagedSettingsUI.framework; sourceTree = SDKROOT; };
-		604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetrospectiveView.swift; sourceTree = "<group>"; };
 		604971B42E27CB1900AB2731 /* ShieldActionEx.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldActionEx.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076C9F12E09664B0068E676 /* limber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = limber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = limber_ActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -177,6 +175,8 @@
 				View/Laboratory/StudyInsightView.swift,
 				View/Laboratory/StudyProgressRow.swift,
 				View/Main/MainView.swift,
+				View/Retrospective/CustomStepSlider.swift,
+				View/Retrospective/RetrospectiveView.swift,
 				View/RootView.swift,
 				View/Sheets/AlertSheet.swift,
 				View/Sheets/ScheduleExSheet/BottomSheet700H/BottomSheet4320H.swift,
@@ -339,7 +339,6 @@
 			isa = PBXGroup;
 			children = (
 				609EF2182E2FC8E50029D990 /* Unused */,
-				604971AB2E2699EE00AB2731 /* RetrospectiveView.swift */,
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
 				6076CA1F2E0969560068E676 /* limber_ActivityReport */,
@@ -615,7 +614,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				604971AD2E2699EE00AB2731 /* RetrospectiveView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -719,7 +717,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -748,7 +746,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionExRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -898,7 +896,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -937,7 +935,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -974,7 +972,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1003,7 +1001,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1031,7 +1029,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
@@ -1058,7 +1056,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
