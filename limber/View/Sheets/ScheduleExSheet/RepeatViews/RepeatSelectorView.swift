@@ -32,9 +32,10 @@ struct RepeatSelectorView: View {
             .contentShape(Circle())
             
             Text(option)
+              .frame(maxWidth: .infinity)
               .font(.system(size: 14))
               .foregroundColor(.gray)
-            Spacer()
+     
           }
           .onTapGesture {
             if vm.selectedOption == option {
