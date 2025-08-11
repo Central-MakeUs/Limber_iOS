@@ -23,6 +23,7 @@
     @Query var sessions: [FocusSession]
     
     @ObservedObject var vm: ScheduleExVM
+    var timerRepository = TimerRepository()
     
     @State var showSheet = false
     @FocusState private var isFocused: Bool  // ← 여기!
@@ -100,15 +101,30 @@
                       }
                     }(), isOn: true, days: daysText
                   )
+                  
+                  let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+                  
+                  Task {
+                    do {
+                      let result = try await timerRepository.createTimer(newSession.getRequestDto(userId: userId))
+                        
+                      
+//                      let newDto = newSession.getResponseDto()
+//                      let dtos = sessions.map {$0.getResponseDto()} + [newDto]
+//                      FocusSessionManager.shared.saveFocusSessions(dtos)
+//                      
+//                      vm.tapReservingBtn(newDto)
+//                      context.insert(newSession)
+//
+//                      dismiss()
 
-                  let newDto = newSession.getDto()
-                  var dtos = sessions.map {$0.getDto()} + [newDto]
-                  FocusSessionManager.shared.saveFocusSessions(dtos)
+                    } catch {
+                      print("error::: \(error)")
+                    }
+                  }
+                 
                   
-                  vm.tapReservingBtn(newDto)
-                  context.insert(newSession)
                   
-                  dismiss()
                   
                 })
               

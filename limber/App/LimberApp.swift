@@ -8,6 +8,7 @@
 import SwiftUI
 import FamilyControls
 import ManagedSettings
+import _DeviceActivity_SwiftUI
 
 @main
 struct LimberApp: App {

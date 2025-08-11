@@ -21,8 +21,18 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
-        FirebaseApp.configure()
+        do {
+          let deviceID = try DeviceID.shared.getOrCreate()
+          print("deviceID \(deviceID)")
 
+          SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
+
+        } catch {
+          print("Erorr \(error)")
+        }
+      
+    
+      
         return true
     }
     

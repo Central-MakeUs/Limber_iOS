@@ -8,10 +8,9 @@
 import SwiftUI
 import ManagedSettings
 import SwiftData
-import FirebaseCore
 
 struct TotalActivityView: View {
-    var activityReport: ActivityReport
+  @State var activityReport: ActivityReport = .init(totalDuration: TimeInterval(), apps: [], focusTotalDuration: TimeInterval(), focuses: [])
     var focusTotalDuration: TimeInterval
     var dopaminePer: Double
     var focusPer: Double
@@ -138,11 +137,7 @@ struct TotalActivityView: View {
           //            .padding()
           
         }
-        .background(Color.gray50)
-        .cornerRadius(12)
-        .padding(.horizontal, 20)
-        .padding(.top, 14)
-        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 2)
+        
       }
     }
 

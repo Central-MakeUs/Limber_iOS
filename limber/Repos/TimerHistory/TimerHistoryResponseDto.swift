@@ -17,9 +17,9 @@ struct TimerHistoryResponseDto: Codable {
     let focusTypeId: Int
     let repeatCycleCode: RepeatCycleCode
     let repeatDays: String
-    let historyDt: String      // "yyyy-MM-dd'T'HH:mm:ss"
+    let historyDt: String     
     let historyStatus: HistoryStatus
-    let failReason: String?    // 실패 사유 (nullable)
-    let startTime: String      // "HH:mm:ss"
-    let endTime: String        // "HH:mm:ss"
+    let failReason: String?
+    let startTime: String
+    let endTime: String
 }

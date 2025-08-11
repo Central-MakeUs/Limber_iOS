@@ -8,9 +8,10 @@
 import Foundation
 
 struct TimerRequestDto: Codable {
-    let userId: Int
+  let userId: String
     let title: String
     let focusTypeId: Int
+  let timerCode: TimerCode
     let repeatCycleCode: RepeatCycleCode
     let repeatDays: String
     let startTime: String

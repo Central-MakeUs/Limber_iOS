@@ -53,8 +53,32 @@ class FocusSession {
     return formatter.date(from: timeString)
   }
   
-  func getDto() -> TimerResponseDto {
+  func timeToDto(_ timeString: String) -> Date? {
+    let parser = DateFormatter()
+    parser.locale = Locale(identifier: "ko_KR") // 한국어 오전/오후 인식
+    parser.dateFormat = "a h시 m분"
+
+    if let date = parser.date(from: timeString) {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "HH:mm" // 24시간제
+        
+        let result = formatter.string(from: date)
+        print(result) // 👉 "15:45"
+    } else {
+        print("변환 실패")
+    }
+    return parser.date(from: timeString)
+  }
+  
+  
+  func getResponseDto() -> TimerResponseDto {
     return TimerResponseDto(id: self.id, title: self.name, focusTypeId: 1, repeatCycleCode: .every, repeatDays: self.days, startTime: self.startTime, endTime: self.endTime, status: self.isOn ? .running : .ready)
+  }
+  
+  func getRequestDto(userId: String) -> TimerRequestDto {
+    return TimerRequestDto(userId: userId, title: self.name, focusTypeId: focusTitleId, timerCode: .SCHEDULED, repeatCycleCode: .none, repeatDays: self.days, startTime: self.startTime, endTime: self.endTime)
+ 
   }
 }
 

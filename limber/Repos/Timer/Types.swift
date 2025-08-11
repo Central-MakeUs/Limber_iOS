@@ -16,9 +16,10 @@ enum TimerRepositoryError: Error {
     case httpError(code: Int)
 }
 enum RepeatCycleCode: String, Codable {
-    case every   = "EVERY"    
+    case every   = "EVERY"
     case weekday = "WEEKDAY"
     case weekend = "WEEKEND"
+  case none = "NONE"
 }
 
 enum TimerStatus: String, Codable {
@@ -28,3 +29,8 @@ enum TimerStatus: String, Codable {
     case completed = "COMPLETED"  // 종료됨
     case canceled  = "CANCELED"   // 취소됨
 }
+enum TimerCode: String, Codable {
+  case SCHEDULED = "SCHEDULED"
+  case IMMEDIATE = "IMMEDIATE"
+}
+

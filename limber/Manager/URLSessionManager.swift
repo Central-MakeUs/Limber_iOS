@@ -6,18 +6,12 @@
 //
 
 import Combine
+import Foundation
 
 
-enum SubURLS: String {
+class URLManager {
+  
+  
+  static let baseURL = URL(string: "https://3.35.146.79:8888")!
     
-    case all = "/all"
-}
-class URLSessionManager: ObservableObject {
-    
-    private let baseURL = "https://192.168.0.125/limber"
-    
-    func setValues() {
-        let allUrl = baseURL + SubURLS.all.rawValue
-        
-    }
 }

@@ -16,9 +16,6 @@ import DeviceActivity
 
 
 class ScheduleExVM: ObservableObject {
-  
-  @EnvironmentObject var urlSessionManage: URLSessionManager
-  
   private var cancellables = Set<AnyCancellable>()
   
   @Published var textFieldName: String = ""

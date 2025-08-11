@@ -17,7 +17,7 @@ protocol TimerRepositoryProtocol {
 }
 
 final class TimerRepository: TimerRepositoryProtocol {
-    private let baseURL = URL(string: "https://your.api.server/api/timers")!
+  private let baseURL = URLManager.baseURL
     private let session: URLSession
     private let jsonDecoder: JSONDecoder
     private let jsonEncoder: JSONEncoder
@@ -44,21 +44,21 @@ final class TimerRepository: TimerRepositoryProtocol {
     }
 
     func getUserTimers(userId: Int) async throws -> [TimerResponseDto] {
-        let url = baseURL.appendingPathComponent("user/\(userId)")
+        let url = baseURL.appendingPathComponent("/user/\(userId)")
         let (data, response) = try await session.data(from: url)
         try validate(response: response)
         return try jsonDecoder.decode([TimerResponseDto].self, from: data)
     }
 
     func getTimer(by id: Int) async throws -> TimerResponseDto {
-        let url = baseURL.appendingPathComponent("\(id)")
+        let url = baseURL.appendingPathComponent("/\(id)")
         let (data, response) = try await session.data(from: url)
         try validate(response: response)
         return try jsonDecoder.decode(TimerResponseDto.self, from: data)
     }
 
     func updateTimerStatus(id: Int, dto: TimerStatusUpdateDto) async throws -> TimerResponseDto {
-        let url = baseURL.appendingPathComponent("\(id)/status")
+        let url = baseURL.appendingPathComponent("/\(id)/status")
         var request = URLRequest(url: url)
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -70,14 +70,14 @@ final class TimerRepository: TimerRepositoryProtocol {
     }
 
     func getTimerStatus(id: Int) async throws -> TimerStatus {
-        let url = baseURL.appendingPathComponent("\(id)/status")
+        let url = baseURL.appendingPathComponent("/\(id)/status")
         let (data, response) = try await session.data(from: url)
         try validate(response: response)
         return try jsonDecoder.decode(TimerStatus.self, from: data)
     }
 
     func deleteTimer(id: Int) async throws {
-        let url = baseURL.appendingPathComponent("\(id)")
+        let url = baseURL.appendingPathComponent("/\(id)")
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
 
