@@ -61,7 +61,6 @@ struct HomeView: View {
         .padding(.horizontal, 24)
         .padding(.bottom, 18)
         
-        ScrollView {
           Image("mainCharactor_1")
             .resizable()
             .frame(width: 120, height: 120)
@@ -99,7 +98,7 @@ struct HomeView: View {
                 .padding(.vertical, 16)
             }
           }
-          .frame(width: 200, height: 56)
+          .frame(maxWidth: 200, maxHeight: 56)
           .background(
             LinearGradient(
               stops: [
@@ -131,7 +130,7 @@ struct HomeView: View {
             .frame(height: 400)
           
           Spacer()
-        }
+        
         
       
       }
