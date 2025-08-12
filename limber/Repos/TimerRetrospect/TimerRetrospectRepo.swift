@@ -31,7 +31,7 @@ struct TimerRetrospectResponseDto: Decodable {
 // MARK: - API Client
 
 struct TimerRetrospectAPI {
-  private let baseURL: URL = .init(string: "http://3.35.146.79:8888")!
+    private let baseURL: URL = URLManager.baseURL
     private let session: URLSession
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()

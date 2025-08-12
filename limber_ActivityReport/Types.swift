@@ -6,6 +6,20 @@
 //
 
 import Foundation
+
+
+struct TimerOnceDecoder: Codable {
+    let success: Bool
+    let data: TimerResponseDto
+    let error: String?
+}
+
+struct TimerArrayDecoder: Codable {
+    let success: Bool
+    let data: TimerResponseDto
+    let error: String?
+}
+
 struct TimerStatusUpdateDto: Codable {
     let status: TimerStatus
 }
@@ -16,10 +30,10 @@ enum TimerRepositoryError: Error {
     case httpError(code: Int)
 }
 enum RepeatCycleCode: String, Codable {
-    case every   = "EVERY"
-    case weekday = "WEEKDAY"
-    case weekend = "WEEKEND"
-  case none = "NONE"
+    case EVERY   = "EVERY"
+    case WEEKDAY = "WEEKDAY"
+    case WEEKEND = "WEEKEND"
+  case NONE = "NONE"
 }
 
 enum TimerStatus: String, Codable {

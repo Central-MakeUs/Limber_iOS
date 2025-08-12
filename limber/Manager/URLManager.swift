@@ -10,8 +10,6 @@ import Foundation
 
 
 class URLManager {
-  
-  
-  static let baseURL = URL(string: "https://3.35.146.79:8888")!
+  static let baseURL = URL(string: "http://3.35.146.79:8888")!
     
 }

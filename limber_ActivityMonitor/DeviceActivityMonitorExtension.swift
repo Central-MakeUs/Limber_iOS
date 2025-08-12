@@ -53,7 +53,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     }
     SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
 
-      let focusSession = FocusSessionManager.shared.loadFocusSessions()
+    let focusSession = TimerSharedManager.shared.loadFocusSessions()
     NSLog("focusSesssion ::: \(focusSession)")
         if let idx = focusSession.map({ $0.id.description }).firstIndex(of: activity.rawValue) {
           let today = Date()
@@ -61,7 +61,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
           let weekdayNumber = calendar.component(.weekday, from: today)
           if focusSession[idx].getDays().contains("\(weekdayNumber)") {
             NSLog("fddccc::::focusSession[idx] \(focusSession[idx])")
-            FocusSessionManager.shared.saveTimeringSession(focusSession[idx])
+            TimerSharedManager.shared.saveTimeringSession(focusSession[idx])
           }
           
         }
@@ -85,7 +85,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     UNUserNotificationCenter.current().add(request)
     
     SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
-    FocusSessionManager.shared.deleteTimerSession(timerSessionId: 0)
+    TimerSharedManager.shared.deleteTimerSession(timerSessionId: 0)
     
     //        defaults?.set(true, forKey: "changeView")
     //

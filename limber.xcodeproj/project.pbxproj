@@ -117,8 +117,9 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/Styles/LabelStyle.swift,
 				FocusSession.swift,
-				Manager/FocusSessionManager.swift,
+				Manager/TimerSharedManager.swift,
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
 		};
@@ -127,6 +128,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/Styles/LabelStyle.swift,
 				FocusSession.swift,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
@@ -136,6 +138,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/Styles/LabelStyle.swift,
 				FocusSession.swift,
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
@@ -162,11 +165,13 @@
 				"Customs/Extension/VIew+.swift",
 				"GoogleService-Info.plist",
 				Info.plist,
+				Manager/TimerSharedManager.swift,
 				"OnBoarding/나중.swift",
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
 				Repos/Timer/TimerDto.swift,
+				Repos/Timer/TimerRepository.swift,
 				Repos/Timer/Types.swift,
 				View/HomeView.swift,
 				View/Laboratory/LabView.swift,
@@ -179,6 +184,7 @@
 				View/Retrospective/RetrospectiveView.swift,
 				View/RootView.swift,
 				View/Sheets/AlertSheet.swift,
+				View/Sheets/Block/BlockAppSheet.swift,
 				View/Sheets/ScheduleExSheet/BottomSheet700H/BottomSheet4320H.swift,
 				View/Sheets/ScheduleExSheet/RepeatViews/RepeatSelectorView.swift,
 				View/Sheets/ScheduleExSheet/RepeatViews/RepeatView.swift,
@@ -188,6 +194,7 @@
 				View/Timer/CellChecker.swift,
 				View/Timer/TimerView.swift,
 				View/UnlockReasonView.swift,
+				ViewModel/HomeVM.swift,
 				ViewModel/ScheduleExVM.swift,
 				ViewModel/TimerVM.swift,
 			);

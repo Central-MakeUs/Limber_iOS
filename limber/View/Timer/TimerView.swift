@@ -10,7 +10,6 @@ import _SwiftData_SwiftUI
 import DeviceActivity
 
 struct TimerView: View {
-  @Query var sessions: [FocusSession]
   @Environment(\.modelContext) private var modelContext
   
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
@@ -74,6 +73,9 @@ struct TimerView: View {
             
           } else {
             setting
+                  .onAppear {
+                      timerVM.onAppear()
+                  }
           }
           
           
@@ -227,7 +229,7 @@ struct TimerView: View {
         if !timerVM.isEdit {
           Text("진행 예정인 실험")
             .font(.suitHeading3Small)
-          Text("\(sessions.count)")
+            Text("\(timerVM.timers.count)")
             .foregroundStyle(.limberPurple)
             .font(.suitHeading3Small)
           Spacer()
@@ -250,7 +252,7 @@ struct TimerView: View {
       ZStack(alignment: .bottomTrailing) {
         ScrollView {
           VStack(spacing: 12) {
-            ForEach(sessions, id: \.id) { model in
+            ForEach(timerVM.timers, id: \.id) { model in
               HStack(alignment: .top) {
                 if timerVM.isEdit {
                   CellChecker(timerVM: timerVM, model: model, action: {
@@ -263,28 +265,28 @@ struct TimerView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
-                  Text("\(model.focusTitle)")
+                    Text("\(model.focusTypeId )")
                     .font(Font.suitBody2)
                     .frame(width: 49, height: 28)
                     .background(
-                      model.isOn
+                        model.status != .ready
                       ? Color.LimerLightPurple
                       : Color.gray200)
                     .foregroundStyle(
-                      model.isOn
+                        model.status != .ready
                       ? Color.LimberPurple
                       : Color.gray500)
                     .cornerRadius(100)
                     .padding(.bottom, 12)
                   
-                  Text("\(model.name)")
+                  Text("\(model.title)")
                     .lineLimit(2)
                     .padding(.bottom, 6)
-                    .foregroundStyle(model.isOn
+                    .foregroundStyle(model.status != .ready
                                      ? Color.gray800
                                      : Color.gray600)
-                  Text("\(model.repeatType) \(model.startTime)-\(model.endTime)")
-                    .foregroundStyle(model.isOn
+                  Text("\(model.repeatDays) \(model.startTime)-\(model.endTime)")
+                    .foregroundStyle(model.status != .ready
                                      ? Color.gray600
                                      : Color.gray400)
                 }
@@ -292,7 +294,7 @@ struct TimerView: View {
                 if !timerVM.isEdit {
                   
                   Toggle("", isOn: Binding(
-                    get: { model.isOn },
+                    get: { model.status != .ready },
                     set: { newValue in
                       toggleChanged(id: model.id, newValue: newValue)
                     }
@@ -403,36 +405,36 @@ struct TimerView: View {
   
   
   //TODO: 백엔드 도입 후 다시 ViewModel 로 이동
-  func toggleChanged(id: PersistentIdentifier, newValue: Bool) {
-    if let index = sessions.firstIndex(where: { $0.id == id }) {
-      sessions[index].isOn = newValue
-      do {
-        let deviceActivityCenter = DeviceActivityCenter()
-
-        if !newValue {
-          deviceActivityCenter.stopMonitoring([.init(sessions[index].id.description)])
-        } else {
-          let intervalStart = TimeManager.shared.timeStringToDateComponents(sessions[index].startTime) ?? DateComponents()
-          let intervalEnd = TimeManager.shared.timeStringToDateComponents(sessions[index].endTime) ?? DateComponents()
-          try deviceActivityCenter.startMonitoring(.init(sessions[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
-        }
-    
-      } catch {
-        print("err \(error)")
-      }
-    }
+  func toggleChanged(id: Int, newValue: Bool) {
+//    if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
+//        timerVM.timers[index]. = newValue
+//      do {
+//        let deviceActivityCenter = DeviceActivityCenter()
+//
+//        if !newValue {
+//          deviceActivityCenter.stopMonitoring([.init(sessions[index].id.description)])
+//        } else {
+//          let intervalStart = TimeManager.shared.timeStringToDateComponents(sessions[index].startTime) ?? DateComponents()
+//          let intervalEnd = TimeManager.shared.timeStringToDateComponents(sessions[index].endTime) ?? DateComponents()
+//          try deviceActivityCenter.startMonitoring(.init(sessions[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
+//        }
+//    
+//      } catch {
+//        print("err \(error)")
+//      }
+//    }
   }
   
   
   func allCheckerTapped() {
     timerVM.isAllChecker.toggle()
-    if timerVM.isAllChecker {
-      _ = sessions.map {
-        timerVM.checkedModels.insert($0)
-      }
-    } else {
-      timerVM.checkedModels.removeAll()
-    }
+//    if timerVM.isAllChecker {
+//      _ = sessions.map {
+//        timerVM.checkedModels.insert($0)
+//      }
+//    } else {
+//      timerVM.checkedModels.removeAll()
+//    }
   }
   
 }

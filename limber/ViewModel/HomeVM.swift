@@ -25,7 +25,7 @@ class HomeVM: ObservableObject {
     
     
     
-    let sessions =  FocusSessionManager.shared.loadFocusSessions()
+    let sessions =  TimerSharedManager.shared.loadFocusSessions()
     
     if let isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) {
       self.isTimering = isTimering

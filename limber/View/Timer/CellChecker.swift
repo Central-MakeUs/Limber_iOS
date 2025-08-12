@@ -10,7 +10,7 @@ import SwiftUI
 struct CellChecker: View {
   @ObservedObject var timerVM: TimerVM
   
-  let model: FocusSession
+  let model: TimerResponseDto
   var action: () -> Void
   var body: some View {
     // 체크

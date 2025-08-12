@@ -131,7 +131,7 @@ struct BlockAppsSheet: View {
             let endTime = TimeManager.shared.formatter.string(from: endDate)
             let dto = TimerNowDto(focusTypeId: self.focusTypeId, startTime: startTime, endTime:           endTime)
             do {
-              FocusSessionManager.shared.saveTimeringSession(dto)
+              TimerSharedManager.shared.saveTimeringSession(dto)
               try deviceActivityCenter.startMonitoring(.init("0") , during: schedule)
             } catch {
               print("err \(error)")
@@ -208,16 +208,6 @@ class ClearBackgroundView: UIView {
       return
     }
     parentView.backgroundColor = .clear
-  }
-}
-struct iconLabelStyle: LabelStyle {
-  func makeBody(configuration: Configuration) -> some View {
-    configuration.icon
-  }
-}
-struct textLabelStyle: LabelStyle {
-  func makeBody(configuration: Configuration) -> some View {
-    configuration.title
   }
 }
 

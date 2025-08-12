@@ -16,6 +16,9 @@ import DeviceActivity
 
 
 class ScheduleExVM: ObservableObject {
+    
+    var timerRepository = TimerRepository()
+    
   private var cancellables = Set<AnyCancellable>()
   
   @Published var textFieldName: String = ""
@@ -49,6 +52,7 @@ class ScheduleExVM: ObservableObject {
   //MARK: RepeatView
   @Published var repeatOptions = ["매일", "평일", "주말"]
   @Published var selectedDays: Set<String> = []
+    
   @Published var weekdays = ["월", "화", "수", "목", "금", "토", "일"]
   @Published var selectedOption: String? = nil
   
@@ -93,8 +97,9 @@ class ScheduleExVM: ObservableObject {
         selectedDays.removeAll()
         if let newValue {
           for val in daysDic[newValue]! {
-            selectedDays.insert(weekdays[val])
+              selectedDays.insert(weekdays[val])
           }
+
         }
         
       }
@@ -114,7 +119,7 @@ class ScheduleExVM: ObservableObject {
   }
   
   func on700() {
-    self.allTime[2] = selectedDays.reduce("") { $0 + " " + $1 }
+      self.allTime[2] = weekdays.filter { selectedDays.contains($0) }.reduce("") { $0 + " " + $1 }
     heights = [.height(700), .height(432)]
     detents = .height(700)
     
@@ -171,6 +176,8 @@ class ScheduleExVM: ObservableObject {
   
   func repeatPicked() {
     allTime[2] = "\(repeatTime)"
+      
+
   }
   
   func goBack700H() {
@@ -199,7 +206,7 @@ class ScheduleExVM: ObservableObject {
       repeats: true)
     
     do {
-      FocusSessionManager.shared.saveTimeringSession(focusSession)
+      TimerSharedManager.shared.saveTimeringSession(focusSession)
       
       try deviceActivityCenter.startMonitoring(.init(focusSession.id.description) , during: schedule)
     } catch {

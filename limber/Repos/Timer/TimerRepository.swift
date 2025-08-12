@@ -9,7 +9,7 @@
 import Foundation
 protocol TimerRepositoryProtocol {
     func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto
-    func getUserTimers(userId: Int) async throws -> [TimerResponseDto]
+    func getUserTimers(userId: String) async throws -> [TimerResponseDto]
     func getTimer(by id: Int) async throws -> TimerResponseDto
     func updateTimerStatus(id: Int, dto: TimerStatusUpdateDto) async throws -> TimerResponseDto
     func getTimerStatus(id: Int) async throws -> TimerStatus
@@ -17,7 +17,7 @@ protocol TimerRepositoryProtocol {
 }
 
 final class TimerRepository: TimerRepositoryProtocol {
-  private let baseURL = URLManager.baseURL
+    private let baseURL = URLManager.baseURL.appendingPathComponent("/api/timers")
     private let session: URLSession
     private let jsonDecoder: JSONDecoder
     private let jsonEncoder: JSONEncoder
@@ -33,21 +33,27 @@ final class TimerRepository: TimerRepositoryProtocol {
     }
 
     func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto {
-        var request = URLRequest(url: baseURL)
+        let url = baseURL.appendingPathComponent("")
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try jsonEncoder.encode(dto)
-
+        
         let (data, response) = try await session.data(for: request)
         try validate(response: response)
-        return try jsonDecoder.decode(TimerResponseDto.self, from: data)
+        let timerResponse = try jsonDecoder.decode(TimerOnceDecoder.self, from: data)
+        return timerResponse.data
+
     }
 
-    func getUserTimers(userId: Int) async throws -> [TimerResponseDto] {
+    func getUserTimers(userId: String) async throws -> [TimerResponseDto] {
         let url = baseURL.appendingPathComponent("/user/\(userId)")
         let (data, response) = try await session.data(from: url)
+        
         try validate(response: response)
-        return try jsonDecoder.decode([TimerResponseDto].self, from: data)
+        let timerResponse = try jsonDecoder.decode(TimerArrayDecoder.self, from: data)
+
+        return timerResponse.data
     }
 
     func getTimer(by id: Int) async throws -> TimerResponseDto {

@@ -7,8 +7,8 @@
 
 import Foundation
 
-class FocusSessionManager {
-  static let shared = FocusSessionManager()
+class TimerSharedManager {
+  static let shared = TimerSharedManager()
   
   private init() {
     

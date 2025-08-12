@@ -9,18 +9,18 @@
   import SwiftUI
   import SwiftData
   let weekdayTextToNumber: [String: String] = [
-      "일": "1",
-      "월": "2",
-      "화": "3",
-      "수": "4",
-      "목": "5",
-      "금": "6",
-      "토": "7"
+      "일": "0",
+      "월": "1",
+      "화": "2",
+      "수": "3",
+      "목": "4",
+      "금": "5",
+      "토": "6"
   ]
   struct ScheduleExSheet: View {
+      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-    @Query var sessions: [FocusSession]
     
     @ObservedObject var vm: ScheduleExVM
     var timerRepository = TimerRepository()
@@ -83,7 +83,10 @@
                   let days = vm.selectedDays.compactMap {
                     weekdayTextToNumber[$0]
                   }
-                  let daysText = days.reduce("") { $0 + "," + $1 }
+                    let daysText = days.sorted().joined(separator: ",")
+                       
+                    
+                    
                   let newSession = FocusSession(
                     name: vm.textFieldName,
                     focusTitle: vm.selectedCategory,
@@ -102,21 +105,21 @@
                     }(), isOn: true, days: daysText
                   )
                   
-                  let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+                 
                   
                   Task {
                     do {
-                      let result = try await timerRepository.createTimer(newSession.getRequestDto(userId: userId))
                         
-                      
-//                      let newDto = newSession.getResponseDto()
-//                      let dtos = sessions.map {$0.getResponseDto()} + [newDto]
-//                      FocusSessionManager.shared.saveFocusSessions(dtos)
-//                      
-//                      vm.tapReservingBtn(newDto)
-//                      context.insert(newSession)
+                        let dto =  newSession.getRequestDto(userId: userId)
+                        
+                      let reponseDto = try await timerRepository.createTimer(dto)
+                        
+                        
 //
-//                      dismiss()
+//                      TimerSharedManager.shared.saveFocusSessions(dtos)
+//
+                      vm.tapReservingBtn(reponseDto)
+                      dismiss()
 
                     } catch {
                       print("error::: \(error)")

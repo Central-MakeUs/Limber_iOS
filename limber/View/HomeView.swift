@@ -139,7 +139,7 @@ struct HomeView: View {
       var startTimeStr = ""
       var endTimeStr = ""
       
-      if let session = FocusSessionManager.shared.getTimeringSession() {
+      if let session = TimerSharedManager.shared.getTimeringSession() {
         sessions.forEach {
           if $0.id == session.id {
             startTimeStr = $0.startTime + "00"
@@ -147,7 +147,7 @@ struct HomeView: View {
           }
         }
 
-      } else if let nowTimer = FocusSessionManager.shared.getNowTimer() {
+      } else if let nowTimer = TimerSharedManager.shared.getNowTimer() {
         
         startTimeStr = nowTimer.startTime
         endTimeStr = nowTimer.endTime

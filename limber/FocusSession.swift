@@ -26,7 +26,7 @@ class FocusSession {
   var focusTitleId: Int
   
   init(name: String, focusTitle: String, startTime: String, endTime: String, repeatType: String, isOn: Bool, days: String) {
-    let titleDic: [String: Int] = ["학습": 0,"업무": 1,"회의": 2,"직업": 3,"기타": 4]
+    let titleDic: [String: Int] = ["학습": 1,"업무": 2,"회의": 3,"직업": 4,"기타": 5]
     self.name = name
     self.focusTitle = focusTitle
     self.startTime = startTime
@@ -53,31 +53,28 @@ class FocusSession {
     return formatter.date(from: timeString)
   }
   
-  func timeToDto(_ timeString: String) -> Date? {
-    let parser = DateFormatter()
-    parser.locale = Locale(identifier: "ko_KR") // 한국어 오전/오후 인식
-    parser.dateFormat = "a h시 m분"
-
-    if let date = parser.date(from: timeString) {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "HH:mm" // 24시간제
+    func convertKoreanTimeTo24Hour(_ timeString: String) -> String? {
+        let inputFormatter = DateFormatter()
+        inputFormatter.locale = Locale(identifier: "ko_KR")
+        inputFormatter.dateFormat = "ah시m분"
         
-        let result = formatter.string(from: date)
-        print(result) // 👉 "15:45"
-    } else {
-        print("변환 실패")
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "HH:mm"
+
+        if let date = inputFormatter.date(from: timeString) {
+            return outputFormatter.string(from: date)
+        } else {
+            return nil
+        }
     }
-    return parser.date(from: timeString)
-  }
   
   
-  func getResponseDto() -> TimerResponseDto {
-    return TimerResponseDto(id: self.id, title: self.name, focusTypeId: 1, repeatCycleCode: .every, repeatDays: self.days, startTime: self.startTime, endTime: self.endTime, status: self.isOn ? .running : .ready)
-  }
+//  func getResponseDto() -> TimerResponseDto {
+//      return TimerResponseDto(id: self.id, title: self.name, focusTypeId: 1, repeatCycleCode: .every, repeatDays: self.days, startTime: self.startTime, endTime: self.endTime, status: self.isOn ? .running : .ready)
+//  }
   
   func getRequestDto(userId: String) -> TimerRequestDto {
-    return TimerRequestDto(userId: userId, title: self.name, focusTypeId: focusTitleId, timerCode: .SCHEDULED, repeatCycleCode: .none, repeatDays: self.days, startTime: self.startTime, endTime: self.endTime)
+      return TimerRequestDto(userId: userId, title: self.name, focusTypeId: focusTitleId, timerCode: .SCHEDULED, repeatCycleCode: .NONE, repeatDays: self.days, startTime: convertKoreanTimeTo24Hour(self.startTime) ?? "", endTime: convertKoreanTimeTo24Hour(self.endTime) ?? "")
  
   }
 }

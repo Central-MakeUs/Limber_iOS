@@ -25,14 +25,8 @@ class TimerVM: ObservableObject {
   @Published var selectingM: Int = 0
   @Published var selectedCategory: String = ""
   
-  @Published var checkedModels: Set<FocusSession> = []
-  
-  @Published var timeSelect: [String] = ["시작", "종료", "반복"]
-  @Published var allTime: [String] = [
-    "오후 5시 36분",
-    "오후 10시 32분",
-    "2"]
-  
+  @Published var checkedModels: Set<TimerResponseDto> = []
+
   @Published var changeSheet = false
   @Published var bottomSheetTitle = "시작"
   @Published var isStartTime = false
@@ -45,6 +39,10 @@ class TimerVM: ObservableObject {
   @Published var delAlert = false
   
   @Published var toastOn = false
+    
+    @Published var timers: [TimerResponseDto] = []
+    
+    var timerRepository = TimerRepository()
   
   func focusCategoryTapped(idx: Int) {
     switch idx {
@@ -89,7 +87,19 @@ class TimerVM: ObservableObject {
   //    }
   
   func onAppear() {
+      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+      Task {
+          do {
+              timers = try await self.timerRepository.getUserTimers(userId: userId)
+
+          } catch {
+              
+          }
+      }
+    
+      
     isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) ?? false
+      
   }
   
   func nowStarting(completion: () -> ()) {
