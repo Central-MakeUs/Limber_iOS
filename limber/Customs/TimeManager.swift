@@ -68,7 +68,7 @@ class TimeManager: ObservableObject {
   let formatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "ko_KR")
-    formatter.dateFormat = "ah시m분ss"
+    formatter.dateFormat = "HH:mm:ss"
     return formatter
   }()
   
@@ -121,10 +121,10 @@ class TimeManager: ObservableObject {
     return String(format: "%02d:%02d:%02d", hr, min, sec)
   }
   
-  func timeStringToDateComponents(_ timeString: String) -> DateComponents? {
+  func timeStringToDateComponents(_ timeString: String, dateFormatStr: String = "ah시m분") -> DateComponents? {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "ko_KR")
-    formatter.dateFormat = "ah시m분"
+    formatter.dateFormat = dateFormatStr
     
     guard let date = formatter.date(from: timeString) else {
       return nil
@@ -134,6 +134,15 @@ class TimeManager: ObservableObject {
     return components
   }
   
+
+  
+  //TODO: exension 으로
+  func timeStringToDate(_ timeString: String) -> Date? {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "ko_KR")
+    formatter.dateFormat = "HH:mm"
+    return formatter.date(from: timeString)
+  }
  
   
   

@@ -35,7 +35,7 @@ struct ActivityReport {
   let apps: [AppDeviceActivity]
   
   var focusTotalDuration: TimeInterval
-  var focuses: [FocusSession]
+  var focuses: [TimerModel]
 }
 
 struct AppDeviceActivity: Identifiable {

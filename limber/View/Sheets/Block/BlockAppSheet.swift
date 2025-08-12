@@ -132,7 +132,7 @@ struct BlockAppsSheet: View {
             let dto = TimerNowDto(focusTypeId: self.focusTypeId, startTime: startTime, endTime:           endTime)
             do {
               TimerSharedManager.shared.saveTimeringSession(dto)
-              try deviceActivityCenter.startMonitoring(.init("0") , during: schedule)
+              try deviceActivityCenter.startMonitoring(.init("now") , during: schedule)
             } catch {
               print("err \(error)")
             }

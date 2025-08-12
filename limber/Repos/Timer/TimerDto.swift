@@ -9,13 +9,13 @@ import Foundation
 
 struct TimerRequestDto: Codable {
   let userId: String
-    let title: String
-    let focusTypeId: Int
+  let title: String
+  let focusTypeId: Int
   let timerCode: TimerCode
-    let repeatCycleCode: RepeatCycleCode
-    let repeatDays: String
-    let startTime: String
-    let endTime: String
+  let repeatCycleCode: RepeatCycleCode
+  let repeatDays: String
+  let startTime: String
+  let endTime: String
 }
 
 struct TimerResponseDto: Codable, Hashable {
@@ -26,14 +26,25 @@ struct TimerResponseDto: Codable, Hashable {
     let repeatDays: String
     let startTime: String
     let endTime: String
-    let status: TimerStatus
+    var status: TimerStatus
   
-  func getDays() -> [String] {
-    return repeatDays.components(separatedBy: ",")
+  
+  func getDays() -> String {
+    
+    let days = ["일", "월", "화", "수", "목", "금", "토"]
+
+    return repeatDays.split(separator: ",")
+      .compactMap { Int($0) }
+      .map { days[$0] }
+      .joined(separator: " ")
   }
   func getFocusTitle() -> String {
     let idDic: [Int: String] = [0: "학습",1: "업무", 2: "회의", 3: "직업",4: "기타"]
     return idDic[self.focusTypeId] ?? ""
+  }
+  
+  func toModel() -> TimerModel {
+    return TimerModel(id: self.id, title: self.title, focusTitle: self.getFocusTitle(), startTime: self.startTime, endTime: self.endTime, repeatDays: self.getDays(), repeatCycleCode: self.repeatCycleCode)
   }
 }
 struct LocalTime: Codable {

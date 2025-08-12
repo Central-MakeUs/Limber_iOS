@@ -33,7 +33,7 @@ final class TimerRepository: TimerRepositoryProtocol {
     }
 
     func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto {
-        let url = baseURL.appendingPathComponent("")
+        let url = baseURL
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

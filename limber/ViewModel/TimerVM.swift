@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import SwiftData
+import DeviceActivity
 
 class TimerVM: ObservableObject {
   
@@ -88,10 +89,10 @@ class TimerVM: ObservableObject {
   
   func onAppear() {
       let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-      Task {
+    Task { @MainActor [weak self] in
+      guard let self else {return}
           do {
-              timers = try await self.timerRepository.getUserTimers(userId: userId)
-
+            timers = try await timerRepository.getUserTimers(userId: userId)
           } catch {
               
           }
@@ -110,7 +111,26 @@ class TimerVM: ObservableObject {
         toastOn = true
       }
     }
-
+  }
+  
+  func deleteTimers(action: () -> ()) async {
+    let deviceActivityCenter = DeviceActivityCenter()
+    do {
+      for m in self.checkedModels {
+        try await self.timerRepository.deleteTimer(id: m.id)
+        deviceActivityCenter.stopMonitoring([.init(m.id.description)])
+        TimerSharedManager.shared.deleteTimerSession(timerSessionId: m.id)
+      }
+    } catch {
+      
+    }
+       await MainActor.run {
+      delAlert = false
+      isEdit = false
+      action()
+    }
+  
+    
   }
   
   

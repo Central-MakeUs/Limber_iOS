@@ -23,6 +23,7 @@ class TimerSharedManager {
     return []
   }
   
+  
   func saveFocusSessions(_ sessions: [TimerResponseDto]) {
     let encoder = JSONEncoder()
     if let data = try? encoder.encode(sessions) {
@@ -76,6 +77,12 @@ class TimerSharedManager {
       }
     }
     return nil
+  }
+  
+  func addTimer(dto: TimerResponseDto) {
+    var datas: [TimerResponseDto] = self.loadFocusSessions()
+    datas.append(dto)
+    self.saveFocusSessions(datas)
   }
   
 

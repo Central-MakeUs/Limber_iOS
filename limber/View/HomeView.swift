@@ -12,8 +12,6 @@ import SwiftData
 
 struct HomeView: View {
   @Environment(\.modelContext) private var context
-
-  @Query var sessions: [FocusSession]
   @ObservedObject var homeVM: HomeVM
   @ObservedObject var deviceActivityReportVM = DeviceActivityReportVM()
   @EnvironmentObject var router: AppRouter
@@ -140,13 +138,8 @@ struct HomeView: View {
       var endTimeStr = ""
       
       if let session = TimerSharedManager.shared.getTimeringSession() {
-        sessions.forEach {
-          if $0.id == session.id {
-            startTimeStr = $0.startTime + "00"
-            endTimeStr = $0.endTime + "00"
-          }
-        }
-
+            startTimeStr = session.startTime
+            endTimeStr = session.endTime
       } else if let nowTimer = TimerSharedManager.shared.getNowTimer() {
         
         startTimeStr = nowTimer.startTime

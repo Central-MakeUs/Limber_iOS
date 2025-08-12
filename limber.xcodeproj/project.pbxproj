@@ -118,8 +118,13 @@
 				Assets.xcassets,
 				Colors.xcassets,
 				Customs/Styles/LabelStyle.swift,
-				FocusSession.swift,
+				Customs/TimeManager.swift,
 				Manager/TimerSharedManager.swift,
+				Manager/URLManager.swift,
+				Repos/Timer/TimerDto.swift,
+				Repos/Timer/TimerRepository.swift,
+				Repos/Timer/Types.swift,
+				TimerModel.swift,
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
 		};
@@ -129,7 +134,12 @@
 				Assets.xcassets,
 				Colors.xcassets,
 				Customs/Styles/LabelStyle.swift,
-				FocusSession.swift,
+				Customs/TimeManager.swift,
+				Manager/URLManager.swift,
+				Repos/Timer/TimerDto.swift,
+				Repos/Timer/TimerRepository.swift,
+				Repos/Timer/Types.swift,
+				TimerModel.swift,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
 		};
@@ -139,7 +149,12 @@
 				Assets.xcassets,
 				Colors.xcassets,
 				Customs/Styles/LabelStyle.swift,
-				FocusSession.swift,
+				Customs/TimeManager.swift,
+				Manager/URLManager.swift,
+				Repos/Timer/TimerDto.swift,
+				Repos/Timer/TimerRepository.swift,
+				Repos/Timer/Types.swift,
+				TimerModel.swift,
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
 		};
@@ -165,14 +180,10 @@
 				"Customs/Extension/VIew+.swift",
 				"GoogleService-Info.plist",
 				Info.plist,
-				Manager/TimerSharedManager.swift,
 				"OnBoarding/나중.swift",
 				OnBoarding/AccessScreenTimeView.swift,
 				"OnBoarding/ContentView 2.swift",
 				OnBoarding/OnBoardingView.swift,
-				Repos/Timer/TimerDto.swift,
-				Repos/Timer/TimerRepository.swift,
-				Repos/Timer/Types.swift,
 				View/HomeView.swift,
 				View/Laboratory/LabView.swift,
 				View/Laboratory/ReportView.swift,
@@ -206,6 +217,20 @@
 				Info.plist,
 			);
 			target = 6076C9F02E09664B0068E676 /* limber */;
+		};
+		6097A12F2E4BA7A000E2A20D /* Exceptions for "Unused" folder in "ShieldConfigurationEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SharedData.swift,
+			);
+			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
+		};
+		6097A1302E4BA7A000E2A20D /* Exceptions for "Unused" folder in "ShieldActionEx" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SharedData.swift,
+			);
+			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
 		};
 		609EF22C2E3121A10029D990 /* Exceptions for "limber_ActivityReport" folder in "limber" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -282,6 +307,8 @@
 			exceptions = (
 				609EF2882E3650A40029D990 /* Exceptions for "Unused" folder in "limber_ActivityMonitor" target */,
 				609EF2822E33E4420029D990 /* Exceptions for "Unused" folder in "limber_ActivityReport" target */,
+				6097A12F2E4BA7A000E2A20D /* Exceptions for "Unused" folder in "ShieldConfigurationEx" target */,
+				6097A1302E4BA7A000E2A20D /* Exceptions for "Unused" folder in "ShieldActionEx" target */,
 			);
 			path = Unused;
 			sourceTree = "<group>";

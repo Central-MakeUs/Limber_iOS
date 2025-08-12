@@ -84,40 +84,38 @@
                     weekdayTextToNumber[$0]
                   }
                     let daysText = days.sorted().joined(separator: ",")
-                       
                     
-                    
-                  let newSession = FocusSession(
-                    name: vm.textFieldName,
+                  let model = TimerModel(
+                    id: -1, title: vm.textFieldName,
                     focusTitle: vm.selectedCategory,
-                    startTime: vm.allTime[0].replacingOccurrences(of: " ", with: ""),
-                    endTime:  vm.allTime[1].replacingOccurrences(of: " ", with: ""),
-                    repeatType: {
-                      if let option = vm.selectedOption, !option.isEmpty {
-                        return option
-                      } else {
-                        var all = ""
-                        _ = vm.selectedDays.map {
-                          all += $0
-                        }
-                        return all
-                      }
-                    }(), isOn: true, days: daysText
-                  )
+                    startTime: vm.allTime[0],
+                    endTime: vm.allTime[1],
+                    repeatDays: daysText,
+                    repeatCycleCode: vm.selectedOptionDic[vm.selectedOption ?? ""] ?? .NONE)
                   
-                 
+//                  (
+//                    name: vm.textFieldName,
+//                    focusTitle: vm.selectedCategory,
+//                    startTime: vm.allTime[0].replacingOccurrences(of: " ", with: ""),
+//                    endTime:  vm.allTime[1].replacingOccurrences(of: " ", with: ""),
+//                    repeatType: {
+//                      if let option = vm.selectedOption, !option.isEmpty {
+//                        return option
+//                      } else {
+//                        var all = ""
+//                        _ = vm.selectedDays.map {
+//                          all += $0
+//                        }
+//                        return all
+//                      }
+//                    }(), isOn: true, days: daysText
+//                  )
                   
                   Task {
                     do {
-                        
-                        let dto =  newSession.getRequestDto(userId: userId)
-                        
+                      let dto =  model.getRequestDto(userId: userId, timerCode: .SCHEDULED)
                       let reponseDto = try await timerRepository.createTimer(dto)
-                        
-                        
-//
-//                      TimerSharedManager.shared.saveFocusSessions(dtos)
-//
+                      TimerSharedManager.shared.addTimer(dto: reponseDto)
                       vm.tapReservingBtn(reponseDto)
                       dismiss()
 
@@ -125,12 +123,7 @@
                       print("error::: \(error)")
                     }
                   }
-                 
-                  
-                  
-                  
                 })
-              
               .padding(20)
             }
             

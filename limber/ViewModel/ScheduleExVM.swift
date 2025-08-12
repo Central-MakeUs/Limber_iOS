@@ -21,6 +21,8 @@ class ScheduleExVM: ObservableObject {
     
   private var cancellables = Set<AnyCancellable>()
   
+  let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND]
+  
   @Published var textFieldName: String = ""
   @Published var selectedCategory: String = ""
   @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
@@ -192,7 +194,7 @@ class ScheduleExVM: ObservableObject {
   
 
   
-  func tapReservingBtn(_ focusSession : TimerResponseDto) {
+  func tapReservingBtn(_ timer : TimerResponseDto) {
     let deviceActivityCenter = DeviceActivityCenter()
     let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
     let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
@@ -206,9 +208,9 @@ class ScheduleExVM: ObservableObject {
       repeats: true)
     
     do {
-      TimerSharedManager.shared.saveTimeringSession(focusSession)
+      TimerSharedManager.shared.saveTimeringSession(timer)
       
-      try deviceActivityCenter.startMonitoring(.init(focusSession.id.description) , during: schedule)
+      try deviceActivityCenter.startMonitoring(.init(timer.id.description) , during: schedule)
     } catch {
       print("err \(error)")
     }

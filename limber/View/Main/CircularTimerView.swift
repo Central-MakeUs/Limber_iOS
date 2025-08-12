@@ -10,8 +10,6 @@ import SwiftUI
 import SwiftData
 
 struct CircularTimerView: View {
-  
-  @Query var sessions: [FocusSession]
   @EnvironmentObject var router: AppRouter
   @Environment(\.dismiss) var dismiss
 

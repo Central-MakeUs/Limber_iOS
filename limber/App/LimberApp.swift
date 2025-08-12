@@ -53,7 +53,6 @@ struct LimberApp: App {
             .environmentObject(appDelegate)
           
         }
-        .modelContainer(for: [FocusSession.self])
         .environmentObject(router)
         .environmentObject(blockVM)
         .environmentObject(timerObserver)

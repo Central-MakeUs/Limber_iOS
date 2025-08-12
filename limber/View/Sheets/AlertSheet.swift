@@ -43,15 +43,12 @@ struct AlertSheet: View {
           .cornerRadius(10)
           
           Button {
-            timerVM.checkedModels.forEach {
-              let deviceActivityCenter = DeviceActivityCenter()
-              deviceActivityCenter.stopMonitoring([.init($0.id.description)])
-              TimerSharedManager.shared.deleteTimerSession(timerSessionId: $0.id)
+            Task {
+              await timerVM.deleteTimers(action: {
+                dismiss()
+              })
             }
-            dismiss()
-            timerVM.delAlert = false
-            timerVM.isEdit = false
-            
+       
           } label: {
             Text("삭제하기")
               .font(.suitHeading3Small)

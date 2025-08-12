@@ -265,7 +265,7 @@ struct TimerView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("\(model.focusTypeId )")
+                    Text("\(model.getFocusTitle() )")
                     .font(Font.suitBody2)
                     .frame(width: 49, height: 28)
                     .background(
@@ -285,7 +285,7 @@ struct TimerView: View {
                     .foregroundStyle(model.status != .ready
                                      ? Color.gray800
                                      : Color.gray600)
-                  Text("\(model.repeatDays) \(model.startTime)-\(model.endTime)")
+                  Text("\(model.getDays()) \(model.startTime)-\(model.endTime)")
                     .foregroundStyle(model.status != .ready
                                      ? Color.gray600
                                      : Color.gray400)
@@ -406,35 +406,35 @@ struct TimerView: View {
   
   //TODO: 백엔드 도입 후 다시 ViewModel 로 이동
   func toggleChanged(id: Int, newValue: Bool) {
-//    if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
-//        timerVM.timers[index]. = newValue
-//      do {
-//        let deviceActivityCenter = DeviceActivityCenter()
-//
-//        if !newValue {
-//          deviceActivityCenter.stopMonitoring([.init(sessions[index].id.description)])
-//        } else {
-//          let intervalStart = TimeManager.shared.timeStringToDateComponents(sessions[index].startTime) ?? DateComponents()
-//          let intervalEnd = TimeManager.shared.timeStringToDateComponents(sessions[index].endTime) ?? DateComponents()
-//          try deviceActivityCenter.startMonitoring(.init(sessions[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
-//        }
-//    
-//      } catch {
-//        print("err \(error)")
-//      }
-//    }
+    if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
+      timerVM.timers[index].status = newValue ? .running : .canceled
+      do {
+        let deviceActivityCenter = DeviceActivityCenter()
+
+        if !newValue {
+          deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
+        } else {
+          let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
+          let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
+          try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
+        }
+    
+      } catch {
+        print("err \(error)")
+      }
+    }
   }
   
   
   func allCheckerTapped() {
     timerVM.isAllChecker.toggle()
-//    if timerVM.isAllChecker {
-//      _ = sessions.map {
-//        timerVM.checkedModels.insert($0)
-//      }
-//    } else {
-//      timerVM.checkedModels.removeAll()
-//    }
+    if timerVM.isAllChecker {
+      _ = timerVM.timers.map {
+        timerVM.checkedModels.insert($0)
+      }
+    } else {
+      timerVM.checkedModels.removeAll()
+    }
   }
   
 }

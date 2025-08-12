@@ -52,12 +52,15 @@ struct TotalActivityScene: DeviceActivityReportScene {
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
       
-//      let focuses = FocusSessionManager.shared.loadFocusSessions().map { FocusSession(name: $0.title, focusTitle: "", startTime: $0.startTime, endTime: $0.endTime, repeatType: $0.repeatCycleCode.rawValue, isOn: $0.status == .running , days: $0.repeatDays) }
+      let models = TimerSharedManager.shared.loadFocusSessions().map { $0.toModel() }
       
-//      var focusTotalDuration = 0.0
-//      focuses.forEach {
-//        focusTotalDuration += $0.totalDuration ?? 0.0
-//      }
+      var focusTotalDuration = 0.0
+      models.forEach {
+        focusTotalDuration += $0.totalDuration ?? 0.0
+      }
+      
+     
+      
       return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: 12, focuses: [])
     }
 }
