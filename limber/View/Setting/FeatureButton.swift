@@ -13,21 +13,26 @@ struct FeatureButton: View {
   let action: () -> ()
   
   var body: some View {
-    
-    Button {
-      action()
-    } label: {
-      VStack(spacing: 8) {
-        Image(icon)
-          .frame(width: 32, height: 32)
-        
-        Text(title)
-          .font(.suitBody2)
-          .foregroundColor(.gray800)
-          .multilineTextAlignment(.center)
+    VStack {
+      Spacer().frame(height: 12)
+
+      Button {
+        action()
+      } label: {
+        VStack(spacing: 8) {
+          Image(icon)
+            .frame(width: 32, height: 32)
+          
+          Text(title)
+            .font(.suitBody2)
+            .foregroundColor(.gray800)
+            .multilineTextAlignment(.center)
+        }
       }
+      .frame(maxWidth: .infinity)
+      Spacer().frame(height: 12)
+
     }
-    .frame(maxWidth: .infinity)
 
   
   }

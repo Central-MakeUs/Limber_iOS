@@ -8,15 +8,11 @@
 import Foundation
 
 
-// MARK: - 공통 RangeRequest (요청 바디)
 struct RangeRequest: Encodable {
     let userId: String
-    /// 예: "2025-08-01T00:00:00"
     let startDate: String
-    /// 예: "2025-08-11T23:59:59"
     let endDate: String
 
-    // 편의 이니셜라이저 (Date → 문자열 포맷 변환)
     init(userId: String, start: Date, end: Date, formatter: DateFormatter = .yyyyMMddTHHmmssKST) {
         self.userId = userId
         self.startDate = formatter.string(from: start)
@@ -24,9 +20,7 @@ struct RangeRequest: Encodable {
     }
 }
 
-// 서버가 LocalDateTime 문자열을 받는다고 가정하여 KST 기준 포맷 제공
 extension DateFormatter {
-    /// "yyyy-MM-dd'T'HH:mm:ss" (KST 고정)
     static let yyyyMMddTHHmmssKST: DateFormatter = {
         let df = DateFormatter()
         df.calendar = Calendar(identifier: .gregorian)
@@ -37,15 +31,9 @@ extension DateFormatter {
     }()
 }
 
-// MARK: - 응답 DTO들 (Decodable)
-
-// (1) 요일별 총 실험 시간
 struct WeekdayActualDto: Decodable {
-    /// 일:0 ~ 토:6
     let weekdayIndex: Int
-    /// 예: "SUNDAY", "MONDAY" (서버 DayOfWeek 문자열 가정)
     let dayOfWeek: String
-    /// 해당 요일의 실제 실험 시간(분)
     let totalActualMinutes: Int
 }
 
@@ -82,6 +70,7 @@ struct FailReasonCountDto: Decodable {
 
 // MARK: - API 클라이언트
 struct TimerHistoryAnalyticsAPI {
+  
     private let baseURL: URL
     private let session: URLSession
     private let encoder: JSONEncoder
@@ -93,7 +82,6 @@ struct TimerHistoryAnalyticsAPI {
         self.session = session
 
         let encoder = JSONEncoder()
-        // 서버가 문자열 날짜를 받으므로 Date 직접 인코딩은 쓰지 않지만 기본 제공
         encoder.outputFormatting = [.withoutEscapingSlashes]
 
         let decoder = JSONDecoder()
@@ -128,7 +116,6 @@ struct TimerHistoryAnalyticsAPI {
         try await post("actual-by-weekday", body: range)
     }
 
-    // (2) /immersion-by-weekday
     func immersionByWeekday(_ range: RangeRequest) async throws -> [WeekdayImmersionDto] {
         try await post("immersion-by-weekday", body: range)
     }

@@ -13,7 +13,7 @@ protocol TimerHistoryRepositoryProtocol {
     func getHistoriesByUserId(_ userId: Int) async throws -> [TimerHistoryResponseDto]
 }
 final class TimerHistoryRepository: TimerHistoryRepositoryProtocol {
-    private let baseURL = URL(string: "https://your.api.server/api/timer-histories")!
+  private let baseURL = URLManager.baseURL.appendingPathComponent("/api/timer-histories")
     private let session: URLSession
     private let jsonDecoder: JSONDecoder
 

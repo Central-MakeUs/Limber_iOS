@@ -9,7 +9,6 @@ import SwiftUI
 struct TooltipBubble: View {
     let text: String
     let buttonFrame: CGRect
-
     let tooltipSize = CGSize(width: 188, height: 58)
 
     var body: some View {
@@ -18,6 +17,7 @@ struct TooltipBubble: View {
                 VStack(spacing: 0) {
                     Image("polygon")
                         .resizable()
+                        .tint(.primaryVivid)
                         .frame(width: 11, height: 11)
                         .offset(y: -(tooltipSize.height / 2))
                 }
@@ -25,10 +25,10 @@ struct TooltipBubble: View {
                     Text(text)
                         .font(.suitBody3)
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                 }
                 .frame(width: tooltipSize.width, height: tooltipSize.height)
-                .background(Color.gray300)
+                .background(Color.primaryVivid)
                 .cornerRadius(4)
             }
             .fixedSize()

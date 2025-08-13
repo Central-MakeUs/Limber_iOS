@@ -53,8 +53,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
       
     }
     else if
-      let endedActivityName = response.notification.request.content.userInfo["endedActivityName"] as? String {
-      self.currentViewId = .retrospective(id: endedActivityName)
+      let id = response.notification.request.content.userInfo["id"] as? String,
+      let historyId = response.notification.request.content.userInfo["historyId"] as? String {
+      self.currentViewId = .retrospective(id: id, historyId: historyId)
     }
     
     

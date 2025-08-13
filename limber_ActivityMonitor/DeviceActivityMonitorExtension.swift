@@ -60,9 +60,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
           let calendar = Calendar.current
           
           let weekdayNumber = calendar.component(.weekday, from: today)
-          NSLog("fddccc::::focusSession[idx] \(focusSession[idx])")
-          NSLog("fddccc::::focusSession[idx] \(focusSession[idx].repeatDays.split(separator: ","))")
-          NSLog("fddccc::::focusSession[idx] \(weekdayNumber)")
+
 
           if focusSession[idx].repeatDays.split(separator: ",").contains("\(weekdayNumber)") {
             NSLog("fddccc::::focusSession[idx] \(focusSession[idx])")
@@ -70,8 +68,6 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
           }
           
         }
-  
-    
   }
   
   override func intervalDidEnd(for activity: DeviceActivityName) {
@@ -85,6 +81,19 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     content.interruptionLevel = .timeSensitive
     content.relevanceScore = 1.0
     content.userInfo = ["endedActivityName":activity.rawValue]
+    
+    Task {
+      do {
+        let id = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+        let timer = TimerRepository()
+        let a = try await timer.getUserTimers(userId: id)
+        NSLog("a::: \(a)")
+      } catch {
+        NSLog("error::: \(error)")
+      }
+      
+    }
+  
     
     let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
     UNUserNotificationCenter.current().add(request)

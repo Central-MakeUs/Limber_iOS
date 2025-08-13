@@ -73,7 +73,8 @@ enum SomeRoute: Hashable {
   case home
   case unlock(token: ApplicationToken)
   case circularTimer
-  case retrospective(id: String)
+  case retrospective(id: String, historyId: String)
+  case focusTypes
 }
 
 

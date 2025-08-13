@@ -64,10 +64,10 @@ class LabVM: ObservableObject {
         )
     ]
     
-    @Published var totalTime: String = ""
-    @Published var weeklyDate: String = ""
-    @Published var averageAttentionTime: String = ""
-    @Published var averageAttentionImmersion: String = ""
+    @Published var totalTime: String = "10시간 20분"
+    @Published var weeklyDate: String = "2025년 06월 23일-29일"
+    @Published var averageAttentionTime: String = "10시간 20분"
+    @Published var averageAttentionImmersion: String = "49%"
     @Published var toggleIsOn: Bool = false
     
     

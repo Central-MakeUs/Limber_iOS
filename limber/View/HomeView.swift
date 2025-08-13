@@ -138,8 +138,8 @@ struct HomeView: View {
       var endTimeStr = ""
       
       if let session = TimerSharedManager.shared.getTimeringSession() {
-            startTimeStr = session.startTime
-            endTimeStr = session.endTime
+            startTimeStr = session.startTime + ":00"
+            endTimeStr = session.endTime + ":00"
       } else if let nowTimer = TimerSharedManager.shared.getNowTimer() {
         
         startTimeStr = nowTimer.startTime

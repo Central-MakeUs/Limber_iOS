@@ -118,3 +118,6 @@ struct LabView: View {
     .coordinateSpace(name: "tooltipArea")
   }
 }
+#Preview {
+  LabView(labVM: LabVM())
+}

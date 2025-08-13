@@ -26,7 +26,7 @@
     var timerRepository = TimerRepository()
     
     @State var showSheet = false
-    @FocusState private var isFocused: Bool  // ← 여기!
+    @FocusState private var isFocused: Bool
     
     var body: some View {
       GeometryReader { _ in

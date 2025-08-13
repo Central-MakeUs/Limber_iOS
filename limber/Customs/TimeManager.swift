@@ -25,7 +25,7 @@ class TimerObserver: ObservableObject {
   var formatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "ko_KR")
-    formatter.dateFormat = "ah시m분ss"
+    formatter.dateFormat = "HH:mm:ss"
     return formatter
   }()
   

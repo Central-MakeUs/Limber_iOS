@@ -41,13 +41,17 @@ struct LimberApp: App {
               case .circularTimer:
                 CircularTimerView()
                   .toolbar(.hidden, for: .navigationBar)
-              case .retrospective(let id):
+              case .retrospective(let id, let historyId):
                 let dto = TimerSharedManager.shared.getFromId(timerSessionId: id)
                 let date = TimeManager.shared.dateFormatter.string(from: .now)
                 let labName = dto?.getFocusTitle() ?? ""
                 let vm = RetrospectiveVM(date: date, labName: labName)
                 RetrospectiveView(vm: vm)
                 
+              case .focusTypes:
+                FocusTypesView()
+                  .toolbar(.hidden, for: .navigationBar)
+
               }
             }
             .environmentObject(appDelegate)

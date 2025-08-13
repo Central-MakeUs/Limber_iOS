@@ -269,11 +269,11 @@ struct TimerView: View {
                     .font(Font.suitBody2)
                     .frame(width: 49, height: 28)
                     .background(
-                        model.status != .ready
+                        model.status == .ON
                       ? Color.LimerLightPurple
                       : Color.gray200)
                     .foregroundStyle(
-                        model.status != .ready
+                        model.status  == .ON
                       ? Color.LimberPurple
                       : Color.gray500)
                     .cornerRadius(100)
@@ -282,11 +282,11 @@ struct TimerView: View {
                   Text("\(model.title)")
                     .lineLimit(2)
                     .padding(.bottom, 6)
-                    .foregroundStyle(model.status != .ready
+                    .foregroundStyle(model.status == .ON
                                      ? Color.gray800
                                      : Color.gray600)
                   Text("\(model.getDays()) \(model.startTime)-\(model.endTime)")
-                    .foregroundStyle(model.status != .ready
+                    .foregroundStyle(model.status == .ON
                                      ? Color.gray600
                                      : Color.gray400)
                 }
@@ -294,9 +294,12 @@ struct TimerView: View {
                 if !timerVM.isEdit {
                   
                   Toggle("", isOn: Binding(
-                    get: { model.status != .ready },
+                    get: { model.status == .ON },
                     set: { newValue in
-                      toggleChanged(id: model.id, newValue: newValue)
+                      
+                      Task {
+                        await toggleChanged(id: model.id, newValue: newValue)
+                      }
                     }
                   ))
                   .labelsHidden()
@@ -405,23 +408,46 @@ struct TimerView: View {
   
   
   //TODO: 백엔드 도입 후 다시 ViewModel 로 이동
-  func toggleChanged(id: Int, newValue: Bool) {
+  func toggleChanged(id: Int, newValue: Bool) async {
+    
     if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
-      timerVM.timers[index].status = newValue ? .running : .canceled
       do {
-        let deviceActivityCenter = DeviceActivityCenter()
+        
+        let result = try await self.timerVM.timerRepository.updateTimerStatus(id: id, dto: TimerStatusUpdateDto(status: timerVM.timers[index].status))
+        
+        timerVM.timers[index].status = result.status
 
-        if !newValue {
+        let deviceActivityCenter = DeviceActivityCenter()
+        
+        if result.status != .ON {
           deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
         } else {
           let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
           let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
           try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
         }
-    
       } catch {
-        print("err \(error)")
+        print("Error ::: ToggleChanged \(error)")
       }
+  
+
+      
+//      timerVM.timers[index].status = newValue ? .running : .canceled
+//      do {
+//        let deviceActivityCenter = DeviceActivityCenter()
+//
+//        
+//        if !newValue {
+//          deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
+//        } else {
+//          let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
+//          let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
+//          try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
+//        }
+//    
+//      } catch {
+//        print("err \(error)")
+//      }
     }
   }
   
