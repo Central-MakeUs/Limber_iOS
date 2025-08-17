@@ -41,7 +41,7 @@ class TimerVM: ObservableObject {
   
   @Published var toastOn = false
     
-    @Published var timers: [TimerResponseDto] = []
+  @Published var timers: [TimerResponseDto] = []
     
     var timerRepository = TimerRepository()
   
@@ -97,8 +97,6 @@ class TimerVM: ObservableObject {
               
           }
       }
-    
-      
     isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) ?? false
       
   }
@@ -112,6 +110,7 @@ class TimerVM: ObservableObject {
       }
     }
   }
+  
   
   func deleteTimers(action: () -> ()) async {
     let deviceActivityCenter = DeviceActivityCenter()
@@ -129,11 +128,7 @@ class TimerVM: ObservableObject {
       isEdit = false
       action()
     }
-  
-    
   }
-  
-  
 }
 struct ToastModifier: ViewModifier {
     @Binding var isPresented: Bool

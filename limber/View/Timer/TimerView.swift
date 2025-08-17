@@ -18,7 +18,7 @@ struct TimerView: View {
   
   @State var showSheet = false
   @State var showModal = false
-  @State var topPick = 1
+  @State var topPick = 0
   
   var body: some View {
     VStack {
@@ -56,15 +56,14 @@ struct TimerView: View {
             if !timerVM.isTimering {
               main
               Spacer()
-              BottomBtn(isEnable: $timerVM.btnEnable, title: "시작하기", action:  {
+              BottomBtn(isEnable: $timerVM.btnEnable, title: "시작하기", action:  { [self] in
                 timerVM.nowStarting(completion: {
                   self.showModal = true
-
-                }                
+                }
                 )
                 
               })
-              .padding(20)
+              .padding( 20)
               .disabled(!timerVM.btnEnable)
             } else {
               alreadyTimer
@@ -73,21 +72,19 @@ struct TimerView: View {
             
           } else {
             setting
-                  .onAppear {
-                      timerVM.onAppear()
-                  }
+              .onAppear {
+                timerVM.onAppear()
+              }
           }
-          
-          
         }
-        .background(Color.gray100)
+        .background(Color.gray50)
 
 
      
     }
     .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "타이머는 15분 이상부터 시작할 수 있습니다.", duration: 2))
     .fullScreenCover(isPresented: $showModal) {
-      BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: timerVM.categorys.firstIndex(of: timerVM.selectedCategory) ?? 0, showModal: $showModal)
+      BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, timerVM: timerVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: (timerVM.categorys.firstIndex(of: timerVM.selectedCategory) ?? 0 ) + 1, showModal: $showModal)
         .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
         .background(Color.black.opacity(0.3))
         .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
@@ -139,13 +136,13 @@ struct TimerView: View {
       Spacer()
         .frame(height: 60)
       HStack {
-        Text("무엇에 집중하고 싶으신가요?")
-          .font(.suitHeading3Small)
+        Spacer()
+        Text("어떤 활동에 집중하고 싶은가요?")
+          .font(.suitHeading3)
           .padding(.horizontal, 20)
-        
         Spacer()
       }
-      ScrollView(.horizontal) {
+      ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 8) {
           ForEach(timerVM.categorys, id: \.self) { text in
             Text(text)
@@ -190,8 +187,9 @@ struct TimerView: View {
         .frame(height: 48)
       
       HStack {
-        Text("얼마나 집중하시겠어요?")
-          .font(.suitHeading3Small)
+        Spacer()
+        Text("얼마동안 집중할까요?")
+          .font(.suitHeading3)
           .padding(.horizontal, 20)
         Spacer()
       }
@@ -217,8 +215,6 @@ struct TimerView: View {
  
     
   }
-  
-  
   //MARK: 예약설정, 예약 설정
   @ViewBuilder
   var setting: some View {
@@ -248,9 +244,11 @@ struct TimerView: View {
         }
         
       }
+      .padding(.horizontal, 20)
       
       ZStack(alignment: .bottomTrailing) {
         ScrollView {
+          Spacer().frame(height: 10)
           VStack(spacing: 12) {
             ForEach(timerVM.timers, id: \.id) { model in
               HStack(alignment: .top) {
@@ -263,14 +261,13 @@ struct TimerView: View {
                     }
                   })
                 }
-                
                 VStack(alignment: .leading, spacing: 0) {
                     Text("\(model.getFocusTitle() )")
                     .font(Font.suitBody2)
                     .frame(width: 49, height: 28)
                     .background(
                         model.status == .ON
-                      ? Color.LimerLightPurple
+                        ? Color.BGDark
                       : Color.gray200)
                     .foregroundStyle(
                         model.status  == .ON
@@ -280,19 +277,20 @@ struct TimerView: View {
                     .padding(.bottom, 12)
                   
                   Text("\(model.title)")
+                    .font(Font.suitHeading3)
                     .lineLimit(2)
                     .padding(.bottom, 6)
                     .foregroundStyle(model.status == .ON
                                      ? Color.gray800
                                      : Color.gray600)
                   Text("\(model.getDays()) \(model.startTime)-\(model.endTime)")
+                    .font(Font.suitBody2)
                     .foregroundStyle(model.status == .ON
                                      ? Color.gray600
                                      : Color.gray400)
                 }
                 Spacer()
                 if !timerVM.isEdit {
-                  
                   Toggle("", isOn: Binding(
                     get: { model.status == .ON },
                     set: { newValue in
@@ -305,18 +303,18 @@ struct TimerView: View {
                   .labelsHidden()
                   .tint(Color.LimberPurple)
                 }
-                
               }
               .frame(maxWidth: .infinity)
               .padding(20)
-              
+              .background {
+                RoundedRectangle(cornerRadius: 10)
+                  .fill(Color.white)
+                  .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 0)
+              }
+              .padding(.horizontal, 20)
             }
-            .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 0)
-            .background(.white)
-            .cornerRadius(10)
           }
         }
-        
         HStack {
           Spacer()
           Button {
@@ -327,12 +325,13 @@ struct TimerView: View {
           }
           .frame(width: 56, height: 56)
         }
-        .padding(.bottom, 40)
+        .padding([.bottom, .trailing], 20)
+        
       }
       
-    }.padding(.horizontal, 20)
+    }
       .sheet(isPresented: $showSheet) {
-        ScheduleExSheet(vm: schedulExVM)
+        ScheduleExSheet(timerVM: timerVM, vm: schedulExVM)
           .presentationDetents(schedulExVM.heights, selection: $schedulExVM.detents)
           .presentationDragIndicator(.hidden)
           .presentationCornerRadius(24)
@@ -360,12 +359,12 @@ struct TimerView: View {
           .frame(width: 16, height: 16)
           .padding(.leading, 12)
         Text("편집하기")
-          .frame(width: 49, height: 20)
+          .frame(height: 20)
           .font(.suitBody2)
           .padding(.trailing, 12)
       }
     }
-    .frame(width: 95, height: 36)
+    .frame(height: 36)
     .foregroundStyle(.gray600)
     .background(.gray200)
     .cornerRadius(100)
@@ -379,7 +378,7 @@ struct TimerView: View {
       } label: {
         HStack {
           Text("삭제")
-            .frame(width: 25, height: 20)
+            .frame(height: 20)
             .font(.suitBody2)
         }
       }
@@ -393,7 +392,7 @@ struct TimerView: View {
       } label: {
         HStack {
           Text("완료")
-            .frame(width: 25, height: 20)
+            .frame(height: 20)
             .font(.suitBody2)
         }
       }
@@ -412,8 +411,7 @@ struct TimerView: View {
     
     if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
       do {
-        
-        let result = try await self.timerVM.timerRepository.updateTimerStatus(id: id, dto: TimerStatusUpdateDto(status: timerVM.timers[index].status))
+        let result = try await self.timerVM.timerRepository.updateTimerStatus(id: id, dto: TimerStatusUpdateDto(status: timerVM.timers[index].status == .OFF ? .ON : .OFF))
         
         timerVM.timers[index].status = result.status
 
@@ -422,32 +420,23 @@ struct TimerView: View {
         if result.status != .ON {
           deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
         } else {
+          
           let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
           let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
+          
+          
           try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
         }
+      } catch TimerRepositoryError.httpError(let code) {
+        if code == 409 {
+//          timerVM.dontReserveToastOn = true
+
+        }
       } catch {
-        print("Error ::: ToggleChanged \(error)")
+        
       }
   
 
-      
-//      timerVM.timers[index].status = newValue ? .running : .canceled
-//      do {
-//        let deviceActivityCenter = DeviceActivityCenter()
-//
-//        
-//        if !newValue {
-//          deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
-//        } else {
-//          let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
-//          let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
-//          try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
-//        }
-//    
-//      } catch {
-//        print("err \(error)")
-//      }
     }
   }
   

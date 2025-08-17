@@ -13,23 +13,13 @@ struct RangeRequest: Encodable {
     let startDate: String
     let endDate: String
 
-    init(userId: String, start: Date, end: Date, formatter: DateFormatter = .yyyyMMddTHHmmssKST) {
+  init(userId: String, start: String, end: String) {
         self.userId = userId
-        self.startDate = formatter.string(from: start)
-        self.endDate = formatter.string(from: end)
+    self.startDate = start
+    self.endDate = end
     }
 }
 
-extension DateFormatter {
-    static let yyyyMMddTHHmmssKST: DateFormatter = {
-        let df = DateFormatter()
-        df.calendar = Calendar(identifier: .gregorian)
-        df.locale = Locale(identifier: "ko_KR")
-        df.timeZone = TimeZone(identifier: "Asia/Seoul")
-        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        return df
-    }()
-}
 
 struct WeekdayActualDto: Decodable {
     let weekdayIndex: Int
@@ -59,26 +49,31 @@ struct TotalImmersionDto: Decodable {
 }
 
 struct FocusDistributionDto: Decodable {
-    let repeatCycleCode: String
-    let totalActualMinutes: Int
+  let focusTypeId: Int
+  let focusTypeName: String
+  let totalActualMinutes: Int
 }
 
 struct FailReasonCountDto: Decodable {
     let failReason: String
     let count: Int
 }
+struct APIResponse<T: Decodable>: Decodable {
+    let success: Bool
+    let data: T
+    let error: String?
+}
+
 
 // MARK: - API 클라이언트
 struct TimerHistoryAnalyticsAPI {
   
-    private let baseURL: URL
+  private let baseURL: URL = URLManager.baseURL
     private let session: URLSession
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
 
-    init(baseURL: URL,
-         session: URLSession = .shared) {
-        self.baseURL = baseURL
+    init(session: URLSession = .shared) {
         self.session = session
 
         let encoder = JSONEncoder()
@@ -112,31 +107,31 @@ struct TimerHistoryAnalyticsAPI {
     }
 
     // (1) /actual-by-weekday
-    func actualByWeekday(_ range: RangeRequest) async throws -> [WeekdayActualDto] {
-        try await post("actual-by-weekday", body: range)
+    func actualByWeekday(_ range: RangeRequest) async throws -> APIResponse<[WeekdayActualDto]> {
+      try await post("actual-by-weekday", body: range)
     }
 
-    func immersionByWeekday(_ range: RangeRequest) async throws -> [WeekdayImmersionDto] {
+    func immersionByWeekday(_ range: RangeRequest) async throws -> APIResponse<[WeekdayImmersionDto]> {
         try await post("immersion-by-weekday", body: range)
     }
 
     // (3) /total-actual
-    func totalActual(_ range: RangeRequest) async throws -> TotalActualDto {
+    func totalActual(_ range: RangeRequest) async throws -> APIResponse<TotalActualDto> {
         try await post("total-actual", body: range)
     }
 
     // (4) /total-immersion
-    func totalImmersion(_ range: RangeRequest) async throws -> TotalImmersionDto {
+    func totalImmersion(_ range: RangeRequest) async throws -> APIResponse<TotalImmersionDto> {
         try await post("total-immersion", body: range)
     }
 
     // (5) /focus-distribution
-    func focusDistribution(_ range: RangeRequest) async throws -> [FocusDistributionDto] {
+    func focusDistribution(_ range: RangeRequest) async throws -> APIResponse<[FocusDistributionDto]> {
         try await post("focus-distribution", body: range)
     }
 
     // (6) /fail-reasons
-    func failReasons(_ range: RangeRequest) async throws -> [FailReasonCountDto] {
+    func failReasons(_ range: RangeRequest) async throws -> APIResponse<[FailReasonCountDto]> {
         try await post("fail-reasons", body: range)
     }
 }

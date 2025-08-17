@@ -15,6 +15,7 @@ struct BlockAppsSheet: View {
   @StateObject var blockVM: BlockVM = BlockVM()
   
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
+  @ObservedObject var timerVM: TimerVM
   
   @State var untilHour: Int
   @State var untilMinute: Int
@@ -24,8 +25,6 @@ struct BlockAppsSheet: View {
   @State private var isEnable = true
   
   @Binding var showModal: Bool
-
-  
   
   
   var body: some View {
@@ -88,7 +87,7 @@ struct BlockAppsSheet: View {
                 .frame(width: 100, height: 76, alignment: .center)
                 .background(Color.gray100)
                 .cornerRadius(8)
-
+                
               }
             }
           }
@@ -121,23 +120,40 @@ struct BlockAppsSheet: View {
           .font(.system(size: 15))
           .padding(.bottom, 8)
         
+        
         BottomBtn(isEnable: $isEnable, title: "시작하기") {
           if let endDate = TimeManager.shared.addTime(hours: self.untilHour, minutes: self.untilMinute), let startDate = TimeManager.shared.addTime(),
              let schedule = createSchedule(addHours: self.untilHour, addMinutes: self.untilMinute)
           {
+            
             let deviceActivityCenter = DeviceActivityCenter()
+            
+            let startTime = TimeManager.shared.HHmmFormatter.string(from: startDate)
+            let endTime = TimeManager.shared.HHmmFormatter.string(from: endDate)
+            
+            let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+            let request = TimerRequestDto(userId: userId, title: "", focusTypeId: self.focusTypeId, timerCode: .IMMEDIATE, repeatCycleCode: .NONE, repeatDays: "", startTime: startTime , endTime: endTime)
+            
+            Task {
+              do {
+                NSLog("request \(request)")
 
-            let startTime = TimeManager.shared.formatter.string(from: startDate)
-            let endTime = TimeManager.shared.formatter.string(from: endDate)
-            let dto = TimerNowDto(focusTypeId: self.focusTypeId, startTime: startTime, endTime:           endTime)
-            do {
-              TimerSharedManager.shared.saveTimeringSession(dto)
-              try deviceActivityCenter.startMonitoring(.init("now") , during: schedule)
-            } catch {
-              print("err \(error)")
+                let reponseDto = try await timerVM.timerRepository.createTimer(request)
+                TimerSharedManager.shared.addTimer(dto: reponseDto)
+                TimerSharedManager.shared.saveTimeringSession(reponseDto)
+                
+                try deviceActivityCenter.startMonitoring(.init(reponseDto.id.description) , during: schedule)
+                
+                timerVM.isTimering = true
+                
+              } catch {
+                print("error::: \(error)")
+              }
+              
             }
+            
           }
-        
+          
           blockVM.setShieldRestrictions()
           
           dismiss()
@@ -161,24 +177,21 @@ struct BlockAppsSheet: View {
       }
   }
   func createSchedule(addHours: Int, addMinutes: Int) -> DeviceActivitySchedule? {
-      let now = Date()
-      let calendar = Calendar.current
-
-      // 현재 시와 분 구함
-      let nowComponents = calendar.dateComponents([.hour, .minute], from: now)
-      let nowHour = nowComponents.hour ?? 0
-      let nowMinute = nowComponents.minute ?? 0
-
-      // 종료 시간 계산
-      var endDate = calendar.date(byAdding: DateComponents(hour: addHours, minute: addMinutes), to: now)!
-      let endComponents = calendar.dateComponents([.hour, .minute], from: endDate)
-
-      // DeviceActivitySchedule 은 DateComponents 로 받음
-      return DeviceActivitySchedule(
-          intervalStart: DateComponents(hour: nowHour, minute: nowMinute),
-          intervalEnd: DateComponents(hour: endComponents.hour, minute: endComponents.minute),
-          repeats: false
-      )
+    let now = Date()
+    let calendar = Calendar.current
+    
+    let nowComponents = calendar.dateComponents([.hour, .minute], from: now)
+    let nowHour = nowComponents.hour ?? 0
+    let nowMinute = nowComponents.minute ?? 0
+    
+    let endDate = calendar.date(byAdding: DateComponents(hour: addHours, minute: addMinutes), to: now)!
+    let endComponents = calendar.dateComponents([.hour, .minute], from: endDate)
+    
+    return DeviceActivitySchedule(
+      intervalStart: DateComponents(hour: nowHour, minute: nowMinute),
+      intervalEnd: DateComponents(hour: endComponents.hour, minute: endComponents.minute),
+      repeats: false
+    )
   }
 }
 

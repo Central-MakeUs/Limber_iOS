@@ -22,13 +22,11 @@ class HomeVM: ObservableObject {
 
   
   func onAppear() {
-    
-    
-    
-    let sessions =  TimerSharedManager.shared.loadFocusSessions()
+
     
     if let isTimering = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.isTimering.key) {
       self.isTimering = isTimering
+      
     }
     if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
       let decoder = JSONDecoder()

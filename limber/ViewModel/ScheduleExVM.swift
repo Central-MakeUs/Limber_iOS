@@ -17,12 +17,13 @@ import DeviceActivity
 
 class ScheduleExVM: ObservableObject {
     
-    var timerRepository = TimerRepository()
-    
+  private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+  private let timerRepository = TimerRepository()
+
   private var cancellables = Set<AnyCancellable>()
   
   let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND]
-  
+    
   @Published var textFieldName: String = ""
   @Published var selectedCategory: String = ""
   @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
@@ -62,6 +63,10 @@ class ScheduleExVM: ObservableObject {
   @Published var scheduleExBtnEnable = false
   @Published var timeBtnEnable = false
   @Published var repeatBtnEnable = false
+  @Published var timesNotEmpty = false
+  
+  @Published var toastOn = false
+  @Published var dontReserveToastOn = false
   
   
   private let daysDic: [String: [Int]] = ["평일": [0,1,2,3,4], "주말": [5,6] , "매일" : [0,1,2,3,4,5,6]]
@@ -69,8 +74,10 @@ class ScheduleExVM: ObservableObject {
   
   //Binding
   init() {
-    $allTime.allSatisfy { !(!$0.isEmpty) }
-      .assign(to: &$scheduleExBtnEnable)
+    
+    $allTime
+        .map { !$0.contains { $0.isEmpty } }
+        .assign(to: &$timesNotEmpty)
     
     $selectedDays
       .map { !$0.isEmpty }
@@ -78,13 +85,14 @@ class ScheduleExVM: ObservableObject {
     
     Publishers.CombineLatest($selectedMinute, $selectedHour)
       .map { m, h in
-        m != 0 || h != 0
+//        m != 0 || h != 0
+        return true
       }
       .assign(to: &$timeBtnEnable)
     
-    Publishers.CombineLatest3($selectedCategory, $textFieldName, $allTime)
+    Publishers.CombineLatest3($selectedCategory, $textFieldName, $timesNotEmpty)
       .map { category, text, allTime in
-        !category.isEmpty && !text.isEmpty && !allTime.isEmpty
+        !category.isEmpty && !text.isEmpty && allTime
       }.assign(to: &$scheduleExBtnEnable)
     
     
@@ -107,7 +115,6 @@ class ScheduleExVM: ObservableObject {
       }
       .store(in: &cancellables)
     
-    //TODO: 시간 쪽 bottomBtn 이랑 월~일 sort
   }
   
   func on432() {
@@ -178,8 +185,6 @@ class ScheduleExVM: ObservableObject {
   
   func repeatPicked() {
     allTime[2] = "\(repeatTime)"
-      
-
   }
   
   func goBack700H() {
@@ -192,9 +197,8 @@ class ScheduleExVM: ObservableObject {
     }
   }
   
-
-  
-  func tapReservingBtn(_ timer : TimerResponseDto) {
+ 
+  func tapReservingBtn(completion: (Int?) -> ()) async -> Bool {
     let deviceActivityCenter = DeviceActivityCenter()
     let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
     let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
@@ -202,19 +206,64 @@ class ScheduleExVM: ObservableObject {
     let intervalStart = TimeManager.shared.timeStringToDateComponents(startTimeStr) ?? DateComponents()
     let intervalEnd = TimeManager.shared.timeStringToDateComponents(endTimeStr) ?? DateComponents()
     
+    
     let schedule = DeviceActivitySchedule(
       intervalStart: intervalStart,
       intervalEnd: intervalEnd,
       repeats: true)
-    
-    do {
-      TimerSharedManager.shared.saveTimeringSession(timer)
-      
-      try deviceActivityCenter.startMonitoring(.init(timer.id.description) , during: schedule)
-    } catch {
-      print("err \(error)")
+    if !isAtLeast15MinutesApart(intervalStart, intervalEnd) {
+      completion(nil)
+      return false
     }
+    
+    let days = selectedDays.compactMap {
+      weekdayTextToNumber[$0]
+    }
+    
+    let daysText = days.sorted().joined(separator: ",")
+    
+    let model = TimerModel(
+      id: -1, title: textFieldName,
+      focusTitle: selectedCategory,
+      startTime: allTime[0],
+      endTime: allTime[1],
+      repeatDays: daysText,
+      repeatCycleCode: selectedOptionDic[selectedOption ?? ""] ?? .NONE)
+    
+      do {
+        let dto =  model.getRequestDto(userId: userId, timerCode: .SCHEDULED)
+        let reponseDto = try await timerRepository.createTimer(dto)
+        
+        TimerSharedManager.shared.addTimer(dto: reponseDto)
+        TimerSharedManager.shared.saveTimeringSession(reponseDto)
+        try deviceActivityCenter.startMonitoring(.init(reponseDto.id.description) , during: schedule)
+        
+        return true
+
+      } catch TimerRepositoryError.httpError(let code) {
+        completion(code)
+        return false
+
+    } catch {
+      return false
+    }
+
+      
+    
   }
+  
+  func isAtLeast15MinutesApart(_ first: DateComponents, _ second: DateComponents) -> Bool {
+      let calendar = Calendar.current
+      
+      guard let date1 = calendar.date(from: first),
+            let date2 = calendar.date(from: second) else {
+          return false
+      }
+      
+      let diff = abs(date1.timeIntervalSince(date2))
+      return diff >= (15 * 60)
+  }
+
   
   
   func checkDays() {

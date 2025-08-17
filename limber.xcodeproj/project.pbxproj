@@ -117,6 +117,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
 				Manager/TimerSharedManager.swift,
@@ -124,6 +125,8 @@
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
 				Repos/Timer/Types.swift,
+				Repos/TimerHistory/TimerHistoryRepository.swift,
+				Repos/TimerHistory/TimerHistoryResponseDto.swift,
 				TimerModel.swift,
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
@@ -133,6 +136,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
 				Manager/URLManager.swift,
@@ -148,6 +152,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				Colors.xcassets,
+				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
 				Manager/URLManager.swift,
@@ -180,21 +185,26 @@
 				"Customs/Extension/VIew+.swift",
 				"GoogleService-Info.plist",
 				Info.plist,
-				"OnBoarding/나중.swift",
-				OnBoarding/AccessScreenTimeView.swift,
-				"OnBoarding/ContentView 2.swift",
-				OnBoarding/OnBoardingView.swift,
+				Repos/TimerHistory/TimerHistoryRepository.swift,
 				View/FocusTypesView.swift,
 				View/HomeView.swift,
 				View/Laboratory/LabView.swift,
+				View/Laboratory/LookBackView.swift,
 				View/Laboratory/ReportView.swift,
+				View/Laboratory/RetrospectEmptyView.swift,
 				View/Laboratory/StopReasonView.swift,
 				View/Laboratory/StudyInsightView.swift,
 				View/Laboratory/StudyProgressRow.swift,
+				View/Laboratory/WeeklyDataView.swift,
+				View/Main/CircularTimerView.swift,
 				View/Main/MainView.swift,
+				View/OnBoarding/AccessScreenTimeView.swift,
+				View/OnBoarding/OnBoardingView.swift,
+				View/OnBoarding/unusedOnBoarding.swift,
 				View/Retrospective/CustomStepSlider.swift,
 				View/Retrospective/RetrospectiveView.swift,
 				View/RootView.swift,
+				View/Setting/SettingView.swift,
 				View/Sheets/AlertSheet.swift,
 				View/Sheets/AutoFocus/AutoFocusSheet.swift,
 				View/Sheets/Block/BlockAppSheet.swift,
@@ -208,6 +218,8 @@
 				View/Timer/TimerView.swift,
 				View/UnlockReasonView.swift,
 				ViewModel/HomeVM.swift,
+				ViewModel/LabVM.swift,
+				ViewModel/RetrospectiveVM.swift,
 				ViewModel/ScheduleExVM.swift,
 				ViewModel/TimerVM.swift,
 			);
@@ -698,7 +710,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -710,7 +722,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -725,7 +737,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -737,7 +749,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldConfigurationEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -753,7 +765,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -765,7 +777,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldActionEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -782,7 +794,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionExRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -794,7 +806,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber.ShieldActionEx;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -932,7 +944,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -942,15 +954,15 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -971,7 +983,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"limber/Preview Content\"";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -981,15 +993,15 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.seungwan.limber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1008,7 +1020,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1020,7 +1032,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seungwan.limber.limber-ActivityMonitor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1037,7 +1049,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1049,7 +1061,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seungwan.limber.limber-ActivityMonitor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1065,7 +1077,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
@@ -1077,7 +1089,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seungwan.limber.limber-ActivityReport";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1092,7 +1104,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
@@ -1104,7 +1116,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.2;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.seungwan.limber.limber-ActivityReport";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

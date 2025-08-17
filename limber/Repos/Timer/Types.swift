@@ -7,6 +7,35 @@
 
 import Foundation
 
+struct TimerAllFetchStatusRequest: Codable {
+  let userId: String
+  let timerCode: String
+  let status: String
+}
+
+struct TimerAllFetchStatusResponse: Codable {
+    let id: Int
+    let title: String
+    let focusTypeId: Int
+    let repeatCycleCode: String
+    let repeatDays: String
+    let startTime: String
+    let endTime: String
+    let status: String
+}
+
+struct TimerFailDecoder: Codable {
+  let success: Bool
+  let data: TimerFailDto
+  let error: String?
+}
+
+struct TimerFailDto: Codable {
+  let timerId: Int
+  let failReason: String
+  
+}
+
 struct TimerOnceDecoder: Codable {
   let success: Bool
   let data: TimerResponseDto
@@ -17,6 +46,23 @@ struct TimerArrayDecoder: Codable {
   let success: Bool
   let data: [TimerResponseDto]
   let error: String?
+}
+
+struct TimerAllFetchStatusDecoder: Codable {
+  let success: Bool
+  let data: TimerAllFetchStatusResponse
+  let error: String?
+}
+
+struct TimerUnlockDecoder: Codable {
+  let success: Bool
+  let data: TimerUnlockDecoderDto
+  let error: String?
+}
+
+struct TimerUnlockDecoderDto: Codable {
+  let timerId: Int
+  let failReason: String
 }
 
 struct TimerStatusUpdateDto: Codable {

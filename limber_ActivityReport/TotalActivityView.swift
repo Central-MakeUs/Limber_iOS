@@ -22,13 +22,18 @@ struct TotalActivityView: View {
         self.focusPer = focusPer
     }
     var body: some View {
-      ZStack {
-        VStack(spacing: 16) {
+      mainViewTopLabel(totalWin: activityReport.totalDuration > activityReport.focusTotalDuration)
+        .background(  activityReport.totalDuration > activityReport.focusTotalDuration ? Color.lightYellow : Color.primayBGNormal)
+        .cornerRadius(100)
+      Spacer()
+        .frame(height: 14)
+      
+        VStack(spacing: 12) {
           HStack {
             VStack(alignment: .leading, spacing: 6) {
               Text("집중한 시간")
-                .font(.suitBody2)
-                .foregroundColor(.limberPurple)
+                .font(.suitBody3)
+                .foregroundColor(.gray600)
               
               Text(activityReport.focusTotalDuration.toString())
                 .font(.suitHeading2)
@@ -37,9 +42,9 @@ struct TotalActivityView: View {
             Spacer()
             VStack(alignment: .trailing, spacing: 6) {
               Text("도파민 노출 시간")
-                .font(.suitBody2)
-                .foregroundColor(.limberOrange)
-              
+                .font(.suitBody3)
+                .foregroundColor(.gray600)
+
               HStack {
                 Spacer()
                 Text(activityReport.totalDuration.toString())
@@ -53,22 +58,29 @@ struct TotalActivityView: View {
           .padding(.horizontal, 24)
           .padding(.top, 20)
           
-          GeometryReader { geometry in
-            HStack(spacing: 0) {
-              Rectangle()
-                .fill(Color.limberPurple)
-                .frame(width: geometry.size.width * (1 - dopaminePer) - 0.001, height: 24)
-                .padding(.trailing, 1)
-              
-              Rectangle()
-                .fill(Color.limberOrange)
-                .frame(width: geometry.size.width * dopaminePer - 0.001, height: 24)
-                .padding(.leading, 1)
+          GeometryReader { geo in
+            let p = min(max(dopaminePer, 0), 1)
+            let leftW  = geo.size.width * (1 - p)
+            let rightW = geo.size.width * p
+            let hasLeft  = leftW  > 0.0
+            let hasRight = rightW > 0.0
+
+            HStack(spacing: (hasLeft && hasRight) ? 2 : 0) {
+              if hasLeft {
+                Color.limberPurple
+                  .frame(width: leftW,  height: 24)
+              }
+              if hasRight {
+                Color.limberOrange
+                  .frame(width: rightW, height: 24)
+              }
             }
-            .cornerRadius(12)
+            .frame(height: 24, alignment: .leading)
+            .mask(RoundedRectangle(cornerRadius: 12, style: .continuous))
           }
           .frame(height: 24)
           .padding(.horizontal, 24)
+          .padding(.bottom, 4)
           
           HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 0) {
@@ -79,22 +91,22 @@ struct TotalActivityView: View {
                   .foregroundStyle(Color.gray600)
                 Spacer()
               }
-              .padding([.vertical, .leading])
+              .padding( .leading)
+              .padding( .vertical, 18)
               
               VStack {
                 VStack(alignment: .leading) {
                   ForEach(
                     activityReport.focuses.sorted {  $0.totalDuration ?? 0.0 > $1.totalDuration ?? 0.0 }.prefix(3), id: \.id ) { model in
-                      ActivityRow(name: model.title , time: (model.totalDuration ?? 0.0).toString(), icon: nil)
+                      ActivityRow(name: model.focusTitle , time: (model.totalDuration ?? 0.0).toString(), icon: nil)
                     }
                 }
                 Spacer()
               }
               .padding(.horizontal)
             }
-            .background(Color.gray200)
+            .background(.gray100)
             .cornerRadius(10)
-            .padding(.leading)
             
             VStack(alignment: .leading, spacing: 0) {
               HStack {
@@ -104,7 +116,8 @@ struct TotalActivityView: View {
                   .foregroundStyle(Color.gray600)
                 Spacer()
               }
-              .padding([.vertical, .leading])
+              .padding( .leading)
+              .padding( .vertical, 18)
               
               VStack {
                 VStack(alignment: .leading) {
@@ -117,12 +130,11 @@ struct TotalActivityView: View {
               }.padding(.horizontal)
               
             }
-            .background(Color.gray200)
+            .background(.gray100)
             .cornerRadius(10)
-            .padding(.trailing)
           }
-          .frame(maxHeight: 140)
-          .padding(.vertical)
+          .frame(maxHeight: 160)
+          .padding(.horizontal, 20)
           //            Button {
           //
           //            } label: {
@@ -136,9 +148,54 @@ struct TotalActivityView: View {
           //            }
           //            .padding()
           
+          Spacer()
+
         }
-        
-      }
+        .background(Color.white)
+        .cornerRadius(12)
+
     }
 
+}
+struct mainViewTopLabel: View {
+  @State var text1: String
+  @State var text2: String
+  @State var totalWin: Bool
+  
+  init(totalWin: Bool) {
+    self.totalWin = totalWin
+    if !totalWin {
+      text1 = "집중 시간"
+      text2 = "이 앞서고 있어요! 계속 이어나가요"
+    } else {
+      text1 = "도파민 노출"
+      text2 = "이 과다해요! 집중을 더 늘려보아요"
+    }
+
+  }
+  
+  var body: some View {
+    HStack(spacing: 0) {
+      Spacer()
+        .frame(width: 12)
+      Image( !totalWin ? "fire" : "dopamineIcon")
+      Spacer()
+        .frame(width: 6)
+      
+      Text(text1)
+        .lineLimit(1)
+        .foregroundStyle(totalWin ? Color(red: 1, green: 0.27, blue: 0.17) : .primaryVivid)
+        .font(.suitBody2)
+
+      Text(text2)
+        .lineLimit(1)
+        .font(.suitBody2)
+      
+      Spacer()
+        .frame(width: 20)
+    }
+    .frame(maxWidth: 350)
+    .frame(height: 44)
+  }
+  
 }

@@ -19,8 +19,6 @@ struct StudyInsightView: View {
                 color: Color.primayBGNormal)
     
   ]
-  
-  
   var body: some View {
     
     VStack(alignment: .leading, spacing: 0) {
@@ -34,41 +32,44 @@ struct StudyInsightView: View {
         Spacer()
       }
       .padding([.top, .bottom])
-      
-      VStack(alignment: .leading, spacing: 24) {
-        VStack(alignment: .leading, spacing: 0) {
-          Text("가장 몰입한 상황은")
-            .font(.suitHeading2)
-            .foregroundColor(.gray800)
-          
-          HStack(spacing: 0) {
-            Text("학습")
-              .font(.suitHeading2)
-              .foregroundColor(.limberPurple)
-            Text("이에요")
+   
+        VStack(alignment: .leading, spacing: 24) {
+          VStack(alignment: .leading, spacing: 0) {
+            Text("가장 몰입한 상황은")
               .font(.suitHeading2)
               .foregroundColor(.gray800)
+            
+            HStack(spacing: 0) {
+              Text(labVM.studyData.first?.title ?? "")
+                .font(.suitHeading2)
+                .foregroundColor(.limberPurple)
+              Text("이에요")
+                .font(.suitHeading2)
+                .foregroundColor(.gray800)
+            }
+            Spacer()
+              .frame(height: 12)
+            Text("전체 집중 시간의 \(labVM.studyPer)%를 차지했어요.")
+              .font(.suitBody2)
+              .foregroundColor(.gray700)
           }
-          Spacer()
-            .frame(height: 12)
-          Text("전체 집중 시간의 50%를 차지했어요.")
-            .font(.suitBody2)
-            .foregroundColor(.gray700)
-        }
-        .padding([.horizontal, .top], 24)
-        
-        VStack(spacing: 20) {
-          ForEach(Array(labVM.studyData.enumerated()), id: \.element.title) { idx, item in
-            StudyProgressRow(item: item, colors: colors[idx])
+          .padding([.horizontal, .top], 24)
+          
+          VStack(spacing: 20) {
+            ForEach(Array(labVM.studyData.enumerated()), id: \.element.title) { idx, item in
+              
+              StudyProgressRow(item: item, colors: colors[idx])
+            }
           }
+          .padding([.horizontal, .bottom] ,24)
+          .padding(.top, 16)
+          
+          
         }
-        .padding([.horizontal, .bottom] ,24)
-        .padding(.top, 16)
-        
-      }
-      .background(Color.white)
-      .cornerRadius(16)
-      .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 2)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 2)
+  
       
       Spacer()
     }

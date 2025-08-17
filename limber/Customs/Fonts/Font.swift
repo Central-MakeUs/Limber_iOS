@@ -27,19 +27,21 @@ extension Font {
   
 }
 extension Font {
-  static var suitDisplay1: Font { .custom("SUIT-SemiBold", size: 40) }
-  static var suitDisplay2: Font { .custom("SUIT-SemiBold", size: 28) }
+  static var suitDisplay1: Font { .custom("SUIT-SemiBold", size: 41) }
+  static var suitDisplay2: Font { .custom("SUIT-SemiBold", size: 29) }
   
-  static var suitHeading1: Font { .custom("SUIT-SemiBold", size: 24) }
-  static var suitHeading2: Font { .custom("SUIT-SemiBold", size: 20) }
-  static var suitHeading3: Font { .custom("SUIT-SemiBold", size: 18) }
-  static var suitHeading3Small: Font { .custom("SUIT-SemiBold", size: 16) }
+  static var suitHeading1: Font { .custom("SUIT-SemiBold", size: 25) }
+  static var suitHeading1_1: Font { .custom("SUIT-SemiBold", size: 23) }
+  
+  static var suitHeading2: Font { .custom("SUIT-SemiBold", size: 21) }
+  static var suitHeading3: Font { .custom("SUIT-SemiBold", size: 19) }
+  static var suitHeading3Small: Font { .custom("SUIT-SemiBold", size: 17) }
   
   
-  static var suitBody1: Font { .custom("SUIT-Medium", size: 16) }
-  static var suitBody2: Font { .custom("SUIT-Medium", size: 14) }
-  static var suitBody2_sb: Font { .custom("SUIT-SemiBold", size: 14) }
-  static var suitBody3: Font { .custom("SUIT-Medium", size: 12) }
+  static var suitBody1: Font { .custom("SUIT-Medium", size: 17) }
+  static var suitBody2: Font { .custom("SUIT-Medium", size: 15) }
+  static var suitBody2_sb: Font { .custom("SUIT-SemiBold", size: 15) }
+  static var suitBody3: Font { .custom("SUIT-Medium", size: 13) }
   
-  static var suitCaption1: Font { .custom("SUIT-Medium", size: 12) }
+  static var suitCaption1: Font { .custom("SUIT-Medium", size: 11) }
 }

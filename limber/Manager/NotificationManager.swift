@@ -30,7 +30,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
            let tokenData = tokenString.data(using: .utf8),
            let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {            
             self.appToken = appToken
-            self.currentViewId = .unlock(token: appToken)
+          
+            self.currentViewId = .unlock
         }
         
         completionHandler()

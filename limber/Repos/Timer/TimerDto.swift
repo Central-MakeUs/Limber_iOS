@@ -39,8 +39,8 @@ struct TimerResponseDto: Codable, Hashable {
       .joined(separator: " ")
   }
   func getFocusTitle() -> String {
-    let idDic: [Int: String] = [0: "학습",1: "업무", 2: "회의", 3: "직업",4: "기타"]
-    return idDic[self.focusTypeId] ?? ""
+    
+    return StaticValManager.titleDic[self.focusTypeId] ?? ""
   }
   
   func toModel() -> TimerModel {
@@ -53,11 +53,4 @@ struct LocalTime: Codable {
     let second: Int
     let nano: Int
     
-}
-
-
-struct TimerNowDto: Codable {
-  let focusTypeId: Int
-  let startTime: String
-  let endTime: String
 }

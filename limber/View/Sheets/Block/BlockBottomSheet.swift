@@ -68,12 +68,12 @@ struct BlockBottomSheet: View {
           .padding(.leading, 12)
         Text("/10")
           .font(.suitHeading3Small)
-          .foregroundStyle(Color.gray600)
+          .foregroundStyle(Color.Gray800)
           .padding(.trailing, 12)
       }
       .frame(minWidth: 56, minHeight: 30)
       .fixedSize()
-      .background(Color.limerLightPurple)
+      .background(Color.bgDark)
       .cornerRadius(100)
       .padding(.leading)
       Spacer()
@@ -89,4 +89,9 @@ struct BlockBottomSheet: View {
   }
   
   
+}
+
+
+#Preview {
+  BlockBottomSheet(isOnboarding: false, vm: BlockVM(), onComplete: {})
 }

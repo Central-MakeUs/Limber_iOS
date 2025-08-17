@@ -8,17 +8,29 @@
 import Foundation
 import SwiftUI
 import ManagedSettings
+import DeviceActivity
 
 struct UnlockReasonView: View {
+  @Environment(\.dismiss) var dismiss
+  @EnvironmentObject var router: AppRouter
+  
   @ObservedObject var blockVM: BlockVM
   
-  private let staticModels: [String] = ["집중 의지가 부족해요","휴식이 필요해요","일정이 빨리 끝났어요","긴급한 상황이 발생했어요","외부의 방해가 있어요"]
+  @State var isSheet = false
   
-  @Environment(\.dismiss) var dismiss
-  @State var token: ApplicationToken
+ 
   
-  @State var checkedModels: Set<String> = []
+  private let staticFailCodes: [String :String] = [FailReason.lackOfFocusIntention.rawValue :"LACK_OF_FOCUS_INTENTION", FailReason.needBreak.rawValue: "NEED_BREAK", FailReason.finishedEarly.rawValue: "FINISHED_EARLY", FailReason.emergency.rawValue: "EMERGENCY", FailReason.externalDisturbance.rawValue: "EXTERNAL_DISTURBANCE" ]
+    
+
+  
+  
+  @State var checkedReason: String = ""
   @State var isEnable: Bool = false
+  
+  var timerId: String
+  
+  
   var body: some View {
     VStack(alignment: .center, spacing: 0) {
       HStack {
@@ -45,21 +57,21 @@ struct UnlockReasonView: View {
         .frame(height: 46)
       
       VStack(spacing: 12) {
-        ForEach(staticModels, id: \.self) { text in
+        ForEach(Array(staticFailCodes.keys), id: \.self) { text in
           
           Button(action: {
-            if checkedModels.contains(text) {
-              checkedModels.remove(text)
+            if checkedReason == text {
+              checkedReason = ""
             } else {
-              checkedModels.insert(text)
+              checkedReason = text
             }
-            isEnable = checkedModels.count > 0
+            isEnable = !checkedReason.isEmpty
           }, label: {
             HStack(spacing: 0) {
               ZStack {
                 Circle()
-                  .fill(checkedModels.contains(text) ? Color.LimberPurple : Color.white)
-                if checkedModels.contains(text) {
+                  .fill(checkedReason == text ? Color.LimberPurple : Color.white)
+                if checkedReason == text {
                   Image(systemName: "checkmark")
                     .foregroundColor(.white)
                 }
@@ -86,11 +98,8 @@ struct UnlockReasonView: View {
             .overlay(
               RoundedRectangle(cornerRadius: 10)
                 .inset(by: 0.5)
-                .stroke(checkedModels.contains(text) ? .limberPurple : .gray300, lineWidth: 1)
-              
+                .stroke(checkedReason == text ? .limberPurple : .gray300, lineWidth: 1)
             )
-            
-            
           })
           
         }
@@ -99,15 +108,99 @@ struct UnlockReasonView: View {
       
       Spacer()
       BottomBtn(isEnable: $isEnable, title: "잠금 풀기", action: {
-        blockVM.removeForShieldRestrictions(appToken: self.token)
-        dismiss()
+        isSheet = true
       })
       .padding()
     }
     .toolbar(.hidden, for: .navigationBar)
+    .fullScreenCover(isPresented: $isSheet ) {
+      ReAskAlertSheet(leftAction: {
+        let repo = TimerRepository()
+        Task {
+          let failReason = staticFailCodes[checkedReason] ?? "NONE"
+          do {
+            try await repo.unlockTimer(timerId: self.timerId, failReason: failReason)
+            let deviceActivityCenter = DeviceActivityCenter()
+            deviceActivityCenter.stopMonitoring()
+            blockVM.removeForShieldRestrictions()
+            isSheet = false
+            router.push(.unlockEndView)
+          } catch {
+            print("error:::\(error)")
+          }
+
+        }
+       
+      }, rightAction: {
+        router.poptoRoot()
+      }, topText: "이대로 잠금을 풀면 실험이 종료돼요", bottomText: "실험을 중단할까요?", leftBtnText: "잠금 풀기", rightBtnText: "실험 유지하기")
+      .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+      .background(Color.black.opacity(0.3))
+      .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+      .ignoresSafeArea(.all)
+    }
   }
 }
 
-//#Preview {
-//    UnlockReasonView()
-//}
+struct UnlockEndView: View {
+  @EnvironmentObject var router: AppRouter
+
+  var body: some View {
+    ZStack {
+      VStack {
+        Image("sadLimber")
+          .resizable()
+          .scaledToFit()
+          .frame(width: 280, height: 280)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      
+      // 2) 위쪽 텍스트
+      VStack(spacing: 8) {
+        Text("아쉽지만 실험을 중단했어요")
+          .font(.suitHeading3)
+        
+        Text("충분한 여유를 가지고\n다음 집중 실험을 준비해봐요")
+          .font(.suitBody2)
+          .foregroundColor(.gray)
+          .multilineTextAlignment(.center)
+      }
+      .padding(.top, 60)
+      .frame(maxHeight: .infinity, alignment: .top)
+      
+      // 3) 아래쪽 버튼
+      HStack(spacing: 12) {
+        Button("화면 닫기") {
+          router.poptoRoot()
+        }
+        .frame(maxWidth: .infinity, maxHeight: 54)
+        .foregroundStyle(.gray800)
+        .background(Color(.primayBGNormal))
+        .cornerRadius(8)
+        .font(.suitHeading3Small)
+        
+        Button("새 타이머 시작") {
+          
+          router.poptoRoot()
+          router.selectedTab = .timer
+          
+        }
+          .frame(maxWidth: .infinity, maxHeight: 54)
+          .background(Color.limberPurple)
+          .foregroundColor(.white)
+          .cornerRadius(8)
+          .font(.suitHeading3Small)
+        
+      }
+      .padding(.horizontal, 20)
+      .padding(.bottom, 32)
+      .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+    .background(Color.white)
+    .toolbar(.hidden, for: .navigationBar)
+
+  }
+}
+#Preview {
+  UnlockEndView()
+}

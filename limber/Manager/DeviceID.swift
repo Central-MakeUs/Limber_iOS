@@ -25,7 +25,6 @@ final class DeviceID {
             return existing
         }
 
-        // 1) 우선순위 예시: IDFV가 있으면 그걸 기반으로, 없으면 랜덤 UUID
         let base = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
         try save(base)
         return base

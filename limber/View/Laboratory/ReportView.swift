@@ -7,11 +7,11 @@
 
 import SwiftUI
 struct ReportView: View {
-    
-    @ObservedObject var labVM: LabVM
+
+  @ObservedObject var labVM: LabVM
     var body: some View {
-        
         ScrollView {
+          if true {
             VStack(alignment: .leading, spacing: 20) {
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -20,7 +20,7 @@ struct ReportView: View {
                     Text("총 실험 시간")
                         .font(.suitBody2)
                         .foregroundColor(.gray600)
-                    Text(labVM.totalTime)
+                    Text(labVM.totalScheduledTimes)
                         .font(.suitHeading1)
                     
                     Spacer()
@@ -32,20 +32,33 @@ struct ReportView: View {
                             .foregroundColor(.gray500)
                         
                         Spacer()
+                      
+                      Button {
+                        labVM.leftChevronTap()
+                      } label : {
+                        Image("leftChevron")
+                      }
+                      .frame(width: 24, height: 24)
+                                          
+                      Button {
+                        labVM.rightChevronTap()
+                      } label : {
+                        Image(labVM.weekCount == 0 ? "rightChevron" : "rightChevron_Black")
+                          .tint(Color.black)
+                      }
+                      .frame(width: 24, height: 24)
                     }
                 }
-                // 막대 그래프
+       
                 WeeklyDataView(labVM: labVM)
                 
                 HStack {
                     Spacer()
-                    
-                    SimpleToggle(leftText: "집중 시간", rightText: "몰입도 ", isOn: $labVM.toggleIsOn)
+                  SimpleToggle(leftText: "집중 시간", rightText: "몰입도 ", isImmersion: $labVM.isImmersion)
                     Spacer()
                 }
                 .padding(.bottom, 12)
                 
-                // 하단 통계 카드
                 HStack(spacing: 16) {
                     HStack {
                         VStack(alignment: .leading, spacing: 8) {
@@ -58,7 +71,7 @@ struct ReportView: View {
                                 .font(.suitBody2)
                                 .foregroundColor(.primaryVivid)
                             
-                            Text(labVM.averageAttentionTime)
+                          Text(labVM.averageAttentionTime)
                                 .foregroundColor(.primaryDark)
                         }
                         .padding()
@@ -79,7 +92,7 @@ struct ReportView: View {
                                 .font(.suitBody2)
                                 .foregroundColor(.primaryVivid)
                             
-                            Text(labVM.averageAttentionImmersion)
+                          Text(labVM.averageAttentionImmersion)
                                 .foregroundColor(.primaryDark)
                             
                         }
@@ -99,95 +112,69 @@ struct ReportView: View {
                 .frame(height: 6)
             
             VStack(alignment: .leading, spacing: 20) {
-                
-                
+              
+              if !labVM.studyData.isEmpty {
                 StudyInsightView(labVM: labVM)
                 
                 Spacer().frame(height: 12)
-                
+              }
+               
+              
+              if !labVM.reasonData.isEmpty {
                 StopReasonView(labVM: labVM)
-                
+              }
             }
             .padding(.horizontal, 20)
             Spacer()
             
+
+          } else {
+            RetrospectEmptyView()
             
+          }
+        
+                       
             
         }
-    }
-}
-struct SegmentedToggle: View {
-    @Binding var selectedIndex: Int
-    private let titles = ["집중 시간", "몰입도"]
-    
-    var body: some View {
-        HStack(spacing: 0) {
-            ForEach(0..<titles.count, id: \.self) { i in
-                Text(titles[i])
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(selectedIndex == i ? .black : .gray)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation(.easeInOut) {
-                            selectedIndex = i
-                        }
-                    }
-            }
-        }
-        .background(Color.gray.opacity(0.2))
-        .clipShape(Capsule())
-        .overlay(
-            GeometryReader { proxy in
-                let width = proxy.size.width / CGFloat(titles.count)
-                RoundedRectangle(cornerRadius: (proxy.size.height-4)/2)
-                    .fill(Color.white)
-                    .frame(width: width-4, height: proxy.size.height-4)
-                    .offset(x: CGFloat(selectedIndex) * width + 2)
-                    .animation(.easeInOut, value: selectedIndex)
-            }
-                .padding(2)
-        )
-        .frame(height: 40)
+   
     }
 }
 struct SimpleToggle: View {
     let leftText: String
     let rightText: String
-    @Binding var isOn: Bool
+    @Binding var isImmersion: Bool
     
     var body: some View {
         HStack(spacing: 4) {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.4)) {
-                    isOn = false
+                  isImmersion = false
                 }
             }) {
                 Text(leftText)
                     .font(.suitBody2)
-                    .foregroundColor(isOn ? .gray500 : .black)
+                    .foregroundColor(isImmersion ? .gray500 : .black)
                     .frame(maxWidth: .infinity)
                     .frame(height: 32)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(isOn ? Color.clear : Color.white)
+                            .fill(isImmersion ? Color.clear : Color.white)
                     )
             }
             
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.4)) {
-                    isOn = true
+                  isImmersion = true
                 }
             }) {
                 Text(rightText)
                     .font(.suitBody2)
-                    .foregroundColor(isOn ? .black : .gray500)
+                    .foregroundColor(isImmersion ? .black : .gray500)
                     .frame(maxWidth: .infinity)
                     .frame(height: 32)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(isOn ? Color.white : Color.clear)
+                            .fill(isImmersion ? Color.white : Color.clear)
                     )
             }
         }

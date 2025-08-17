@@ -52,54 +52,52 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
       }
     }
     SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
-
+    SharedData.defaultsGroup?.set(activity.rawValue, forKey: SharedData.Keys.nowTimerKey.key)
+    
     let focusSession = TimerSharedManager.shared.loadFocusSessions()
-    NSLog("focusSesssion ::: \(focusSession) \(activity.rawValue)")
-        if let idx = focusSession.map({ $0.id.description }).firstIndex(of: activity.rawValue) {
-          let today = Date()
-          let calendar = Calendar.current
-          
-          let weekdayNumber = calendar.component(.weekday, from: today)
-
-
-          if focusSession[idx].repeatDays.split(separator: ",").contains("\(weekdayNumber)") {
-            NSLog("fddccc::::focusSession[idx] \(focusSession[idx])")
-            TimerSharedManager.shared.saveTimeringSession(focusSession[idx])
-          }
-          
-        }
+    if let idx = focusSession.map({ $0.id.description }).firstIndex(of: activity.rawValue) {
+      let today = Date()
+      let calendar = Calendar.current
+      let weekdayNumber = calendar.component(.weekday, from: today)
+      if focusSession[idx].repeatDays.split(separator: ",").contains("\(weekdayNumber)") {
+        TimerSharedManager.shared.saveTimeringSession(focusSession[idx])
+      }
+      
+    }
+    
+    
   }
   
   override func intervalDidEnd(for activity: DeviceActivityName) {
     super.intervalDidEnd(for: activity)
     let store = ManagedSettingsStore(named: .total)
     store.shield.applications = []
-    
     let content = UNMutableNotificationContent()
     content.title = "림버"
     content.body = "타이머가 종료되었어요!\n앱에서 회고를 진행해주세요!"
     content.interruptionLevel = .timeSensitive
     content.relevanceScore = 1.0
-    content.userInfo = ["endedActivityName":activity.rawValue]
-    
+    content.userInfo = ["timerId": activity.rawValue]
+
     Task {
+      NSLog("intervalDidEnd:::")
       do {
-        let id = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-        let timer = TimerRepository()
-        let a = try await timer.getUserTimers(userId: id)
-        NSLog("a::: \(a)")
+        SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
+        TimerSharedManager.shared.deleteTimerSession(timerSessionId: 0)
+        
+        let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
+        try await UNUserNotificationCenter.current().add(request)
       } catch {
-        NSLog("error::: \(error)")
+        NSLog("::: error \(error)")
       }
+    
+      
       
     }
-  
-    
-    let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
-    UNUserNotificationCenter.current().add(request)
-    
-    SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
-    TimerSharedManager.shared.deleteTimerSession(timerSessionId: 0)
+          
+      
+     
+      
     
     //        defaults?.set(true, forKey: "changeView")
     //

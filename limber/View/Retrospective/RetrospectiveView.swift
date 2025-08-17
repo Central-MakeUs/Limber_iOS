@@ -11,21 +11,16 @@ import SwiftUI
 
 struct RetrospectiveView: View {
   @Environment(\.dismiss) var dismiss
-  
   @StateObject var vm: RetrospectiveVM
   
   var body: some View {
     ZStack {
-      Color.primaryDark
-        .ignoresSafeArea()
       Image("background")
         .resizable()
         .ignoresSafeArea()
       
       VStack(spacing: 0) {
-        // 상단 닫기 버튼
         ZStack(alignment: .center) {
-          // 날짜
           Text("\(vm.date) \(vm.labName)실험 회고")
             .font(.suitBody1)
             .foregroundColor(.gray400)
@@ -139,6 +134,8 @@ struct RetrospectiveView: View {
         .padding(20)
         
       }
+      .padding(.top)
+
     }
     .toolbar(.hidden, for: .navigationBar)
     .hideKeyboardOnTap()
@@ -213,9 +210,3 @@ struct RetrospectiveView: View {
 //  }
 //}
 
-
-
-
-#Preview {
-  RetrospectiveView(vm: RetrospectiveVM(date: "", labName: ""))
-}

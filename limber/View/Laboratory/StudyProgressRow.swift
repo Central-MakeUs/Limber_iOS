@@ -7,7 +7,7 @@
 
 import SwiftUI
 struct StudyProgressRow: View {
-    let item: StudyItem
+    let item: RankItem
     let colors: StudyColors
     
     var body: some View {

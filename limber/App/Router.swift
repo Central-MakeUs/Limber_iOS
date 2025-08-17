@@ -71,10 +71,12 @@ extension AppRouter {
 enum SomeRoute: Hashable {
   case main
   case home
-  case unlock(token: ApplicationToken)
+  case unlock
   case circularTimer
-  case retrospective(id: String, historyId: String)
+  case retrospective(id: Int, historyId: Int, date: String, focusType: String)
   case focusTypes
+  case unlockEndView
+  case limberLevelView
 }
 
 

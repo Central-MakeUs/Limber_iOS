@@ -23,7 +23,7 @@ struct BottomBtn: View {
     
     let disabled = LinearGradient(
         stops: [
-            Gradient.Stop(color: .gray600, location: 0.00),
+            Gradient.Stop(color: .gray300, location: 0.00),
         ],
         startPoint: UnitPoint(x: 0, y: 0),
         endPoint: UnitPoint(x: 1, y: 1)
@@ -42,6 +42,7 @@ struct BottomBtn: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
+        .padding(.bottom, 4)
         .disabled(!isEnable)
 
     }

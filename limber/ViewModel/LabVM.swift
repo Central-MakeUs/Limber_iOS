@@ -6,69 +6,153 @@
 //
 
 import Foundation
-
+@MainActor
 class LabVM: ObservableObject {
-    @Published var weeklyData = [
-        (day: "월", value: 5),
-        (day: "화", value: 5),
-        (day: "수", value: 4),
-        (day: "목", value: 5),
-        (day: "금", value: 1),
-        (day: "토", value: 0),
-        (day: "일", value: 0)
-    ]
+  
+  private let historyRepo = TimerHistoryRepository()
+  private let repo = TimerHistoryAnalyticsAPI()
+  private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+  private let studyIcons = ["note", "bag", "book"]
+  private var failReasonIcons = ["firstMedal", "secondMedal", "thirdMedal"]
+  private var totalActualMinutes: Double = 1.0
+  
+  let convertDic = [
+    "LACK_OF_FOCUS_INTENTION": FailReason.lackOfFocusIntention.rawValue,
+    "NEED_BREAK": FailReason.needBreak.rawValue,
+    "FINISHED_EARLY": FailReason.finishedEarly.rawValue,
+    "EMERGENCY": FailReason.emergency.rawValue,
+    "EXTERNAL_DISTURBANCE": FailReason.externalDisturbance.rawValue
+  ]
+  
+  @Published var isImmersion = false
+  
+  @Published var focusTimeWeekly: [(day: String, value: Double)] = [
+    (day: "월", value: 0),
+    (day: "화", value: 0),
+    (day: "수", value: 0),
+    (day: "목", value: 0),
+    (day: "금", value: 0),
+    (day: "토", value: 0),
+    (day: "일", value: 0)
+  ]
+  
+  @Published var immersionWeekly: [(day: String, value: Double)] = [
+    (day: "월", value: 1),
+    (day: "화", value: 2),
+    (day: "수", value: 3),
+    (day: "목", value: 4),
+    (day: "금", value: 5),
+    (day: "토", value: 7),
+    (day: "일", value: 9)
+  ]
+  
+  
+  
+  @Published var histories: [TimerHistoryResponseDto] = []
+  
+  @Published var studyData: [RankItem] = []
+  @Published var reasonData: [RankItem] = []
+  @Published var studyPer: Int = 0
+  @Published var failPer: Int = 0
+  
+  @Published var firstReason: String = ""
+  
+  
+  @Published var totalScheduledTimes: String = ""
+  @Published var weeklyDate: String = ""
+  @Published var averageAttentionTime: String = ""
+  @Published var averageAttentionImmersion: String = ""
+  @Published var totalFailureCount: Double = 1.0
+  @Published var weekCount = 0
+  
+  init() {
+    fetchHistories()
+    Task {
+      await fetchReports()
+    }
+  }
+  
+  func fetchHistories() {
+    Task {
+      do {
+        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange: "ALL", onlyIncompleteRetrospect: false))
+      } catch {
+        print("error:::\(error)")
+      }
+      
+    }
+  }
+  
+  
+  func fetchReports() async {
+    do {
+      let startStr =  TimeManager.shared.weekStartString(for: .now)
+      let endStr =  TimeManager.shared.weekEndString(for: .now)
+      
+      setDate()
+      
+      let reasonData = try await repo.failReasons(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.count > $1.count }).enumerated().map { index, element in
+        self.totalFailureCount += Double(element.count)
+        return element
+       }
+      
     
-    @Published var experiments: [LabExperiment] = [
-        LabExperiment(dateText: "오늘, 1시간 30분", category: "학습", description: "포트폴리오 작업하기", progressText: "20% 집중", iconName: "note", isFaded: false),
-        LabExperiment(dateText: "오늘, 1시간 30분", category: "학습", description: nil, progressText: "20% 집중", iconName: "note", isFaded: false),
-        LabExperiment(dateText: "어제, 1시간 30분", category: "학습", description: "포트폴리오 작업하기", progressText: nil, iconName: "note", isFaded: true),
-        LabExperiment(dateText: "12일 전, 2시간 3분", category: "학습", description: nil, progressText: "회고하기", iconName: "note", isFaded: false)
-    ]
+      self.reasonData = reasonData.enumerated().prefix(3).map { index, element in
+        if index == 0 {
+          self.failPer = Int(Double(element.count) / totalFailureCount * 100)
+          self.firstReason = convertDic[element.failReason] ?? ""
+        }
+        return RankItem(icon: failReasonIcons[index], title: convertDic[element.failReason] ?? "", duration: element.count.description + "회", progress: Double(element.count) / totalFailureCount * 100)
+      }
+      
+      self.studyData  = try await repo.focusDistribution(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.totalActualMinutes > $1.totalActualMinutes }).prefix(3).enumerated().map { index, element in
+        if index == 0 {
+          self.studyPer = Int(Double(element.totalActualMinutes) / self.totalActualMinutes * 100)
+        }
+        return RankItem(icon: studyIcons[index], title: element.focusTypeName, duration: TimeManager.shared.minutesToHourMinuteString(element.totalActualMinutes), progress: Double(element.totalActualMinutes) / self.totalActualMinutes )  }
+      
+      
+      try await repo.actualByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
+        self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60)
+      }
+      
+      try await repo.immersionByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
+        self.immersionWeekly[index == 0 ? immersionWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.ratio) * 24)
+      }
+      
+    } catch {
+      print(error)
+    }
+  }
+  
+  func setDate() {
+    Task {
+      let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
+      let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
+      self.weeklyDate = startStr + "-" + endStr
+      let dto = try await repo.totalImmersion(.init(userId: userId, start: startStr, end: endStr)).data
+      self.totalActualMinutes = Double(dto.totalActualMinutes)
+      self.totalScheduledTimes =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes)
+      self.averageAttentionTime =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes / 7)
+      self.averageAttentionImmersion = (dto.ratio * 100).description + "%"
+    }
     
-    @Published var studyData = [
-        StudyItem(
-            icon: "note",
-            title: "학습",
-            duration: "4시간 12분",
-            progress: 0.8 ),
-        StudyItem(
-            icon: "bag",
-            title: "업무",
-            duration: "3시간 10분",
-            progress: 0.6 ),
-        StudyItem(
-            icon: "book",
-            title: "독서",
-            duration: "2시간",
-            progress: 0.4 )
-    ]
+  }
+  
+  func rightChevronTap() {
+    if weekCount < 0 {
+      weekCount += 1
+      setDate()
+      
+    }
+  }
+  func leftChevronTap() {
+    weekCount -= 1
     
-    @Published var reasonData = [
-        StudyItem(
-            icon: "firstMedal",
-            title: "집중 의지가 부족해요",
-            duration: "4회",
-            progress: 0.8
-        ),
-        StudyItem(
-            icon: "secondMedal",
-            title: "휴식이 필요해요",
-            duration: "3회",
-            progress: 0.6
-        ),
-        StudyItem(
-            icon: "thirdMedal",
-            title: "긴급한 상황이 발생했어요",
-            duration: "1회",
-            progress: 0.2
-        )
-    ]
+    setDate()
     
-    @Published var totalTime: String = "10시간 20분"
-    @Published var weeklyDate: String = "2025년 06월 23일-29일"
-    @Published var averageAttentionTime: String = "10시간 20분"
-    @Published var averageAttentionImmersion: String = "49%"
-    @Published var toggleIsOn: Bool = false
-    
-    
+  }
 }
+
+
+

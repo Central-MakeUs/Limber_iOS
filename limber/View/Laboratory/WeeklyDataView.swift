@@ -13,7 +13,7 @@ struct WeeklyDataView: View {
     var body: some View {
         VStack {
             Chart {
-                ForEach(labVM.weeklyData, id: \.day) { item in
+              ForEach( labVM.isImmersion ? labVM.immersionWeekly : labVM.focusTimeWeekly, id: \.day) { item in
                     BarMark(
                         x: .value("요일", item.day),
                         y: .value("값", item.value),

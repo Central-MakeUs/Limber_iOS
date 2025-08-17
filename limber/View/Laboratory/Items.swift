@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-struct StudyItem {
+struct RankItem {
     let icon: String
     let title: String
     let duration: String

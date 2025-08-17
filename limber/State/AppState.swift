@@ -10,7 +10,6 @@ import ManagedSettings
 
 
 class AppState: ObservableObject {
-    @Published var openSpecialView: Bool = false
-    @Published var appToken: ApplicationToken?
+    @Published var navigateToDetail = false
+    @Published var detailId: Int?
 }
-

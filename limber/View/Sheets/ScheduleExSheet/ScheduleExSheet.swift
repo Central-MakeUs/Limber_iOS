@@ -18,12 +18,12 @@
       "토": "6"
   ]
   struct ScheduleExSheet: View {
-      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+ 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     
+    @ObservedObject var timerVM: TimerVM
     @ObservedObject var vm: ScheduleExVM
-    var timerRepository = TimerRepository()
     
     @State var showSheet = false
     @FocusState private var isFocused: Bool
@@ -54,7 +54,6 @@
               }.frame(height: 24)
               Spacer()
                 .frame(height: 30)
-              
 
               ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
@@ -80,49 +79,23 @@
                 Spacer()
                 
                 BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
-                  let days = vm.selectedDays.compactMap {
-                    weekdayTextToNumber[$0]
-                  }
-                    let daysText = days.sorted().joined(separator: ",")
-                    
-                  let model = TimerModel(
-                    id: -1, title: vm.textFieldName,
-                    focusTitle: vm.selectedCategory,
-                    startTime: vm.allTime[0],
-                    endTime: vm.allTime[1],
-                    repeatDays: daysText,
-                    repeatCycleCode: vm.selectedOptionDic[vm.selectedOption ?? ""] ?? .NONE)
-                  
-//                  (
-//                    name: vm.textFieldName,
-//                    focusTitle: vm.selectedCategory,
-//                    startTime: vm.allTime[0].replacingOccurrences(of: " ", with: ""),
-//                    endTime:  vm.allTime[1].replacingOccurrences(of: " ", with: ""),
-//                    repeatType: {
-//                      if let option = vm.selectedOption, !option.isEmpty {
-//                        return option
-//                      } else {
-//                        var all = ""
-//                        _ = vm.selectedDays.map {
-//                          all += $0
-//                        }
-//                        return all
-//                      }
-//                    }(), isOn: true, days: daysText
-//                  )
-                  
                   Task {
-                    do {
-                      let dto =  model.getRequestDto(userId: userId, timerCode: .SCHEDULED)
-                      let reponseDto = try await timerRepository.createTimer(dto)
-                      TimerSharedManager.shared.addTimer(dto: reponseDto)
-                      vm.tapReservingBtn(reponseDto)
+                    if await vm.tapReservingBtn(completion: { errCode in
+                      if errCode == 409 {
+                        DispatchQueue.main.async {
+                          vm.dontReserveToastOn = true
+                        }
+                      } else if !vm.toastOn {
+                        vm.toastOn = true
+                      }
+                    }) {
+                      timerVM.onAppear()
                       dismiss()
-
-                    } catch {
-                      print("error::: \(error)")
                     }
+                    
                   }
+                
+                  
                 })
               .padding(20)
             }
@@ -135,6 +108,9 @@
       .background(Color.white)
       .cornerRadius(24)
       .hideKeyboardOnTap()
+      .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 시간은 15분 이상부터 설정할 수 있습니다.", duration: 2))
+      .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "해당 시간 동안에 이미 실험이 있어요!", duration: 2))
+
       
       
     }
@@ -150,6 +126,7 @@
           Spacer()
         }
         .padding(.bottom, 20)
+        
         ScrollView(.horizontal) {
           HStack(spacing: 8) {
             ForEach(vm.categorys, id: \.self) { text in
@@ -233,10 +210,11 @@
         }
       }
       .padding(.horizontal)
+      
     }
   }
 
 
   #Preview {
-    ScheduleExSheet(vm: ScheduleExVM())
+    ScheduleExSheet(timerVM: TimerVM(), vm: ScheduleExVM())
   }

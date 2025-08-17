@@ -12,9 +12,10 @@ import SwiftData
 struct CircularTimerView: View {
   @EnvironmentObject var router: AppRouter
   @Environment(\.dismiss) var dismiss
-
   @State var isFinished: Bool = false
   @EnvironmentObject var timer: TimerObserver
+  
+  @State var name: String = ""
 
   
   let gradient = AngularGradient(
@@ -32,14 +33,12 @@ struct CircularTimerView: View {
   )
   
   var progress: Double {
-    
     timer.elapsed / timer.totalTime
   }
   
   var body: some View {
     ZStack {
-      Color.limberPurple
-        .ignoresSafeArea()
+
       Image("background")
         .resizable()
         .ignoresSafeArea()
@@ -123,9 +122,9 @@ struct CircularTimerView: View {
           
           VStack(spacing: 0) {
             
-            Image("mainCharactor_1")
+            Image("timerLimber")
               .resizable()
-              .frame(width: 125, height: 125)
+              .frame(width: 140, height: 140)
             Text(TimeManager.shared
               .timeString(from: timer.totalTime - timer.elapsed))
             .font(.suitDisplay1)
@@ -140,14 +139,14 @@ struct CircularTimerView: View {
           .frame(height: 54)
         HStack(spacing: 0) {
           
-          Label(title: {
-            Text("학습")
-              .font(.suitHeading3Small)
-              .foregroundStyle(.limberPurple)
-          }, icon: {
-            Image("note")
-          })
-          
+//          Label(title: {
+//            Text(name)
+//              .font(.suitHeading3Small)
+//              .foregroundStyle(.limberPurple)
+//          }, icon: {
+//            Image("note")
+//          })
+//          
           if isFinished {
             Text("실험이 종료되었어요!")
               .font(.suitHeading3Small)
@@ -179,29 +178,78 @@ struct CircularTimerView: View {
         Spacer()
           .frame(height: 30)
         
-        Button {
-          router.poptoRoot()
-        } label: {
-          Text("홈으로 가기")
-            .font(.suitHeading3Small)
-            .foregroundStyle(Color.gray800)
-            .frame(maxWidth: .infinity, minHeight: 54)
-            .background(.white)
-            .cornerRadius(10)
-            .padding(.horizontal, 20)
-            .padding(.bottom)
+        
+        HStack(spacing: 12) {
+          Button {
+            router.poptoRoot()
+          } label: {
+            Text("홈으로 가기")
+              .font(.suitHeading3Small)
+              .foregroundStyle(Color.gray800)
+              .frame(maxWidth: .infinity, minHeight: 54)
+              .background(.white)
+              .cornerRadius(10)
+              .padding(.bottom)
+          }
+          
+          
+          if (timer.totalTime - timer.elapsed) == 0 {
+            Button {
+              let historyRepo = TimerHistoryRepository()
+              let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+              let timerId = TimerSharedManager.shared.getHistoryTimerKey() ?? ""
+
+              Task {
+                  do {
+                      if let repo = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId) {
+                          let mmddStr = TimeManager.shared.isoToMMdd(repo.historyDt)
+                          DispatchQueue.main.async {
+                              router.push(.retrospective(
+                                  id: repo.timerId,
+                                  historyId: repo.id,
+                                  date: mmddStr ?? "",
+                                  focusType: repo.focusTypeTitle
+                              ))
+                          }
+                      } else {
+                          DispatchQueue.main.async {
+                              router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                          }
+                      }
+                  } catch {
+                    NSLog("error::: \(error)")
+                      DispatchQueue.main.async {
+                          router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                      }
+                  }
+              }
+              
+            } label: {
+              Text("회고하기")
+                .font(.suitHeading3Small)
+                .foregroundStyle(Color.white)
+                .frame(maxWidth: .infinity, minHeight: 54)
+                .background(.limberPurple)
+                .cornerRadius(10)
+                .padding(.bottom)
+            }
+          }
+        
         }
+        .padding(.horizontal, 20)
+
+   
        
+       
+      }
+      .onAppear {
+        self.isFinished = (timer.totalTime - timer.elapsed) == 0
+
       }
       
     }
+
     
   }
   
-}
-
-struct CircularTimerView_Previews: PreviewProvider {
-  static var previews: some View {
-    CircularTimerView()
-  }
 }

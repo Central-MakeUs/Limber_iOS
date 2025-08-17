@@ -16,52 +16,68 @@ import FirebaseCore
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, ObservableObject {
   
   @Published var currentViewId: SomeRoute?
-  let timerRepo = TimerRepository()
+  
+  @Published var isForeGround: Bool = false
+
+  weak var router: AppRouter?
+
   var appToken: ApplicationToken?
   
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
     UNUserNotificationCenter.current().delegate = self
-    Task {
-      do {
-        let deviceID = try DeviceID.shared.getOrCreate()
-        let timers = try await timerRepo.getUserTimers(userId: deviceID)
-        SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
-        TimerSharedManager.shared.saveFocusSessions(timers)
-      } catch {
-        print("Erorr \(error)")
-      }
+    do {
+      let deviceID = try DeviceID.shared.getOrCreate()
+      SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
+    } catch {
+      
     }
-
-    
-    
-    
-    
     return true
   }
+  
+  
   
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
+
+    if isForeGround {
+      router?.push(.circularTimer)
+      isForeGround = false
+      return
+    }
     
     if let tokenString = response.notification.request.content.userInfo["appToken"] as? String,
        let tokenData = tokenString.data(using: .utf8),
        let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {
       
       self.appToken = appToken
-      self.currentViewId = .unlock(token: appToken)
+      self.currentViewId = .unlock
       
     }
     else if
-      let id = response.notification.request.content.userInfo["id"] as? String,
-      let historyId = response.notification.request.content.userInfo["historyId"] as? String {
-      self.currentViewId = .retrospective(id: id, historyId: historyId)
+      let timerId = response.notification.request.content.userInfo["timerId"] as? String {
+      
+      TimerSharedManager.shared.setHistoryTimer(key: timerId)
+      
+      self.currentViewId = .circularTimer
+    } else {
+      self.currentViewId = .circularTimer
+
     }
     
     
     completionHandler()
   }
-  
-  
-  
+ 
+  func userNotificationCenter(_ center: UNUserNotificationCenter,
+                              willPresent notification: UNNotification,
+                              withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    isForeGround = true
+      if #available(iOS 14.0, *) {
+          completionHandler([.banner, .list, .sound])
+      } else {
+          completionHandler([.alert, .sound])
+      }
+  }
 }

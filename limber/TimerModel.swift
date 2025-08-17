@@ -10,7 +10,7 @@ import SwiftData
 import Foundation
 
 
-struct TimerModel {
+struct TimerModel: Codable {
   var id: Int
   var title: String
   var focusTitle: String

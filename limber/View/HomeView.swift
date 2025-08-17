@@ -4,7 +4,6 @@
 //
 //  Created by 양승완 on 7/12/25.
 //
-
 import SwiftUI
 import DeviceActivity
 import ManagedSettings
@@ -16,53 +15,54 @@ struct HomeView: View {
   @ObservedObject var deviceActivityReportVM = DeviceActivityReportVM()
   @EnvironmentObject var router: AppRouter
   @EnvironmentObject var blockVM: BlockVM
-  @State var showPicker = false
   @EnvironmentObject var timerObserver: TimerObserver
+  @State var showPicker = false
 
   var body: some View {
-    ZStack {
-      Image("mainBackground")
-        .resizable()
-        .ignoresSafeArea()
-        .background(Color.limberPurple)
-  
-      VStack(spacing: 0) {
-        HStack {
-          Image("LIMBER")
-            .foregroundStyle(.limerLightPurple)
+    GeometryReader { geo in
+      let isSmallScreen = geo.size.width < 380
+
+      ZStack {
+        Image("mainBackground")
+          .resizable()
+          .ignoresSafeArea()
+          .background(Color.limberPurple)
+        VStack(spacing: 0) {
+          HStack {
+            Image("LIMBER")
+              .foregroundStyle(.limerLightPurple)
+            Spacer()
+            Button(action: {
+              showPicker = true
+            }) {
+              HStack(spacing: 2) {
+                Image("appAddIcon")
+                Text(homeVM.pickedApps.count.description)
+              }
+              .font(.suitBody2)
+              .foregroundStyle(Color.limerLightPurple)
+              .padding(.horizontal, 12)
+              .padding(.vertical, 6)
+              .background(Color.white.opacity(0.1))
+              .clipShape(Capsule())
+            }
+            //          Button(action: {
+            //
+            //
+            //          }) {
+            //            Image("bell")
+            //              .foregroundColor(.white)
+            //              .padding(.leading, 10)
+            //          }
+          }
+          .padding(.horizontal, 24)
+          
+          Image("Limber_Level1")
+            .resizable()
+            .frame(maxWidth: isSmallScreen ? 140 : 168, maxHeight: isSmallScreen ? 140 : 168)
           
           Spacer()
-          Button(action: {
-            showPicker = true
-          }) {
-            HStack(spacing: 2) {
-              Image("appAddIcon")
-              Text(homeVM.pickedApps.count.description)
-            }
-            .font(.suitBody2)
-            .foregroundStyle(Color.limerLightPurple)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(Color.white.opacity(0.1))
-            .clipShape(Capsule())
-          }
-          
-//          Button(action: {
-//            
-//            
-//          }) {
-//            Image("bell")
-//              .foregroundColor(.white)
-//              .padding(.leading, 10)
-//          }
-        }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 18)
-        
-          Image("mainCharactor_1")
-            .resizable()
-            .frame(width: 120, height: 120)
-          
+            .frame(maxHeight: isSmallScreen ? 8 : 12)
           Button(action: {
             if homeVM.isTimering {
               router.push(.circularTimer)
@@ -81,26 +81,25 @@ struct HomeView: View {
                   .frame(width: 20)
                 Text(TimeManager.shared
                   .timeString(from: timerObserver.totalTime - timerObserver.elapsed))
-                  .foregroundStyle(.white)
-                  .font(.suitHeading3Small)
+                .foregroundStyle(.white)
+                .font(.suitHeading3Small)
                 Spacer()
                   .frame(width: 8)
                 Image("chevron")
                   .foregroundStyle(Color.white)
               }
             } else {
-              Text("실험 시작하기")
+              Text("집중 시작하기")
+                .kerning(-1.2)
                 .font(.suitHeading3Small)
                 .foregroundColor(.white)
-                .padding(.horizontal, 52)
-                .padding(.vertical, 16)
+                .padding(.horizontal,isSmallScreen ? 0 : 52)
             }
           }
-          .frame(maxWidth: 200, maxHeight: 56)
+          .frame(maxWidth: isSmallScreen ? 160: 200, maxHeight: isSmallScreen ? 44: 56)
           .background(
             LinearGradient(
               stops: [
-                
                 Gradient.Stop(color: Color(red: 0.73, green: 0.38, blue: 1), location: 0.45),
                 Gradient.Stop(color: Color(red: 0.51, green: 0.03, blue: 0.82), location: 0.66),
                 Gradient.Stop(color: Color(red: 0.44, green: 0.08, blue: 0.85), location: 1.00),
@@ -111,26 +110,16 @@ struct HomeView: View {
           )
           .clipShape(Capsule())
           
-          HStack {
-            Spacer().frame(maxWidth: 33)
-            mainViewTopLabel()
-              .background(Color.lightYellow)
-              .cornerRadius(100)
-              .padding(.top, 34)
-            Spacer().frame(maxWidth: 33)
-
-          }
-
-     
-          
+          Spacer().frame(maxHeight: isSmallScreen ? 10: 40)
           
           DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
-            .frame(height: 400)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 10)
           
           Spacer()
-        
-        
-      
+          
+        }
       }
     }
     .onAppear {
@@ -138,13 +127,9 @@ struct HomeView: View {
       var endTimeStr = ""
       
       if let session = TimerSharedManager.shared.getTimeringSession() {
-            startTimeStr = session.startTime + ":00"
-            endTimeStr = session.endTime + ":00"
-      } else if let nowTimer = TimerSharedManager.shared.getNowTimer() {
-        
-        startTimeStr = nowTimer.startTime
-        endTimeStr = nowTimer.endTime
-      }
+        startTimeStr = session.startTime.appendingSecondsIfNeeded()
+        endTimeStr = session.endTime.appendingSecondsIfNeeded()
+      } 
       
       if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , let endDate = TimeManager.shared.parseTimeString(endTimeStr) {
         
@@ -170,28 +155,7 @@ struct HomeView: View {
   }
 }
 
-struct mainViewTopLabel: View {
-  @State var text1 = "도파민 노출"
-  @State var text2 = "이 과다해요! 집중을 더 늘려보아요"
-  var body: some View {
-    HStack(spacing: 0) {
-      Spacer()
-        .frame(width: 12)
-      Image("dopamineIcon")
-      Spacer()
-        .frame(width: 6)
-      
-      Text(text1)
-        .foregroundStyle(Color(red: 1, green: 0.27, blue: 0.17))
-      Text(text2)
-        .frame(maxWidth: .infinity)
-        .lineLimit(1)
-      Spacer()
-        .frame(width: 20)
-    }
-    .minimumScaleFactor(0.5)
-    .frame(height: 44)
-    .font(.suitBody2)
-  }
-  
+
+#Preview {
+  HomeView(homeVM: HomeVM())
 }

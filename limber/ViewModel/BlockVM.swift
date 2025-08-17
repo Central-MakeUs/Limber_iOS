@@ -51,7 +51,7 @@ class BlockVM: ObservableObject {
         }
     }
 
-    func removeForShieldRestrictions(appToken: ApplicationToken) {
+    func removeForShieldRestrictions() {
       store.shield.applications = []
       SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.isTimering.key)
       

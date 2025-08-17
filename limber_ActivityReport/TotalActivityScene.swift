@@ -9,7 +9,6 @@ import DeviceActivity
 import SwiftUI
 import Foundation
 import ManagedSettings
-import SwiftData
 
 struct TotalActivityScene: DeviceActivityReportScene {
   
@@ -52,16 +51,15 @@ struct TotalActivityScene: DeviceActivityReportScene {
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
       
-      let models = TimerSharedManager.shared.loadFocusSessions().map { $0.toModel() }
+      let models = TimerSharedManager.shared.getTimerModels()
       
       var focusTotalDuration = 0.0
       models.forEach {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
-      
-     
-      
-      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: 12, focuses: [])
+    
+      let test = [TimerModel(id: 09, title: "학습", focusTitle: "학습", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY),TimerModel(id: 09, title: "", focusTitle: "학습", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY),TimerModel(id: 09, title: "", focusTitle: "", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY)]
+      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: test)
     }
 }
 

@@ -42,15 +42,13 @@ struct MainView: View {
     .tint(Color.primaryDark)
     .onAppear {
       
-      
-      
       let appearance = UITabBarAppearance()
       appearance.configureWithOpaqueBackground()
       appearance.backgroundColor = UIColor.white
       
-      if #available(iOS 15.0, *) {
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-      }
+      
+      UITabBar.appearance().scrollEdgeAppearance = appearance
+
     }
     
     

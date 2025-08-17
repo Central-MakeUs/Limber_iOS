@@ -26,9 +26,9 @@ struct SettingView: View {
         Spacer()
           .frame(height: 30)
         
-        Image("mainCharactor_1")
+        Image("Limber_Level1")
           .resizable()
-          .frame(width: 140, height: 140)
+          .frame(width: 160, height: 160)
         
         HStack(spacing: 0) {
           Spacer()
@@ -44,17 +44,21 @@ struct SettingView: View {
             )
             .padding(.trailing, 8)
           
-          Text("\(vm.charactorName)")
-            .font(.suitHeading2)
-            .foregroundColor(.primary)
-            .frame(height: 30)
-          
-            //TODO: 버튼일때 (추후)
-//          Image("chevron")
-//            .resizable()
-//            .frame(width: 24, height: 24)
-//            .foregroundStyle(Color.gray400)
-          
+          Button {
+            router.push(.limberLevelView)
+          } label: {
+            Text("\(vm.charactorName)")
+              .font(.suitHeading2)
+              .foregroundColor(.primary)
+              .frame(height: 30)
+            
+            Image("chevron")
+              .resizable()
+              .frame(width: 24, height: 24)
+              .foregroundStyle(Color.gray400)
+            
+          }
+     
           Spacer()
         }
         .padding(.horizontal, 20)
@@ -64,16 +68,16 @@ struct SettingView: View {
         
         // 기능 아이콘들
         HStack(spacing: 8) {
-          FeatureButton(
-            icon: "settingNote",
-            title: "집중할 목표",
-            action: {
-              router.push(.focusTypes)
-            }
-          )
-          .frame(width: 106)
-          .background(Color.white)
-          .cornerRadius(8)
+//          FeatureButton(
+//            icon: "settingNote",
+//            title: "집중할 목표",
+//            action: {
+//              router.push(.focusTypes)
+//            }
+//          )
+//          .frame(width: 106)
+//          .background(Color.white)
+//          .cornerRadius(8)
 
 
           FeatureButton(
@@ -85,7 +89,7 @@ struct SettingView: View {
           .frame(width: 106)
           .background(Color.white)
           .cornerRadius(8)
-//
+
 //          FeatureButton(
 //            icon: "settingAI_Coaching",
 //            title: "AI 집중 코칭",
@@ -93,7 +97,9 @@ struct SettingView: View {
 //              
 //            }
 //          )
-//          .frame(maxWidth: .infinity)
+//          .frame(width: 106)
+//          .background(Color.white)
+//          .cornerRadius(8)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 20)
@@ -106,10 +112,10 @@ struct SettingView: View {
         .frame(height: 10)
       // 메뉴 리스트
       VStack(spacing: 0) {
-        MenuRow(title: "림버의 스토리", hasChevron: true)
+//        MenuRow(title: "림버의 스토리", hasChevron: true)
 //        MenuRow(title: "FAQ", hasChevron: true)
-        MenuRow(title: "이용 약관", hasChevron: true)
-        MenuRow(title: "개인 정보 처리 방침", hasChevron: true)
+//        MenuRow(title: "이용 약관", hasChevron: true)
+//        MenuRow(title: "개인 정보 처리 방침", hasChevron: true)
 //        MenuRow(title: "로그아웃", hasChevron: false, isDestructive: true)
 //        MenuRow(title: "회원 탈퇴", hasChevron: false, isDestructive: true)
       }
@@ -125,10 +131,101 @@ struct SettingView: View {
   }
 }
 
+struct LimberLevelView: View {
+  
+  @Environment(\.dismiss) var dismiss
+  
+    struct Level: Identifiable {
+        let id = UUID()
+        let image: String
+        let level: Int
+        let title: String
+      let isNow: Bool
+    }
+    
+    // 더미 데이터 (에셋 이름은 실제로 Assets에 넣어야 함)
+    let levels: [Level] = [
+      Level(image: "Limber_Level1", level: 1, title: "집중 입문가", isNow: true),
+        Level(image: "Limber_Level2", level: 2, title: "집중 탐험가", isNow: false),
+        Level(image: "Limber_Level3", level: 3, title: "집중 조율사", isNow: false),
+        Level(image: "Limber_Level4", level: 4, title: "시간 관리자", isNow: false),
+        Level(image: "Limber_Level5", level: 5, title: "디지털 평온가", isNow: false),
+        Level(image: "Limber_Level6", level: 6, title: "집중 수호가", isNow: false)
+    ]
+    
+    let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
+    var body: some View {
+        ZStack {
+          Image("background")
+            .resizable()
+            .ignoresSafeArea()
+            VStack(spacing: 24) {
+              ZStack(alignment: .center) {
+                HStack {
+                  Button {
+                    dismiss()
+                  } label: {
+                    
+                    Image("backBtn")
+                  }.padding(.leading)
+                  
+                  Spacer()
+                  
+                }
+                Text("림버 레벨")
+                  .font(.suitHeading3Small)
+                  .foregroundStyle(.white)
+                
+              }
+                Text("집중 시간을 꾸준히 늘려가면 림버가 성장해요!")
+                .font(.suitBody2)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.2))
+                    .cornerRadius(20)
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 12) {
+                        ForEach(levels) { level in
+                          VStack {
+                            VStack {
+                                Image(level.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 140, height: 140)
+                      
+                            }
+                            .frame(maxWidth: 162, maxHeight: 162)
+                            .background(level.isNow ? Color.primaryMiddleDark : Color.white.opacity(0.1))
+                            .cornerRadius(16)
+                          
+                          HStack(spacing: 8) {
+                            Text("\(level.level)")
+                              .font(.suitBody2)
+                                .foregroundColor(.LimerLightPurple)
+                            Text("\(level.title)")
+                              .font(.suitHeading3Small)
+                                .foregroundColor(.white)
+                          }
+                          }
+                      
+             
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                }
+              Spacer()
 
+              
+            }
+        }
+        .toolbar(.hidden, for: .navigationBar)
 
-
-
-#Preview {
-  SettingView(vm: SettingVM())
+    }
 }
