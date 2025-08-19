@@ -17,18 +17,10 @@ struct SelectAppView: View {
   @State var isEnable = true
   
   var body: some View {
+    Spacer().frame(height: 40)
 
-    ZStack {
-      
-      Image("Onboarding4")
-        .resizable()
-        .scaledToFit()
-        .frame(maxWidth: .infinity)
-
-      
       VStack(spacing: 20) {
 
-        
         Text("집중을 방해하는 앱을\n등록해주세요")
           .font(
             Font.suitHeading3
@@ -46,11 +38,16 @@ struct SelectAppView: View {
           showPicker = true
         }
       
-      }
-    }.toolbar(.hidden, for: .navigationBar)
-      .padding(20)
+      }.toolbar(.hidden, for: .navigationBar)
+      .padding(.horizontal, 20)
       .sheet(isPresented: $showPicker) {
         BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
+      }
+      .background {
+        Image("Onboarding4")
+          .resizable()
+          .scaledToFit()
+          .frame(maxWidth: .infinity)
       }
       .presentationDetents([.height(700)])
       .background(

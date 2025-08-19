@@ -14,17 +14,16 @@ struct AccessScreenTimeView: View {
     @State var isEnable = true
     @State var isAlert = false
     var body: some View {
-      ZStack {
-   
-        VStack(spacing: 20) {
+      Spacer().frame(height: 40)
 
-          Text("집중을 방해하는 앱을\n등록해주세요")
+        VStack(spacing: 20) {
+          Text("림버를 사용하려면\n다음의 데이터가 필요해요")
             .font(
               Font.suitHeading3
             )
             .multilineTextAlignment(.center)
           
-          Text("최대 10개의 앱을 등록할 수 있으며 언제든 변경 가능해요")
+          Text("권한에 동의해야 림버를 사용할 수 있어요")
             .font(
               Font.suitBody2
             )
@@ -47,6 +46,20 @@ struct AccessScreenTimeView: View {
               .inset(by: 0.5)
               .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
             )
+          
+//          HStack {
+//            Image(systemName: "phone")
+//              .padding()
+//            Text("알림 허용")
+//              .font(Font.custom("SUIT", size: 16)
+//                .weight(.semibold))
+//            Spacer()
+//          }.padding()
+//            .cornerRadius(10)
+//            .overlay(RoundedRectangle(cornerRadius: 10)
+//              .inset(by: 0.5)
+//              .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
+//            )
           Spacer()
           BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
             Task {
@@ -60,7 +73,6 @@ struct AccessScreenTimeView: View {
           .padding(.bottom, 24)
           
         }
-      }
         .onAppear {
           self.isAlert = false
         }

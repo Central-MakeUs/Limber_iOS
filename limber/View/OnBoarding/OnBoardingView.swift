@@ -30,7 +30,7 @@ struct OnBoardingView: View {
       }
       else if step == 2 {
         VStack {
-          OnboardingIndicator(imageName: "Indicator-2")
+          OnboardingIndicator(imageName: "Indicator-1")
 
           AccessScreenTimeView(step: $step)
         }          .transition(

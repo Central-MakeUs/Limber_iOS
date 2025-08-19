@@ -46,7 +46,7 @@ struct LimberApp: App {
             }
           }
       } else {
-        if false {
+        if hasSeenMain {
             NavigationStack(path: $router.path) {
               MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
                 .task { await bootstrapper.run() }
