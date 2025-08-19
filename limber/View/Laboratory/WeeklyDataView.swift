@@ -23,15 +23,15 @@ struct WeeklyDataView: View {
                     .cornerRadius(6)
                 }
             }
-            .chartYScale(domain: 0...24)
+            .chartYScale(domain: !labVM.isImmersion ? 0...24 : 0...100)
             .chartYAxis {
-                AxisMarks(position: .leading, values: .stride(by: 6)) { value in
+              AxisMarks(position: .leading, values: !labVM.isImmersion ? [0, 6, 12, 18, 24] : [0,20,40,60,80,100]) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5))
                         .foregroundStyle(.gray.opacity(0.3))
                     AxisTick()
                     AxisValueLabel {
                         if let intValue = value.as(Int.self) {
-                            Text("\(intValue)h")
+                          Text(!labVM.isImmersion ? "\(intValue)h" : "\(intValue)%")
                                 .font(.caption)
                                 .foregroundColor(.gray400)
                         }

@@ -58,8 +58,8 @@ struct TotalActivityScene: DeviceActivityReportScene {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
     
-      let test = [TimerModel(id: 09, title: "학습", focusTitle: "학습", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY),TimerModel(id: 09, title: "", focusTitle: "학습", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY),TimerModel(id: 09, title: "", focusTitle: "", startTime: "", endTime: "", repeatDays: "", repeatCycleCode: .EVERY)]
-      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: test)
+      
+      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: models)
     }
 }
 

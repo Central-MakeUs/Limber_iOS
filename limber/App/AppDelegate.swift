@@ -47,16 +47,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
       return
     }
     
-    if let tokenString = response.notification.request.content.userInfo["appToken"] as? String,
-       let tokenData = tokenString.data(using: .utf8),
-       let appToken = try? JSONDecoder().decode(ApplicationToken.self, from: tokenData) {
-      
-      self.appToken = appToken
+    if  response.notification.request.identifier == "urgent"  {
       self.currentViewId = .unlock
       
-    }
-    else if
-      let timerId = response.notification.request.content.userInfo["timerId"] as? String {
+    } else if let timerId = response.notification.request.content.userInfo["timerId"] as? String {
       
       TimerSharedManager.shared.setHistoryTimer(key: timerId)
       

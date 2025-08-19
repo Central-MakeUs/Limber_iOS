@@ -40,7 +40,8 @@ class TimerVM: ObservableObject {
   @Published var delAlert = false
   
   @Published var toastOn = false
-    
+  @Published var cantTommorowToast = false
+
   @Published var timers: [TimerResponseDto] = []
     
     var timerRepository = TimerRepository()

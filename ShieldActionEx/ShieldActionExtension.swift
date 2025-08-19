@@ -30,7 +30,6 @@ class ShieldActionExtension: ShieldActionDelegate {
 
             if let tokenData = try? JSONEncoder().encode(application),
                let tokenString = String(data: tokenData, encoding: .utf8) {
-                content.userInfo = ["appToken": tokenString]
             }
 
             let request = UNNotificationRequest(identifier: "urgent", content: content, trigger: nil)

@@ -14,56 +14,53 @@ struct AccessScreenTimeView: View {
     @State var isEnable = true
     @State var isAlert = false
     var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: 20)
-            
-            Text("림버를 사용하기 위해\n다음의 데이터 허용이 필요해요.")
-                .font(
-                    Font.custom("SUIT", size: 24)
-                        .weight(.semibold)
-                )
-                .multilineTextAlignment(.center)
-            
-            
-            Spacer()
-                .frame(height: 20)
-            
-            Text("서비스 이용에 꼭 필요한 데이터만 수집해요")
-                .font(
-                    Font.custom("SUIT", size: 14)
-                        .weight(.medium)
-                )
-            
-            Spacer()
-                .frame(height: 40)
-            
-            HStack {
-                Image(systemName: "phone")
-                    .padding()
-                Text("스크린타임 데이터")
-                    .font(Font.custom("SUIT", size: 16)
-                        .weight(.semibold))
-                Spacer()
-            }.padding()
-                .cornerRadius(10)
-                .overlay(RoundedRectangle(cornerRadius: 10)
-                        .inset(by: 0.5)
-                        .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
-                )
-            Spacer()
-            BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
-                Task {
-                    let status = await ScreenTimeManager.shared.requestPermission()
-                    ScreenTimeManager.shared.setStatus(status: status)
-                    if ScreenTimeManager.shared.currentStatus() == .approved {
-                        requestNotificationPermission()
-                    }
-                }
-            }
-            .padding(20)
+      ZStack {
+   
+        VStack(spacing: 20) {
 
+          Text("집중을 방해하는 앱을\n등록해주세요")
+            .font(
+              Font.suitHeading3
+            )
+            .multilineTextAlignment(.center)
+          
+          Text("최대 10개의 앱을 등록할 수 있으며 언제든 변경 가능해요")
+            .font(
+              Font.suitBody2
+            )
+            .foregroundStyle(.gray600)
+          
+          
+          Spacer()
+            .frame(height: 40)
+          
+          HStack {
+            Image(systemName: "phone")
+              .padding()
+            Text("스크린타임 데이터")
+              .font(Font.custom("SUIT", size: 16)
+                .weight(.semibold))
+            Spacer()
+          }.padding()
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10)
+              .inset(by: 0.5)
+              .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
+            )
+          Spacer()
+          BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
+            Task {
+              let status = await ScreenTimeManager.shared.requestPermission()
+              ScreenTimeManager.shared.setStatus(status: status)
+              if ScreenTimeManager.shared.currentStatus() == .approved {
+                requestNotificationPermission()
+              }
+            }
+          }
+          .padding(.bottom, 24)
+          
         }
+      }
         .onAppear {
           self.isAlert = false
         }
@@ -76,7 +73,7 @@ struct AccessScreenTimeView: View {
             .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
             .ignoresSafeArea(.all)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 20)
         
     }
     
@@ -85,7 +82,7 @@ struct AccessScreenTimeView: View {
             if granted {
                 Task {
                   await MainActor.run {
-                      self.step = 1
+                      self.step = 3
                   }
                 }
             } else {
@@ -97,7 +94,6 @@ struct AccessScreenTimeView: View {
         }
     }
 }
-
 
 
 

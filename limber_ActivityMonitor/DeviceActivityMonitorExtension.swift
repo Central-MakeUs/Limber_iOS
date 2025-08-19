@@ -80,13 +80,18 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     content.userInfo = ["timerId": activity.rawValue]
 
     Task {
-      NSLog("intervalDidEnd:::")
+      NSLog("intervalDidEnd:::\(activity.rawValue)")
       do {
         SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
+        TimerObserver.shared.stopTimer()
         TimerSharedManager.shared.deleteTimerSession(timerSessionId: 0)
         
-        let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
-        try await UNUserNotificationCenter.current().add(request)
+        if let dotNotNoti = SharedData.defaultsGroup?.bool(forKey: "doNotNoti"), !dotNotNoti {
+          let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
+          try await UNUserNotificationCenter.current().add(request)
+          SharedData.defaultsGroup?.set(false, forKey: "doNotNoti")
+        }
+
       } catch {
         NSLog("::: error \(error)")
       }

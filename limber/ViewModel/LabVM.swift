@@ -26,25 +26,10 @@ class LabVM: ObservableObject {
   
   @Published var isImmersion = false
   
-  @Published var focusTimeWeekly: [(day: String, value: Double)] = [
-    (day: "월", value: 0),
-    (day: "화", value: 0),
-    (day: "수", value: 0),
-    (day: "목", value: 0),
-    (day: "금", value: 0),
-    (day: "토", value: 0),
-    (day: "일", value: 0)
-  ]
   
-  @Published var immersionWeekly: [(day: String, value: Double)] = [
-    (day: "월", value: 1),
-    (day: "화", value: 2),
-    (day: "수", value: 3),
-    (day: "목", value: 4),
-    (day: "금", value: 5),
-    (day: "토", value: 7),
-    (day: "일", value: 9)
-  ]
+  
+  @Published var focusTimeWeekly: [(day: String, value: Double)]
+  @Published var immersionWeekly: [(day: String, value: Double)]
   
   
   
@@ -57,19 +42,40 @@ class LabVM: ObservableObject {
   
   @Published var firstReason: String = ""
   
-  
   @Published var totalScheduledTimes: String = ""
   @Published var weeklyDate: String = ""
   @Published var averageAttentionTime: String = ""
   @Published var averageAttentionImmersion: String = ""
-  @Published var totalFailureCount: Double = 1.0
+  @Published var totalFailureCount: Double = 0.0
   @Published var weekCount = 0
   
+  
   init() {
-    fetchHistories()
+    focusTimeWeekly = [
+      (day: "월", value: 0.0),
+      (day: "화", value: 0.0),
+      (day: "수", value: 0.0),
+      (day: "목", value: 0.0),
+      (day: "금", value: 0.0),
+      (day: "토", value: 0.0),
+      (day: "일", value: 0.0)
+    ]
+    immersionWeekly = [
+      (day: "월", value: 0.0),
+      (day: "화", value: 0.0),
+      (day: "수", value: 0.0),
+      (day: "목", value: 0.0),
+      (day: "금", value: 0.0),
+      (day: "토", value: 0.0),
+      (day: "일", value: 0.0)
+    ]
+    
+    self.fetchHistories()
     Task {
       await fetchReports()
     }
+    
+    
   }
   
   func fetchHistories() {
@@ -86,70 +92,93 @@ class LabVM: ObservableObject {
   
   func fetchReports() async {
     do {
-      let startStr =  TimeManager.shared.weekStartString(for: .now)
-      let endStr =  TimeManager.shared.weekEndString(for: .now)
+      totalFailureCount = 0
+      let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
+      let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
+      focusTimeWeekly = [
+        (day: "월", value: 0.0),
+        (day: "화", value: 0.0),
+        (day: "수", value: 0.0),
+        (day: "목", value: 0.0),
+        (day: "금", value: 0.0),
+        (day: "토", value: 0.0),
+        (day: "일", value: 0.0)
+      ]
+      immersionWeekly = [
+        (day: "월", value: 0.0),
+        (day: "화", value: 0.0),
+        (day: "수", value: 0.0),
+        (day: "목", value: 0.0),
+        (day: "금", value: 0.0),
+        (day: "토", value: 0.0),
+        (day: "일", value: 0.0)
+      ]
       
-      setDate()
+         self.weeklyDate = startStr + "-" + endStr
+         let dto = try await repo.totalImmersion(.init(userId: userId, start: startStr, end: endStr)).data
+         self.totalActualMinutes = Double(dto.totalActualMinutes)
+         self.totalScheduledTimes =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes)
+         self.averageAttentionTime =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes / 7)
+         self.averageAttentionImmersion = (dto.ratio * 100).description + "%"
+      
       
       let reasonData = try await repo.failReasons(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.count > $1.count }).enumerated().map { index, element in
         self.totalFailureCount += Double(element.count)
         return element
        }
-      
     
       self.reasonData = reasonData.enumerated().prefix(3).map { index, element in
+        let progress = Double(element.count) / (totalFailureCount)
         if index == 0 {
-          self.failPer = Int(Double(element.count) / totalFailureCount * 100)
+          self.failPer = Int(progress * 100)
           self.firstReason = convertDic[element.failReason] ?? ""
         }
-        return RankItem(icon: failReasonIcons[index], title: convertDic[element.failReason] ?? "", duration: element.count.description + "회", progress: Double(element.count) / totalFailureCount * 100)
+        
+        return RankItem(icon: failReasonIcons[index], title: convertDic[element.failReason] ?? "", duration: element.count.description + "회", progress: progress )
       }
       
       self.studyData  = try await repo.focusDistribution(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.totalActualMinutes > $1.totalActualMinutes }).prefix(3).enumerated().map { index, element in
         if index == 0 {
-          self.studyPer = Int(Double(element.totalActualMinutes) / self.totalActualMinutes * 100)
+          self.studyPer = Int(Double(element.totalActualMinutes) / (self.totalActualMinutes == 0 ? 1 : self.totalActualMinutes) * 100)
         }
+        
         return RankItem(icon: studyIcons[index], title: element.focusTypeName, duration: TimeManager.shared.minutesToHourMinuteString(element.totalActualMinutes), progress: Double(element.totalActualMinutes) / self.totalActualMinutes )  }
       
       
       try await repo.actualByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
-        self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60)
+        self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60 )
       }
       
       try await repo.immersionByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
-        self.immersionWeekly[index == 0 ? immersionWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.ratio) * 24)
+        self.immersionWeekly[index == 0 ? immersionWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.ratio) * 100)
+        
+        
       }
       
     } catch {
       print(error)
     }
   }
+
   
-  func setDate() {
-    Task {
-      let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
-      let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
-      self.weeklyDate = startStr + "-" + endStr
-      let dto = try await repo.totalImmersion(.init(userId: userId, start: startStr, end: endStr)).data
-      self.totalActualMinutes = Double(dto.totalActualMinutes)
-      self.totalScheduledTimes =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes)
-      self.averageAttentionTime =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes / 7)
-      self.averageAttentionImmersion = (dto.ratio * 100).description + "%"
-    }
-    
-  }
+
   
   func rightChevronTap() {
     if weekCount < 0 {
-      weekCount += 1
-      setDate()
+      Task {
+        weekCount += 1
+        await fetchReports()
+
+      }
       
     }
   }
   func leftChevronTap() {
-    weekCount -= 1
-    
-    setDate()
+    Task {
+      weekCount -= 1
+      await fetchReports()
+
+    }
     
   }
 }

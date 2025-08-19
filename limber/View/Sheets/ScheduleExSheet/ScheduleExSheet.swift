@@ -85,8 +85,14 @@
                         DispatchQueue.main.async {
                           vm.dontReserveToastOn = true
                         }
+                      } else if errCode == 410 {
+                        DispatchQueue.main.async {
+                          vm.cantTommorowToast = true
+                        }
                       } else if !vm.toastOn {
-                        vm.toastOn = true
+                        DispatchQueue.main.async {
+                          vm.toastOn = true
+                        }
                       }
                     }) {
                       timerVM.onAppear()
@@ -110,6 +116,7 @@
       .hideKeyboardOnTap()
       .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 시간은 15분 이상부터 설정할 수 있습니다.", duration: 2))
       .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "해당 시간 동안에 이미 실험이 있어요!", duration: 2))
+      .modifier(ToastModifier(isPresented: $vm.cantTommorowToast, message: "시간 범위는 오늘 내에 시작 시간이 더 작게만 가능해요!", duration: 2))
 
       
       

@@ -120,11 +120,15 @@ struct UnlockReasonView: View {
           let failReason = staticFailCodes[checkedReason] ?? "NONE"
           do {
             try await repo.unlockTimer(timerId: self.timerId, failReason: failReason)
+            
+            SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
             let deviceActivityCenter = DeviceActivityCenter()
-            deviceActivityCenter.stopMonitoring()
+            deviceActivityCenter.stopMonitoring([.init(self.timerId.description)])
             blockVM.removeForShieldRestrictions()
             isSheet = false
+            TimerObserver.shared.stopTimer()
             router.push(.unlockEndView)
+            
           } catch {
             print("error:::\(error)")
           }

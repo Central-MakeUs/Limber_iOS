@@ -199,6 +199,8 @@
 				View/Main/CircularTimerView.swift,
 				View/Main/MainView.swift,
 				View/OnBoarding/AccessScreenTimeView.swift,
+				View/OnBoarding/OnBoardingIndicatorView.swift,
+				View/OnBoarding/OnBoardingStart.swift,
 				View/OnBoarding/OnBoardingView.swift,
 				View/OnBoarding/unusedOnBoarding.swift,
 				View/Retrospective/CustomStepSlider.swift,

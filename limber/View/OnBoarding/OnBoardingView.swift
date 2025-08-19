@@ -11,20 +11,73 @@ struct OnBoardingView: View {
   @State private var step: Int = 0
   @State var onComplete: () -> Void
   @State private var page = 0
+  @State private var showSplash = true
   
   var body: some View {
     ZStack {
-//      OnBoardingStartView()
+      
       if step == 0 {
-        AccessScreenTimeView(step: $step)
-          .transition(.move(edge: .leading))
+        OnBoardingStart(step: $step)
+          .transition(
+                     .asymmetric(
+                      insertion: .move(edge: .trailing),
+                      removal: .move(edge: .leading)
+                     )
+                 )
       }
-      if step == 1 {
-        SelectAppView(onComplete: onComplete).transition(.move(edge: .trailing))
-          .environmentObject(BlockVM())
+      else if step == 1 {
+        OnBoardingIndicatorView(step: $step)
+      }
+      else if step == 2 {
+        VStack {
+          OnboardingIndicator(imageName: "Indicator-2")
+
+          AccessScreenTimeView(step: $step)
+        }          .transition(
+          .asymmetric(
+           insertion: .move(edge: .trailing),
+           removal: .move(edge: .leading)
+          )
+      )
+
+
+      }
+      else if step == 3 {
+        VStack {
+          OnboardingIndicator(imageName: "Indicator-2")
+
+          SelectAppView(onComplete: onComplete)
+        }  .transition(
+          .asymmetric(
+           insertion: .move(edge: .trailing),
+           removal: .move(edge: .leading)
+          )
+      )
+.environmentObject(BlockVM())
+     
+        
+      }
+      
+      if showSplash {
+        ZStack {
+          Image("OnBoardingSplash")
+            .resizable()
+            .ignoresSafeArea()
+            .transition(.opacity)
+          
+        }
+        .transition(.opacity)
+          .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+              withAnimation {
+                showSplash = false
+              }
+            }
+          }
       }
       
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
     .animation(.easeInOut, value: step)
     .onAppear {
       let timerRepository = TimerRepository()
@@ -45,32 +98,3 @@ struct OnBoardingView: View {
   
 }
 
-
-struct OnBoardingStartView : View {
-  var body: some View {
-    ZStack(alignment: .center) {
-      Image("Start1")
-      VStack(spacing: 0) {
-        Spacer()
-          .frame(height: 90)
-        Text("안녕하세요")
-        HStack(spacing: 0) {
-         Text("집중을 도와줄")
-          Text("림버")
-            .foregroundStyle(Color.limberPurple)
-          Text("에요!")
-        }
-       
-        
-        Spacer()
-        
-      }
-      .font(.suitHeading1)
-    }
-   
-  }
-}
-
-#Preview {
-  OnBoardingStartView()
-}

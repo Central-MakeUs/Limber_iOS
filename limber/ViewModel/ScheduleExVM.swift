@@ -67,6 +67,7 @@ class ScheduleExVM: ObservableObject {
   
   @Published var toastOn = false
   @Published var dontReserveToastOn = false
+  @Published var cantTommorowToast = false
   
   
   private let daysDic: [String: [Int]] = ["평일": [0,1,2,3,4], "주말": [5,6] , "매일" : [0,1,2,3,4,5,6]]
@@ -203,10 +204,19 @@ class ScheduleExVM: ObservableObject {
     let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
     let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
     
+    
+    
     let intervalStart = TimeManager.shared.timeStringToDateComponents(startTimeStr) ?? DateComponents()
     let intervalEnd = TimeManager.shared.timeStringToDateComponents(endTimeStr) ?? DateComponents()
     
-    
+    if let sh = intervalStart.hour, let sm = intervalStart.minute,
+       let eh = intervalEnd.hour, let em = intervalEnd.minute {
+        
+        if !(sh < eh || (sh == eh && sm < em)) {
+          completion(410)
+          return false
+        }
+    }
     let schedule = DeviceActivitySchedule(
       intervalStart: intervalStart,
       intervalEnd: intervalEnd,

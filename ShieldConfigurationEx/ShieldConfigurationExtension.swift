@@ -16,11 +16,9 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         let defaults = UserDefaults(suiteName: "group.com.limber")
             let isUnlockRequested = defaults?.bool(forKey: "changeView") ?? false
-            
+            NSLog("config':")
             if isUnlockRequested {
               let image = UIImage(named: "block_iOS_2")
-           
-              
               return ShieldConfiguration(backgroundColor: UIColor(red: 52, green: 36, blue: 63, alpha: 1), icon: image, title: .init(text: "잠금 해제를 위해\n알림을 눌러 이동해주세요", color: .gray100), subtitle: .init(text: "알림이 잘 보이지 않는다면\n 설정 > 알림 > '림버' 알림 허용을 켜주세요.", color: .gray100), primaryButtonLabel: .init(text: "알림 다시 전송하기", color: .black) , primaryButtonBackgroundColor: .gray100, secondaryButtonLabel: .init(text: "취소", color: .gray100))
             } else {
                 let image = UIImage(named: "block_iOS")

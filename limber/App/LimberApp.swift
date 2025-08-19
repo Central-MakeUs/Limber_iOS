@@ -29,21 +29,24 @@ struct LimberApp: App {
 
   private var bootstrapper = AppBootstrapper()
   
-
+  init() {
+         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  // 현재 선택된 점
+         UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray            // 비선택 점
+     }
   
   var body: some Scene {
     WindowGroup {
-        if showSplash {
-            SplashView()
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        withAnimation {
-                            showSplash = false
-                        }
-                    }
-                }
-        } else {
-          if hasSeenMain {
+      if showSplash {
+        SplashView()
+          .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+              withAnimation {
+                showSplash = false
+              }
+            }
+          }
+      } else {
+        if false {
             NavigationStack(path: $router.path) {
               MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
                 .task { await bootstrapper.run() }
@@ -71,12 +74,11 @@ struct LimberApp: App {
                     LimberLevelView()
                       .toolbar(.hidden, for: .navigationBar)
 
-
                   }
                 }
-                .environmentObject(appDelegate)
               
             }
+            .environmentObject(appDelegate)
             .environmentObject(router)
             .environmentObject(blockVM)
             .environmentObject(timerObserver)

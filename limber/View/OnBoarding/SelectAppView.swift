@@ -17,36 +17,47 @@ struct SelectAppView: View {
   @State var isEnable = true
   
   var body: some View {
-    
-    VStack {
-      Spacer()
-        .frame(height: 20)
+
+    ZStack {
       
-      Text("림버를 통해\n관리할 앱을 등록해주세요")
-        .font(
-          Font.suitHeading1
-        )
-        .multilineTextAlignment(.center)
+      Image("Onboarding4")
+        .resizable()
+        .scaledToFit()
+        .frame(maxWidth: .infinity)
+
       
-      Spacer()
-        .frame(height: 20)
+      VStack(spacing: 20) {
+
+        
+        Text("집중을 방해하는 앱을\n등록해주세요")
+          .font(
+            Font.suitHeading3
+          )
+          .multilineTextAlignment(.center)
+        
+        Text("최대 10개의 앱을 등록할 수 있으며 언제든 변경 가능해요")
+          .font(
+            Font.suitBody2
+          )
+          .foregroundStyle(.gray600)
+        
+        Spacer()
+        BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
+          showPicker = true
+        }
       
-      Text("최대 10개의 앱을 등록할 수 있으며 추후에 변경할 수 있어요")
-        .font(
-          Font.suitBody2
-        )
-      Spacer()
-      BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
-        showPicker = true
       }
+    }.toolbar(.hidden, for: .navigationBar)
       .padding(20)
       .sheet(isPresented: $showPicker) {
         BlockBottomSheet(isOnboarding: true, vm: vm, onComplete: onComplete)
       }
       .presentationDetents([.height(700)])
-      .presentationCornerRadius(24)
-    }
-    .toolbar(.hidden, for: .navigationBar)
+      .background(
+              RoundedRectangle(cornerRadius: 24)
+                .fill(Color(.white))
+          )
+          .clipShape(RoundedRectangle(cornerRadius: 24))
     
   }
   
