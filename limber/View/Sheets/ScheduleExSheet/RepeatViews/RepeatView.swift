@@ -36,7 +36,7 @@ struct RepeatView: View {
             dismiss()
           } label: {
             Image("xmark")
-          }.padding(.trailing)
+          }.padding(.trailing, 20)
         }
         
       }.frame(height: 24)

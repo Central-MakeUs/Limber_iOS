@@ -85,11 +85,7 @@
                         DispatchQueue.main.async {
                           vm.dontReserveToastOn = true
                         }
-                      } else if errCode == 410 {
-                        DispatchQueue.main.async {
-                          vm.cantTommorowToast = true
-                        }
-                      } else if !vm.toastOn {
+                      }  else if !vm.toastOn {
                         DispatchQueue.main.async {
                           vm.toastOn = true
                         }
@@ -114,9 +110,9 @@
       .background(Color.white)
       .cornerRadius(24)
       .hideKeyboardOnTap()
-      .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 시간은 15분 이상부터 설정할 수 있습니다.", duration: 2))
-      .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "해당 시간 동안에 이미 실험이 있어요!", duration: 2))
-      .modifier(ToastModifier(isPresented: $vm.cantTommorowToast, message: "시간 범위는 오늘 내에 시작 시간이 더 작게만 가능해요!", duration: 2))
+      .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
+      .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "선택한 시간에는 다른 실험이 예정되어 있어요.", duration: 2, isWarning: true))
+
 
       
       
@@ -136,23 +132,29 @@
         
         ScrollView(.horizontal) {
           HStack(spacing: 8) {
-            ForEach(vm.categorys, id: \.self) { text in
+            ForEach(StaticValManager.titleTextDic, id: \.self) { text in
               Button {
                 vm.selectedCategory = text
                 isFocused = false
                 
               } label: {
-                Text(text)
-                  .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
-                  .frame(width: 68)
-                  .frame(maxHeight: .infinity)
-                  .overlay(
-                    RoundedRectangle(cornerRadius: 100)
-                      .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
-                                vm.selectedCategory == text ? 2 : 1.2)
-                  )
-                  .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
-                  .cornerRadius(100)
+                HStack(spacing: 7) {
+                  Image(text)
+                    .frame(width: 24, height: 24)
+                  
+                  Text(text)
+                }
+                .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
+                .frame(width: 90)
+                .frame(maxHeight: .infinity)
+                .overlay(
+                  RoundedRectangle(cornerRadius: 100)
+                    .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                              timerVM.selectedCategory == text ? 2 : 1.2)
+                )
+                .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
+                .cornerRadius(100)
+               
               }
               
             }
@@ -225,3 +227,4 @@
   #Preview {
     ScheduleExSheet(timerVM: TimerVM(), vm: ScheduleExVM())
   }
+

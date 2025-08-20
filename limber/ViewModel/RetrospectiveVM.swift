@@ -34,15 +34,16 @@ class RetrospectiveVM: ObservableObject {
   func save() {
     Task {
       do {
-        var immersion = 50
-        if sliderValue > 50 {
+        var immersion = 60
+        
+        if sliderValue > 60 {
           immersion = 100
-        } else if 50 > sliderValue {
+        } else if 60 > sliderValue {
           immersion = 20
         }
         
         if let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
-          if let result = try await api.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
+          if let _ = try await api.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
             
           }
           

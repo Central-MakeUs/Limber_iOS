@@ -11,12 +11,14 @@ import SwiftData
 
 struct CircularTimerView: View {
   @EnvironmentObject var router: AppRouter
+  @EnvironmentObject var blockVM: BlockVM
   @Environment(\.dismiss) var dismiss
   @State var isFinished: Bool = false
   @EnvironmentObject var timer: TimerObserver
   
   @State var name: String = ""
-
+  @State var showBlockedAppSheet: Bool = false
+  
   
   let gradient = AngularGradient(
     gradient: Gradient(colors: [.white, .white, .white, .limberPurple, .limberPurple, .limberPurple, .limberPurple ]),
@@ -38,8 +40,7 @@ struct CircularTimerView: View {
   
   var body: some View {
     ZStack {
-
-      Image("background")
+      Image(timer.totalTime - timer.elapsed == 0 ? "DarkBackground" : "background")
         .resizable()
         .ignoresSafeArea()
       
@@ -139,14 +140,14 @@ struct CircularTimerView: View {
           .frame(height: 54)
         HStack(spacing: 0) {
           
-//          Label(title: {
-//            Text(name)
-//              .font(.suitHeading3Small)
-//              .foregroundStyle(.limberPurple)
-//          }, icon: {
-//            Image("note")
-//          })
-//          
+          //          Label(title: {
+          //            Text(name)
+          //              .font(.suitHeading3Small)
+          //              .foregroundStyle(.limberPurple)
+          //          }, icon: {
+          //            Image("note")
+          //          })
+          //
           if isFinished {
             Text("실험이 종료되었어요!")
               .font(.suitHeading3Small)
@@ -164,17 +165,18 @@ struct CircularTimerView: View {
         
         Spacer()
         
-        //                Button {
-        //
-        //                } label: {
-        //                    HStack(spacing: 0) {
-        //                        Text("차단 중인 앱 보기")
-        //                            .font(.suitBody2)
-        //                        Image("chevron")
-        //
-        //                    }
-        //                    .foregroundStyle(.gray300)
-        //                }
+        Button {
+          blockVM.setPicked()
+          self.showBlockedAppSheet = true
+        } label: {
+          HStack(spacing: 0) {
+            Text("차단 중인 앱 보기")
+              .font(.suitBody2)
+            Image("chevron")
+            
+          }
+          .foregroundStyle(.gray300)
+        }
         Spacer()
           .frame(height: 30)
         
@@ -182,6 +184,7 @@ struct CircularTimerView: View {
         HStack(spacing: 12) {
           Button {
             router.poptoRoot()
+            router.selectedTab = .home
           } label: {
             Text("홈으로 가기")
               .font(.suitHeading3Small)
@@ -198,30 +201,30 @@ struct CircularTimerView: View {
               let historyRepo = TimerHistoryRepository()
               let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
               let timerId = TimerSharedManager.shared.getHistoryTimerKey() ?? ""
-
+              
               Task {
-                  do {
-                      if let repo = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId) {
-                          let mmddStr = TimeManager.shared.isoToMMdd(repo.historyDt)
-                          DispatchQueue.main.async {
-                              router.push(.retrospective(
-                                  id: repo.timerId,
-                                  historyId: repo.id,
-                                  date: mmddStr ?? "",
-                                  focusType: repo.focusTypeTitle
-                              ))
-                          }
-                      } else {
-                          DispatchQueue.main.async {
-                              router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
-                          }
-                      }
-                  } catch {
-                    NSLog("error::: \(error)")
-                      DispatchQueue.main.async {
-                          router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
-                      }
+                do {
+                  if let repo = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId) {
+                    let mmddStr = TimeManager.shared.isoToMMdd(repo.historyDt)
+                    DispatchQueue.main.async {
+                      router.push(.retrospective(
+                        id: repo.timerId,
+                        historyId: repo.id,
+                        date: mmddStr ?? "",
+                        focusType: repo.focusTypeTitle
+                      ))
+                    }
+                  } else {
+                    DispatchQueue.main.async {
+                      router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                    }
                   }
+                } catch {
+                  NSLog("error::: \(error)")
+                  DispatchQueue.main.async {
+                    router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                  }
+                }
               }
               
             } label: {
@@ -234,22 +237,82 @@ struct CircularTimerView: View {
                 .padding(.bottom)
             }
           }
-        
+          
         }
         .padding(.horizontal, 20)
-
-   
-       
-       
+        
+        
+        
+        
       }
       .onAppear {
         self.isFinished = (timer.totalTime - timer.elapsed) == 0
-
+        
+      }
+      .sheet(isPresented: $showBlockedAppSheet) {
+        BlockedAppSheet(blockVM: blockVM)
+          .presentationDetents([.height(200)])
+          .presentationCornerRadius(24)
       }
       
     }
-
+    
+    
     
   }
   
+}
+import SwiftUI
+
+struct BlockedAppSheet: View {
+  @Environment(\.dismiss) var dismiss
+  @ObservedObject var blockVM: BlockVM
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      Spacer()
+        .frame(height: 25)
+      ZStack {
+        Text("직접 추가")
+          .font(.suitHeading3Small)
+          .foregroundStyle(.gray800)
+        HStack {
+          Spacer()
+          Button {
+            dismiss()
+          } label: {
+            Image("xmark")
+          }.padding(.trailing, 20)
+        }
+        
+      }.frame(height: 33)
+      
+      ScrollView(.horizontal, showsIndicators: false) {
+        HStack(alignment: .center) {
+          ForEach(blockVM.pickedApps, id: \.self) { app in
+            if let token = app.token {
+              VStack(spacing: 0) {
+                Spacer()
+                Label(token)
+                  .labelStyle(iconLabelStyle())
+                Label(token)
+                  .labelStyle(textLabelStyle())
+                  .scaleEffect(CGSize(width: 0.4, height: 0.4))
+                Spacer()
+              }
+              .frame(width: 100, height: 76, alignment: .center)
+              .background(Color.gray100)
+              .cornerRadius(8)
+              
+            }
+          }
+        }
+      }
+      .frame(height: 76)
+      .padding(20)
+      
+      Spacer()
+    }
+    .frame(maxHeight: 200)
+  }
 }

@@ -12,7 +12,7 @@ import FamilyControls
 struct BlockAppsSheet: View {
   @EnvironmentObject var router: AppRouter
   @Environment(\.dismiss) private var dismiss
-  @StateObject var blockVM: BlockVM = BlockVM()
+  @ObservedObject var blockVM: BlockVM
   
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
   @ObservedObject var timerVM: TimerVM
@@ -130,18 +130,14 @@ struct BlockAppsSheet: View {
             
             let startTime = TimeManager.shared.HHmmFormatter.string(from: startDate)
             let endTime = TimeManager.shared.HHmmFormatter.string(from: endDate)
-            
-            if startTime > endTime {
-              timerVM.cantTommorowToast = true
-              return
-            }
+     
             
             let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
             let request = TimerRequestDto(userId: userId, title: "", focusTypeId: self.focusTypeId, timerCode: .IMMEDIATE, repeatCycleCode: .NONE, repeatDays: "", startTime: startTime , endTime: endTime)
             
             Task {
               do {
-                NSLog("request \(request)")
+                NSLog("request::: \(request)")
 
                 let reponseDto = try await timerVM.timerRepository.createTimer(request)
                 TimerSharedManager.shared.addTimer(dto: reponseDto)
@@ -180,7 +176,7 @@ struct BlockAppsSheet: View {
       .onAppear {
         blockVM.setPicked()
       }
-      .modifier(ToastModifier(isPresented: $timerVM.cantTommorowToast, message: "타이머는 오늘 날짜 이내에서만 가능합니다.", duration: 2))
+
 
   }
   func createSchedule(addHours: Int, addMinutes: Int) -> DeviceActivitySchedule? {

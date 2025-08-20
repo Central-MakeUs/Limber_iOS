@@ -17,16 +17,13 @@ struct UnlockReasonView: View {
   @ObservedObject var blockVM: BlockVM
   
   @State var isSheet = false
-  
- 
-  
-  private let staticFailCodes: [String :String] = [FailReason.lackOfFocusIntention.rawValue :"LACK_OF_FOCUS_INTENTION", FailReason.needBreak.rawValue: "NEED_BREAK", FailReason.finishedEarly.rawValue: "FINISHED_EARLY", FailReason.emergency.rawValue: "EMERGENCY", FailReason.externalDisturbance.rawValue: "EXTERNAL_DISTURBANCE" ]
-    
-
-  
-  
   @State var checkedReason: String = ""
   @State var isEnable: Bool = false
+  @State var showOverlay: Bool = false
+  
+  private let staticFailCodes: [String :String] = [FailReason.lackOfFocusIntention.rawValue :"LACK_OF_FOCUS_INTENTION", FailReason.needBreak.rawValue: "NEED_BREAK", FailReason.finishedEarly.rawValue: "FINISHED_EARLY", FailReason.emergency.rawValue: "EMERGENCY", FailReason.externalDisturbance.rawValue: "EXTERNAL_DISTURBANCE" ]
+  
+  
   
   var timerId: String
   
@@ -72,7 +69,7 @@ struct UnlockReasonView: View {
                 Circle()
                   .fill(checkedReason == text ? Color.LimberPurple : Color.white)
                 if checkedReason == text {
-                  Image(systemName: "checkmark")
+                  Image("checkmark")
                     .foregroundColor(.white)
                 }
               }
@@ -115,6 +112,7 @@ struct UnlockReasonView: View {
     .toolbar(.hidden, for: .navigationBar)
     .fullScreenCover(isPresented: $isSheet ) {
       ReAskAlertSheet(leftAction: {
+        showOverlay = true
         let repo = TimerRepository()
         Task {
           let failReason = staticFailCodes[checkedReason] ?? "NONE"
@@ -125,16 +123,14 @@ struct UnlockReasonView: View {
             let deviceActivityCenter = DeviceActivityCenter()
             deviceActivityCenter.stopMonitoring([.init(self.timerId.description)])
             blockVM.removeForShieldRestrictions()
-            isSheet = false
             TimerObserver.shared.stopTimer()
-            router.push(.unlockEndView)
             
           } catch {
             print("error:::\(error)")
           }
-
+          
         }
-       
+        
       }, rightAction: {
         router.poptoRoot()
       }, topText: "이대로 잠금을 풀면 실험이 종료돼요", bottomText: "실험을 중단할까요?", leftBtnText: "잠금 풀기", rightBtnText: "실험 유지하기")
@@ -142,69 +138,96 @@ struct UnlockReasonView: View {
       .background(Color.black.opacity(0.3))
       .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
       .ignoresSafeArea(.all)
+      .autoDismissOverlay(isPresented: $showOverlay, duration: 2, onDismiss: {
+        isSheet = false
+        router.push(.unlockEndView)
+
+      }) {
+        ZStack {
+          Color.black.opacity(0.5) // 반투명 배경
+            .ignoresSafeArea()
+          
+          VStack(spacing: 12) {
+            LottieView(name: "Loading:Dark.json")
+                 .frame(width: 200, height: 200)
+            
+            Text("실험 중단 중...")
+              .font(.suitHeading1)
+              .foregroundColor(.white)
+            
+            Text("조금만 기다려 주세요! 집중 실험을 마무리하고 있어요.")
+              .font(.suitBody2)
+              .foregroundColor(.gray400)
+          }
+          .padding(24)
+        }
+      }
     }
   }
+  
 }
-
-struct UnlockEndView: View {
-  @EnvironmentObject var router: AppRouter
-
-  var body: some View {
-    ZStack {
-      VStack {
-        Image("sadLimber")
-          .resizable()
-          .scaledToFit()
-          .frame(width: 280, height: 280)
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      
-      // 2) 위쪽 텍스트
-      VStack(spacing: 8) {
-        Text("아쉽지만 실험을 중단했어요")
-          .font(.suitHeading3)
-        
-        Text("충분한 여유를 가지고\n다음 집중 실험을 준비해봐요")
-          .font(.suitBody2)
-          .foregroundColor(.gray)
-          .multilineTextAlignment(.center)
-      }
-      .padding(.top, 60)
-      .frame(maxHeight: .infinity, alignment: .top)
-      
-      // 3) 아래쪽 버튼
-      HStack(spacing: 12) {
-        Button("화면 닫기") {
-          router.poptoRoot()
+  
+  struct UnlockEndView: View {
+    @EnvironmentObject var router: AppRouter
+    
+    var body: some View {
+      ZStack {
+        VStack {
+          Image("sadLimber")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 280, height: 280)
         }
-        .frame(maxWidth: .infinity, maxHeight: 54)
-        .foregroundStyle(.gray800)
-        .background(Color(.primayBGNormal))
-        .cornerRadius(8)
-        .font(.suitHeading3Small)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         
-        Button("새 타이머 시작") {
+        // 2) 위쪽 텍스트
+        VStack(spacing: 8) {
+          Text("아쉽지만 실험을 중단했어요")
+            .font(.suitHeading3)
           
-          router.poptoRoot()
-          router.selectedTab = .timer
-          
+          Text("충분한 여유를 가지고\n다음 집중 실험을 준비해봐요")
+            .font(.suitBody2)
+            .foregroundColor(.gray)
+            .multilineTextAlignment(.center)
         }
+        .padding(.top, 60)
+        .frame(maxHeight: .infinity, alignment: .top)
+        
+        // 3) 아래쪽 버튼
+        HStack(spacing: 12) {
+          Button("화면 닫기") {
+            router.poptoRoot()
+          }
+          .frame(maxWidth: .infinity, maxHeight: 54)
+          .foregroundStyle(.gray800)
+          .background(Color(.primayBGNormal))
+          .cornerRadius(8)
+          .font(.suitHeading3Small)
+          
+          Button("새 타이머 시작") {
+            
+            router.poptoRoot()
+            router.selectedTab = .timer
+            
+          }
           .frame(maxWidth: .infinity, maxHeight: 54)
           .background(Color.limberPurple)
           .foregroundColor(.white)
           .cornerRadius(8)
           .font(.suitHeading3Small)
-        
+          
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 32)
+        .frame(maxHeight: .infinity, alignment: .bottom)
       }
-      .padding(.horizontal, 20)
-      .padding(.bottom, 32)
-      .frame(maxHeight: .infinity, alignment: .bottom)
+      .background(Color.white)
+      .toolbar(.hidden, for: .navigationBar)
+      
     }
-    .background(Color.white)
-    .toolbar(.hidden, for: .navigationBar)
-
   }
-}
+
 #Preview {
   UnlockEndView()
 }
+

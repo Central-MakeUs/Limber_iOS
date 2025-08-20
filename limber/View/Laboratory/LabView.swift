@@ -117,13 +117,13 @@ struct LabView: View {
     }
     .coordinateSpace(name: "tooltipArea")
     .onChange(of: topPick) {
-      if topPick == 0 {
-        Task {
-          await labVM.fetchReports()
-        }
-      } else {
-        labVM.fetchHistories()
-      }
+//      if topPick == 0 {
+//        Task {
+//          await labVM.fetchReports()
+//        }
+//      } else {
+//        labVM.fetchHistories()
+//      }
     
     }
   }

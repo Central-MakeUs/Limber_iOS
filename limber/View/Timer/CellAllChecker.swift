@@ -18,7 +18,7 @@ struct CellAllChecker: View {
         Circle()
           .fill(timerVM.isAllChecker ? Color.LimberPurple : Color.white)
         if timerVM.isAllChecker {
-          Image(systemName: "checkmark")
+          Image("checkmark")
             .foregroundColor(.white)
         }
       }

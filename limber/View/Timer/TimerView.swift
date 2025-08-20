@@ -15,6 +15,7 @@ struct TimerView: View {
   @ObservedObject var deviceReportActivityVM: DeviceActivityReportVM
   @ObservedObject var timerVM: TimerVM
   @ObservedObject var schedulExVM: ScheduleExVM
+  @EnvironmentObject var blockVM: BlockVM
   
   @State var showSheet = false
   @State var showModal = false
@@ -68,7 +69,6 @@ struct TimerView: View {
             } else {
               alreadyTimer
             }
-        
             
           } else {
             setting
@@ -79,12 +79,12 @@ struct TimerView: View {
         }
         .background(Color.gray50)
 
-
      
     }
-    .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "타이머는 15분 이상부터 시작할 수 있습니다.", duration: 2))
+    .modifier(ToastModifier(isPresented: $schedulExVM.offDtoModifier, message: "현재 실험이 진행되고 있어요. 나중에 변경해주세요", duration: 2, isWarning: false))
+    .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
     .fullScreenCover(isPresented: $showModal) {
-      BlockAppsSheet(deviceReportActivityVM: deviceReportActivityVM, timerVM: timerVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: (timerVM.categorys.firstIndex(of: timerVM.selectedCategory) ?? 0 ) + 1, showModal: $showModal)
+      BlockAppsSheet(blockVM: blockVM, deviceReportActivityVM: deviceReportActivityVM, timerVM: timerVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: (StaticValManager.titleTextDic.firstIndex(of: timerVM.selectedCategory) ?? 0 ) + 1, showModal: $showModal)
         .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
         .background(Color.black.opacity(0.3))
         .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
@@ -144,21 +144,29 @@ struct TimerView: View {
       }
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 8) {
-          ForEach(timerVM.categorys, id: \.self) { text in
-            Text(text)
-              .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
-              .frame(width: 68)
-              .frame(maxHeight: .infinity)
-              .overlay(
-                RoundedRectangle(cornerRadius: 100)
-                  .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
-                            timerVM.selectedCategory == text ? 2 : 1.2)
-              )
-              .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
-              .cornerRadius(100)
-              .onTapGesture {
-                timerVM.selectedCategory = text
-              }
+          ForEach(StaticValManager.titleTextDic, id: \.self) { text in
+            
+            HStack(spacing: 7){
+              Image(text)
+                .frame(width: 24, height: 24)
+              Text(text)
+              
+
+            }
+            .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
+            .frame(width: 90)
+            .frame(maxHeight: .infinity)
+            .overlay(
+              RoundedRectangle(cornerRadius: 100)
+                .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                          timerVM.selectedCategory == text ? 2 : 1.2)
+            )
+            .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
+            .cornerRadius(100)
+            .onTapGesture {
+              timerVM.selectedCategory = text
+            }
+            
           }
           
           //TODO: 직접 추가

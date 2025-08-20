@@ -26,8 +26,6 @@ class ScheduleExVM: ObservableObject {
     
   @Published var textFieldName: String = ""
   @Published var selectedCategory: String = ""
-  @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
-  
   @Published var timeSelect: [String] = ["시작", "종료", "반복"]
   @Published var allTime: [String] = [
     "",
@@ -68,6 +66,7 @@ class ScheduleExVM: ObservableObject {
   @Published var toastOn = false
   @Published var dontReserveToastOn = false
   @Published var cantTommorowToast = false
+  @Published var offDtoModifier = false
   
   
   private let daysDic: [String: [Int]] = ["평일": [0,1,2,3,4], "주말": [5,6] , "매일" : [0,1,2,3,4,5,6]]
@@ -209,14 +208,7 @@ class ScheduleExVM: ObservableObject {
     let intervalStart = TimeManager.shared.timeStringToDateComponents(startTimeStr) ?? DateComponents()
     let intervalEnd = TimeManager.shared.timeStringToDateComponents(endTimeStr) ?? DateComponents()
     
-    if let sh = intervalStart.hour, let sm = intervalStart.minute,
-       let eh = intervalEnd.hour, let em = intervalEnd.minute {
-        
-        if !(sh < eh || (sh == eh && sm < em)) {
-          completion(410)
-          return false
-        }
-    }
+ 
     let schedule = DeviceActivitySchedule(
       intervalStart: intervalStart,
       intervalEnd: intervalEnd,
@@ -225,6 +217,8 @@ class ScheduleExVM: ObservableObject {
       completion(nil)
       return false
     }
+    
+
     
     let days = selectedDays.compactMap {
       weekdayTextToNumber[$0]
@@ -247,6 +241,12 @@ class ScheduleExVM: ObservableObject {
         TimerSharedManager.shared.addTimer(dto: reponseDto)
         TimerSharedManager.shared.saveTimeringSession(reponseDto)
         try deviceActivityCenter.startMonitoring(.init(reponseDto.id.description) , during: schedule)
+        
+        if reponseDto.status == .OFF {
+          DispatchQueue.main.async {
+            self.offDtoModifier = true
+          }
+        }
         
         return true
 

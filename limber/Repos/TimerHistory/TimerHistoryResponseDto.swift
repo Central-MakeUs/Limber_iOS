@@ -30,20 +30,20 @@ struct TimerHistoryResponse: Decodable {
 }
 
 struct TimerHistoryResponseDto: Codable, Identifiable {
-    let id: Int
-    let timerId: Int
-    let userId: String
-    let title: String
-    let focusTypeId: Int
-    let repeatCycleCode: String
-    let repeatDays: String
-    let historyDt: String
-    let historyStatus: String
-    let failReason: String?
-    let startTime: String
-    let endTime: String
-    let hasRetrospect: Bool
-    let retrospectId: Int?
+  let id: Int
+  let timerId: Int
+  let userId: String
+  let title: String
+  let focusTypeId: Int
+  let repeatCycleCode: String
+  let repeatDays: String
+  let historyDt: String
+  let historyStatus: String
+  let failReason: String?
+  let startTime: String
+  let endTime: String
+  let hasRetrospect: Bool
+  let retrospectId: Int?
   let retrospectImmersion: Int?
   let retrospectComment: String?
   let focusTypeTitle: String

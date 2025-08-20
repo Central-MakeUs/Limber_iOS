@@ -18,9 +18,9 @@ struct AutoFocusSheet: View {
     VStack {
       
       Spacer()
-        .frame(height: 30)
+        .frame(height: 25)
       ZStack {
-        Text("직접 추가")
+        Text("차단 중인 앱")
           .font(.suitHeading3Small)
           .foregroundStyle(.gray800)
         HStack {
@@ -29,7 +29,7 @@ struct AutoFocusSheet: View {
             dismiss()
           } label: {
             Image("xmark")
-          }.padding(.trailing)
+          }.padding(.trailing, 20)
         }
         
       }.frame(height: 24)

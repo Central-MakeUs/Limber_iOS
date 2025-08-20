@@ -7,5 +7,8 @@
 
 
 class StaticValManager {
-  static let titleDic: [Int: String] = [1:"학습",2:"업무",3:"회의",4:"직업",5:"기타"]
+  static let titleDic: [Int: String] = [1:"학습",2:"업무",3:"회의",4:"작업",5:"독서"]
+  static let titleCntDic: [String: Int] = ["학습":1,"업무":2,"회의":3,"작업":4,"독서": 5]
+  static let titleTextDic: [String] = ["학습","업무","회의","작업","독서"]
+  
 }

@@ -12,7 +12,6 @@ class LabVM: ObservableObject {
   private let historyRepo = TimerHistoryRepository()
   private let repo = TimerHistoryAnalyticsAPI()
   private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-  private let studyIcons = ["note", "bag", "book"]
   private var failReasonIcons = ["firstMedal", "secondMedal", "thirdMedal"]
   private var totalActualMinutes: Double = 1.0
   
@@ -49,6 +48,10 @@ class LabVM: ObservableObject {
   @Published var totalFailureCount: Double = 0.0
   @Published var weekCount = 0
   
+  @Published var isAll = true
+  @Published var onlyNotComplete = false
+  @Published var isChecked = false
+  
   
   init() {
     focusTimeWeekly = [
@@ -81,7 +84,7 @@ class LabVM: ObservableObject {
   func fetchHistories() {
     Task {
       do {
-        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange: "ALL", onlyIncompleteRetrospect: false))
+        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange: self.isAll ? "ALL" : "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
       } catch {
         print("error:::\(error)")
       }
@@ -142,11 +145,11 @@ class LabVM: ObservableObject {
           self.studyPer = Int(Double(element.totalActualMinutes) / (self.totalActualMinutes == 0 ? 1 : self.totalActualMinutes) * 100)
         }
         
-        return RankItem(icon: studyIcons[index], title: element.focusTypeName, duration: TimeManager.shared.minutesToHourMinuteString(element.totalActualMinutes), progress: Double(element.totalActualMinutes) / self.totalActualMinutes )  }
+        return RankItem(icon: StaticValManager.titleDic[element.focusTypeId] ?? "", title: element.focusTypeName, duration: TimeManager.shared.minutesToHourMinuteString(element.totalActualMinutes), progress: Double(element.totalActualMinutes) / self.totalActualMinutes )  }
       
       
       try await repo.actualByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
-        self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60 )
+        self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60 > 24 ? 24 : Double(element.totalActualMinutes) / 60)
       }
       
       try await repo.immersionByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
@@ -181,6 +184,7 @@ class LabVM: ObservableObject {
     }
     
   }
+  
 }
 
 

@@ -12,6 +12,7 @@
 		6049717A2E1AAF3900AB2731 /* ShieldConfigurationEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6049716E2E1AAF3900AB2731 /* ShieldConfigurationEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		604971B52E27CB1900AB2731 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6049716F2E1AAF3900AB2731 /* ManagedSettings.framework */; };
 		604971BD2E27CB1900AB2731 /* ShieldActionEx.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 604971B42E27CB1900AB2731 /* ShieldActionEx.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		605E11EC2E54D3BC00386260 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 605E11EB2E54D3BC00386260 /* Lottie */; };
 		6076CA0C2E0969290068E676 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6076CA0B2E0969290068E676 /* DeviceActivity.framework */; };
 		6076CA142E0969290068E676 /* limber_ActivityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA092E0969280068E676 /* limber_ActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6076CA2A2E0969570068E676 /* limber_ActivityReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6076CA1E2E0969560068E676 /* limber_ActivityReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -270,6 +271,14 @@
 			);
 			target = 6076CA082E0969280068E676 /* limber_ActivityMonitor */;
 		};
+		60B0FAF72E54D05000A4D414 /* Exceptions for "Lottie" folder in "limber_ActivityReport" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Loading:Dark.json",
+				LottieView.swift,
+			);
+			target = 6076CA1D2E0969560068E676 /* limber_ActivityReport */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -329,6 +338,14 @@
 			path = Unused;
 			sourceTree = "<group>";
 		};
+		60B0FAF32E54D03300A4D414 /* Lottie */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				60B0FAF72E54D05000A4D414 /* Exceptions for "Lottie" folder in "limber_ActivityReport" target */,
+			);
+			path = Lottie;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,6 +375,7 @@
 				609EF26D2E33DD860029D990 /* FirebaseCore in Frameworks */,
 				609EF2732E33DD860029D990 /* FirebaseStorage in Frameworks */,
 				609EF2652E33DAB00029D990 /* FirebaseFirestore in Frameworks */,
+				605E11EC2E54D3BC00386260 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +406,7 @@
 		6076C9E82E09664B0068E676 = {
 			isa = PBXGroup;
 			children = (
+				60B0FAF32E54D03300A4D414 /* Lottie */,
 				609EF2182E2FC8E50029D990 /* Unused */,
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA0D2E0969290068E676 /* limber_ActivityMonitor */,
@@ -489,6 +508,7 @@
 			fileSystemSynchronizedGroups = (
 				6076C9F32E09664B0068E676 /* limber */,
 				609EF2182E2FC8E50029D990 /* Unused */,
+				60B0FAF32E54D03300A4D414 /* Lottie */,
 			);
 			name = limber;
 			packageProductDependencies = (
@@ -497,6 +517,7 @@
 				609EF2662E33DAB00029D990 /* FirebaseFirestoreCombine-Community */,
 				609EF26C2E33DD860029D990 /* FirebaseCore */,
 				609EF2722E33DD860029D990 /* FirebaseStorage */,
+				605E11EB2E54D3BC00386260 /* Lottie */,
 			);
 			productName = limber;
 			productReference = 6076C9F12E09664B0068E676 /* limber.app */;
@@ -542,6 +563,7 @@
 				6076C9F32E09664B0068E676 /* limber */,
 				6076CA1F2E0969560068E676 /* limber_ActivityReport */,
 				609EF2182E2FC8E50029D990 /* Unused */,
+				60B0FAF32E54D03300A4D414 /* Lottie */,
 			);
 			name = limber_ActivityReport;
 			packageProductDependencies = (
@@ -592,6 +614,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				609EF2612E33DAB00029D990 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				605E11EA2E54D3BC00386260 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6076C9F22E09664B0068E676 /* Products */;
@@ -1188,6 +1211,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		605E11EA2E54D3BC00386260 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		609EF2612E33DAB00029D990 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1199,6 +1230,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		605E11EB2E54D3BC00386260 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 605E11EA2E54D3BC00386260 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
 		609EF2622E33DAB00029D990 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 609EF2612E33DAB00029D990 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

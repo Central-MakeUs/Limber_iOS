@@ -33,19 +33,21 @@ struct FocusTypesView: View {
       .frame(height: 40)
       
       TagListWithOnMove()
+    
       
-      Button {
-        showSheet = true
-      } label: {
-        Text("직접 추가하기")
-          .foregroundStyle(.black)
-          .font(.suitHeading3Small)
-      }
-      .frame(height: 54)
-      .frame(maxWidth: .infinity)
-      .background(.gray200)
-      .cornerRadius(10, corners: .allCorners)
-      .padding(.horizontal, 20)
+      //TODO: 추가 가능 시
+//      Button {
+//        showSheet = true
+//      } label: {
+//        Text("직접 추가하기")
+//          .foregroundStyle(.black)
+//          .font(.suitHeading3Small)
+//      }
+//      .frame(height: 54)
+//      .frame(maxWidth: .infinity)
+//      .background(.gray200)
+//      .cornerRadius(10, corners: .allCorners)
+//      .padding(.horizontal, 20)
     }
     .sheet(isPresented: $showSheet) {
       AutoFocusSheet()
@@ -79,14 +81,15 @@ final class TagVM: ObservableObject {
     .init(name: "회의"),
     .init(name: "작업"),
     .init(name: "독서"),
-    .init(name: "러닝"),
-    .init(name: "오픽 공부", deletable: true),
-    .init(name: "토익", deletable: true),
-    .init(name: "취준", deletable: true)
+//    .init(name: "러닝"),
+//    .init(name: "오픽 공부", deletable: true),
+//    .init(name: "토익", deletable: true),
+//    .init(name: "취준", deletable: true)
   ]
   
   func move(from source: IndexSet, to destination: Int) {
-    items.move(fromOffsets: source, toOffset: destination)
+//TODO: 이후 드래그 가능 시
+    //    items.move(fromOffsets: source, toOffset: destination)
   }
   
   func delete(_ item: TagItem) {

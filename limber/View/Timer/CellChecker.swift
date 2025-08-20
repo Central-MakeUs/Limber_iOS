@@ -21,7 +21,7 @@ struct CellChecker: View {
         Circle()
           .fill(timerVM.checkedModels.contains(model) ? Color.LimberPurple : Color.white)
         if timerVM.checkedModels.contains(model) {
-          Image(systemName: "checkmark")
+          Image("checkmark")
             .foregroundColor(.white)
         }
       }

@@ -21,7 +21,7 @@ struct TimerModel: Codable {
   let repeatCycleCode: RepeatCycleCode
 
   init(id: Int, title: String, focusTitle: String, startTime: String, endTime: String, repeatDays: String, repeatCycleCode: RepeatCycleCode) {
-    let titleDic: [String: Int] = ["학습": 1,"업무": 2,"회의": 3,"직업": 4,"기타": 5]
+    
     self.id = id
     self.title = title
     self.focusTitle = focusTitle
@@ -29,7 +29,7 @@ struct TimerModel: Codable {
     self.endTime = endTime.replacingOccurrences(of: " ", with: "")
     self.repeatDays = repeatDays
     self.repeatCycleCode = repeatCycleCode
-    focusTypeId = titleDic[focusTitle] ?? 0
+    focusTypeId = StaticValManager.titleCntDic[focusTitle] ?? 0
 
   }
   var totalDuration: TimeInterval? {
@@ -62,6 +62,7 @@ struct TimerModel: Codable {
 //  }
   
   func getRequestDto(userId: String, timerCode: TimerCode) -> TimerRequestDto {
+        
     return TimerRequestDto(userId: userId, title: self.title, focusTypeId: focusTypeId, timerCode: timerCode, repeatCycleCode: repeatCycleCode, repeatDays: self.repeatDays, startTime: convertKoreanTimeTo24Hour(self.startTime) ?? "", endTime: convertKoreanTimeTo24Hour(self.endTime) ?? "")
  
   }

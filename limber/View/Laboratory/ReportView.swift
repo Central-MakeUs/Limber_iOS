@@ -136,6 +136,13 @@ struct ReportView: View {
                        
             
         }
+        .onAppear {
+          Task {
+            await labVM.fetchReports()
+
+          }
+
+        }
    
     }
 }

@@ -11,11 +11,14 @@ import SwiftUI
 
 struct RetrospectiveView: View {
   @Environment(\.dismiss) var dismiss
+  @EnvironmentObject var router: AppRouter
   @StateObject var vm: RetrospectiveVM
+  
+  @State var saveAlertSheet = false
   
   var body: some View {
     ZStack {
-      Image("background")
+      Image("DarkBackground")
         .resizable()
         .ignoresSafeArea()
       
@@ -73,7 +76,7 @@ struct RetrospectiveView: View {
             VStack {
               CustomStepSlider(
                 value: $vm.sliderValue,
-                steps: [0, 50, 100], // 원하는 스텝 배열
+                steps: [0, 50, 100],
                 trackHeight: 8
               )
             }
@@ -102,7 +105,7 @@ struct RetrospectiveView: View {
             
           }
           .font(.system(size: 14, weight: .regular))
-          .foregroundColor(.white.opacity(0.8))
+          .foregroundColor(.gray400)
           .frame(width: 340)
         }
         .padding(.bottom, 30)
@@ -112,7 +115,7 @@ struct RetrospectiveView: View {
             .font(.suitBody2)
             .foregroundStyle(Color.gray400), axis: .vertical)
           .font(.suitBody2)
-          .foregroundStyle(Color.gray400)
+          .foregroundStyle(Color.white)
           .lineLimit(3...6)
           .padding(20)
         }
@@ -128,7 +131,7 @@ struct RetrospectiveView: View {
         
         BottomBtn(isEnable: $vm.isEnable, title: "저장하기", action: {
           vm.save()
-          dismiss()
+          saveAlertSheet = true
           
         })
         .padding(20)
@@ -139,6 +142,20 @@ struct RetrospectiveView: View {
     }
     .toolbar(.hidden, for: .navigationBar)
     .hideKeyboardOnTap()
+    .fullScreenCover(isPresented: $saveAlertSheet, content: {
+      SaveAlertSheet(leftAction: {
+        router.poptoRoot()
+      }, rightAction: {
+        router.poptoRoot()
+        router.selectedTab = .laboratory
+
+      })
+      .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+      .background(Color.black.opacity(0.3))
+      .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
+      .ignoresSafeArea(.all)
+      
+    })
 
     
   }

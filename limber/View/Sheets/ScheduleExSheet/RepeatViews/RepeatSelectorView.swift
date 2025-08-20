@@ -20,7 +20,7 @@ struct RepeatSelectorView: View {
               Circle()
                 .fill(vm.selectedOption == option ? Color.LimberPurple : Color.white)
               if vm.selectedOption == option {
-                Image(systemName: "checkmark")
+                Image("checkmark")
                   .foregroundColor(.white)
               }
             }

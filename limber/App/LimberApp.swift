@@ -39,12 +39,14 @@ struct LimberApp: App {
       if showSplash {
         SplashView()
           .onAppear {
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
               withAnimation {
                 showSplash = false
               }
             }
           }
+        
       } else {
         if hasSeenMain {
             NavigationStack(path: $router.path) {
@@ -88,8 +90,9 @@ struct LimberApp: App {
           } else {
             OnBoardingView(onComplete: {
               hasSeenMain = true
-              
+              SharedData.defaultsGroup?.set(false, forKey: "doNotNoti")
             })
+            
 
           }
         }
@@ -127,7 +130,6 @@ struct LimberApp: App {
 @MainActor
 final class AppBootstrapper: ObservableObject {
     @Published var isReady = false
-
   
     func run() async {
       

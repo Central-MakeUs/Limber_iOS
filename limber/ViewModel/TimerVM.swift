@@ -18,7 +18,6 @@ class TimerVM: ObservableObject {
       .assign(to: &$btnEnable)
   }
 
-  @Published var categorys: [String] = ["학습","업무","회의","직업","기타"]
   @Published var btnEnable = false
   @Published var isTimering = false
   
@@ -103,7 +102,7 @@ class TimerVM: ObservableObject {
   }
   
   func nowStarting(completion: () -> ()) {
-    if selectingH > 0 || (selectingH <= 0 && selectingM > 15) {
+    if selectingH > 0 || (selectingH <= 0 && selectingM > 14) {
       completion()
     } else {
       if !toastOn {
@@ -132,41 +131,55 @@ class TimerVM: ObservableObject {
   }
 }
 struct ToastModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    let message: String
-    let duration: TimeInterval
-
-    @State private var workItem: DispatchWorkItem?
-
-    func body(content: Content) -> some View {
-        ZStack {
-            content
-
-            if isPresented {
-                VStack {
-                    Spacer()
-                    Text(message)
-                        .padding()
-                        .background(Color.black.opacity(0.8))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                        .padding(.bottom, 40)
-                }
-                .animation(.easeInOut, value: isPresented)
+  @Binding var isPresented: Bool
+  let message: String
+  let duration: TimeInterval
+  
+  let isWarning: Bool
+  
+  @State private var workItem: DispatchWorkItem?
+  
+  func body(content: Content) -> some View {
+    ZStack {
+      content
+      
+      if isPresented {
+        VStack {
+          Spacer()
+          HStack(spacing: 8) {
+            if isWarning {
+              Image("warning")
+                .frame(width: 20, height: 20)
+            } else {
+              Image("noti")
+                .frame(width: 20, height: 20)
             }
+            
+            Text(message)
+            
+          }
+          .padding()
+          .background(Color.black.opacity(0.8))
+          .foregroundColor(.white)
+          .cornerRadius(10)
+          .transition(.move(edge: .bottom).combined(with: .opacity))
+          .padding(.bottom, 40)
+          
         }
-        .onChange(of: isPresented) { newValue in
-            if newValue {
-                workItem?.cancel()
-                let task = DispatchWorkItem {
-                    withAnimation {
-                        isPresented = false
-                    }
-                }
-                workItem = task
-                DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: task)
-            }
-        }
+        .animation(.easeInOut, value: isPresented)
+      }
     }
+    .onChange(of: isPresented) { newValue in
+      if newValue {
+        workItem?.cancel()
+        let task = DispatchWorkItem {
+          withAnimation {
+            isPresented = false
+          }
+        }
+        workItem = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: task)
+      }
+    }
+  }
 }

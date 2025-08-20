@@ -46,7 +46,8 @@ class TimerObserver: ObservableObject {
       }
   }
   func stopTimer() {
-    NSLog("stopTimer:::")
+    totalTime = 0
+    elapsed = 0
     cancellable?.cancel()
       cancellable = nil
   }

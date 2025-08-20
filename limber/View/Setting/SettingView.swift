@@ -68,21 +68,21 @@ struct SettingView: View {
         
         // 기능 아이콘들
         HStack(spacing: 8) {
-//          FeatureButton(
-//            icon: "settingNote",
-//            title: "집중할 목표",
-//            action: {
-//              router.push(.focusTypes)
-//            }
-//          )
-//          .frame(width: 106)
-//          .background(Color.white)
-//          .cornerRadius(8)
+          FeatureButton(
+            icon: "settingNote",
+            title: "집중 상황",
+            action: {
+              router.push(.focusTypes)
+            }
+          )
+          .frame(width: 106)
+          .background(Color.white)
+          .cornerRadius(8)
 
 
           FeatureButton(
             icon: "settingApps",
-            title: "관리 중인 앱", action: {
+            title: "방해하는 앱", action: {
               showPicker = true
             }
           )
@@ -113,9 +113,18 @@ struct SettingView: View {
       // 메뉴 리스트
       VStack(spacing: 0) {
 //        MenuRow(title: "림버의 스토리", hasChevron: true)
-//        MenuRow(title: "FAQ", hasChevron: true)
+        MenuRow(title: "FAQ", hasChevron: true, onTap: {
+          if let url = URL(string: "https://www.notion.so/248907c3c029806d93c7e1aacc5aafaa") {
+            UIApplication.shared.open(url)
+          }
+          
+        })
 //        MenuRow(title: "이용 약관", hasChevron: true)
-//        MenuRow(title: "개인 정보 처리 방침", hasChevron: true)
+        MenuRow(title: "개인 정보 처리 방침", hasChevron: true, onTap: {
+          if let url = URL(string: "https://www.notion.so/243907c3c0298031aa27f916366a2d5b?source=copy_link") {
+            UIApplication.shared.open(url)
+          }
+        })
 //        MenuRow(title: "로그아웃", hasChevron: false, isDestructive: true)
 //        MenuRow(title: "회원 탈퇴", hasChevron: false, isDestructive: true)
       }
