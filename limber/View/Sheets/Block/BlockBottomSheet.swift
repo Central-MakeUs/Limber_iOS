@@ -21,6 +21,7 @@ struct BlockBottomSheet: View {
         .frame(height: 20)
       HStack {
         Button(action: {
+          
           dismiss()
         }) {
           Image("xmark")

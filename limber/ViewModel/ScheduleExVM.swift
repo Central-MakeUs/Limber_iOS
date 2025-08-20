@@ -68,6 +68,10 @@ class ScheduleExVM: ObservableObject {
   @Published var cantTommorowToast = false
   @Published var offDtoModifier = false
   
+  @Published var pickedSelectedAMPM = "오전"
+  @Published var pickedSelectedHour = 0
+  @Published var pickedSelectedMinute = 0
+
   
   private let daysDic: [String: [Int]] = ["평일": [0,1,2,3,4], "주말": [5,6] , "매일" : [0,1,2,3,4,5,6]]
   
@@ -175,15 +179,21 @@ class ScheduleExVM: ObservableObject {
   
   func timePicked() {
     if isTime {
+      (pickedSelectedAMPM, pickedSelectedHour, pickedSelectedMinute) = (selectedAMPM, selectedHour, selectedMinute)
       if isStartTime {
         allTime[0] = "\(selectedAMPM) \(selectedHour) 시 \(selectedMinute) 분"
       } else {
+       
         allTime[1] = "\(selectedAMPM) \(selectedHour) 시 \(selectedMinute) 분"
       }
-      (selectedAMPM, selectedHour, selectedMinute) = ("오전", 0, 0)
       
     }
     
+  }
+  
+  func resetTimerPicked() {
+    (selectedAMPM, selectedHour, selectedMinute) = (pickedSelectedAMPM, pickedSelectedHour, pickedSelectedMinute)
+
   }
   
   func repeatPicked() {
@@ -191,6 +201,11 @@ class ScheduleExVM: ObservableObject {
   }
   
   func goBack700H() {
+    
+    if isTime {
+      resetTimerPicked()
+    }
+    
     on700()
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
       self.heights = [.height(700)]
@@ -321,10 +336,14 @@ extension ScheduleExVM {
     isStartTime = false
     isTime = false
     
+    pickedSelectedHour = 0
+    pickedSelectedMinute = 0
+    pickedSelectedAMPM = "오전"
+    
     selectedMinute = 0
     selectedHour = 0
     selectedAMPM = "오전"
-    
+
     startTime = ""
     finishTime = ""
     repeatTime = ""
