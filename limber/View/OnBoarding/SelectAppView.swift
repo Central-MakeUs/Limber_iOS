@@ -37,6 +37,7 @@ struct SelectAppView: View {
         BottomBtn(isEnable: $isEnable, title: "앱 등록하기") {
           showPicker = true
         }
+        .padding(.bottom, 24)
       
       }.toolbar(.hidden, for: .navigationBar)
       .padding(.horizontal, 20)

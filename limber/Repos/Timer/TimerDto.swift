@@ -40,7 +40,6 @@ struct TimerResponseDto: Codable, Hashable {
       .joined(separator: " ")
   }
   func getFocusTitle() -> String {
-    
     return StaticValManager.titleDic[self.focusTypeId] ?? ""
   }
   
