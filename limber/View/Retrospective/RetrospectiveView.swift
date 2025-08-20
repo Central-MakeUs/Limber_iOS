@@ -15,12 +15,14 @@ struct RetrospectiveView: View {
   @StateObject var vm: RetrospectiveVM
   
   @State var saveAlertSheet = false
+  @State var beakerImages = ["20Beaker","60Beaker","100Beaker"]
+
+  private let stepImages = ["20Balloon","60Balloon","100Balloon"]
+
   
   var body: some View {
-    ZStack {
-      Image("DarkBackground")
-        .resizable()
-        .ignoresSafeArea()
+
+    
       
       VStack(spacing: 0) {
         ZStack(alignment: .center) {
@@ -39,20 +41,9 @@ struct RetrospectiveView: View {
           }
           .padding(.trailing, 20)
         }
+
         
         Spacer().frame(height: 50)
-        
-        //        Text("작은 회고가 쌓여 나만의 집중 루틴을 만들어줄거예요")
-        //          .font(.suitBody3)
-        //          .foregroundColor(.limberPurple)
-        //          .frame(height: 29 )
-        //          .frame(maxWidth: .infinity)
-        //          .background(.primaryDark)
-        //          .cornerRadius(100, corners: .allCorners)
-        //          .padding(.horizontal, 55)
-        //        
-        //        Spacer()
-        //          .frame(height: 38)
         
         Text("이번 실험에 얼마나 몰입했나요?")
           .font(.suitHeading3)
@@ -61,38 +52,34 @@ struct RetrospectiveView: View {
         
         Spacer().frame(height: 40)
         
-        
-        Image("beaker")
-          .resizable()
-          .aspectRatio(contentMode: .fit)
+          ZStack {
+            if let animName = vm.transitionAnimationName {
+                LottieView(name: animName, onCompleted: {
+                  vm.transitionAnimationName = nil
+              }, loopMode: .playOnce)
+              } else {
+                Image(beakerImages[Int(vm.currentIndex)])
+                      .resizable()
+                      .scaledToFit()
+         
+              }
+          }
           .frame(width: 200, height: 200)
         
         Spacer()
           .frame(height: 62)
         
-        // 슬라이더 + 값 표시
         VStack(spacing: 8) {
           ZStack(alignment: .trailing) {
             VStack {
-              CustomStepSlider(
-                value: $vm.sliderValue,
-                steps: [0, 50, 100],
-                trackHeight: 8
-              )
+              CustomStepSlider(vm: vm, steps: [0,50,100], stepImages: stepImages)
+              
             }
-            
-            //            if selectedFocus == 2 {
-            //              // 오른쪽 끝 100% 표시
-            //              Text("100%")
-            //                .font(.system(size: 14, weight: .bold))
-            //                .foregroundColor(.white)
-            //                .offset(x: 36)
-            //            }
+        
           }
           .padding(.horizontal, 70)
           .padding(.vertical, 12)
           
-          // 세 가지 선택 텍스트
           HStack {
             Text("거의 못했어요")
               .frame(width: 100)
@@ -137,8 +124,10 @@ struct RetrospectiveView: View {
         .padding(20)
         
       }
-      .padding(.top)
-
+      .background {
+      Image("DarkBackground")
+        .resizable()
+        .ignoresSafeArea()
     }
     .toolbar(.hidden, for: .navigationBar)
     .hideKeyboardOnTap()
@@ -162,68 +151,7 @@ struct RetrospectiveView: View {
   
   
 }
-//#Preview {
-//  FocusExperimentView()
-//}
-//struct CustomStepSlider: View {
-//  @Binding var value: Double
-//  let steps: [Double]
-//  var trackHeight: CGFloat = 8
-//  
-//  private func nearestStep(to rawValue: Double) -> Double {
-//    steps.min(by: { abs($0 - rawValue) < abs($1 - rawValue) }) ?? rawValue
-//  }
-//  
-//  var body: some View {
-//    GeometryReader { geo in
-//      let thumbSize: CGFloat = 22
-//      let availableWidth = geo.size.width - thumbSize
-//      let percent = CGFloat((value - steps.first!) / (steps.last! - steps.first!))
-//      let x = percent * availableWidth
-//      
-//      ZStack(alignment: .leading) {
-//        Capsule()
-//          .fill(Color.gray)
-//          .frame(height: trackHeight)
-//        Capsule()
-//          .fill(Color.LimberPurple)
-//          .frame(width: x + thumbSize / 2, height: trackHeight)
-//        ForEach(steps, id: \.self) { step in
-//          
-//          let stepPercent = CGFloat((step - steps.first!) / (steps.last! - steps.first!))
-//          let stepX = stepPercent * availableWidth
-//          let isActive = value >= step
-//          
-//          let circle = Circle()
-//            .fill(isActive ? Color.LimberPurple : Color.gray)
-//            .frame(width: thumbSize, height: thumbSize)
-//            .offset(x: stepX)
-//          circle
-//          
-//        }
-//        Circle()
-//          .fill(Color.white)
-//          .overlay(Circle().stroke(Color.LimberPurple, lineWidth: 4))
-//          .frame(width: thumbSize + 8, height: thumbSize + 8)
-//          .offset(x: x)
-//          .gesture(
-//            DragGesture(minimumDistance: 0)
-//              .onChanged { gesture in
-//                let loc = min(max(0, gesture.location.x - thumbSize / 2), availableWidth)
-//                let rawPercent = Double(loc / availableWidth)
-//                let rawValue = steps.first! + rawPercent * (steps.last! - steps.first!)
-//                value = nearestStep(to: rawValue) // snap
-//              }
-//              .onEnded { _ in
-//                value = nearestStep(to: value) // 최종적으로도 snap
-//              }
-//          )
-//      }
-//      .frame(height: max(thumbSize, trackHeight))
-//    }
-//    .frame(maxWidth: .infinity)
-//    .frame(height: max(28, trackHeight))
-//    
-//  }
-//}
+#Preview {
+  RetrospectiveView(vm: RetrospectiveVM(date: "", labName: "", timerId: 0, historyId: 0))
+}
 

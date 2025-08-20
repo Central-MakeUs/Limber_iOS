@@ -15,8 +15,15 @@ class RetrospectiveVM: ObservableObject {
   @Published var selectedFocus: Int = 2
   @Published var sliderValue: Double = 0.5
   
-  @Published var timerId: Int
-  @Published var historyId: Int
+  @Published var timerId: Int = 0
+  @Published var historyId: Int = 0
+  
+  @Published var previousIndex: Int = 0
+  @Published var currentIndex: Int = 0
+  
+  
+  @Published var transitionAnimationName: String? = nil
+  @Published var value: Double = 0.0
   
   var api = TimerRetrospectAPI()
   
