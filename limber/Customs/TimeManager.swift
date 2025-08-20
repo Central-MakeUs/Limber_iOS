@@ -49,7 +49,7 @@ class TimerObserver: ObservableObject {
     totalTime = 0
     elapsed = 0
     cancellable?.cancel()
-      cancellable = nil
+    cancellable = nil
   }
   
   

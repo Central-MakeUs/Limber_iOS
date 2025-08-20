@@ -36,31 +36,31 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
   override func intervalDidStart(for activity: DeviceActivityName) {
     super.intervalDidStart(for: activity)
     
-    let newStore = ManagedSettingsStore(named: .total)
-    newStore.clearAllSettings()
-    
-    if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
-      let decoder = JSONDecoder()
-      if let apps = try? decoder.decode([PickedAppModel].self, from: data) {
-        var set = Set<ApplicationToken>()
-        apps.forEach {
-          if let token = $0.token {
-            set.insert(token)
-          }
-        }
-        newStore.shield.applications = set
-      }
-    }
-    SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
-    SharedData.defaultsGroup?.set(activity.rawValue, forKey: SharedData.Keys.nowTimerKey.key)
-    
     let focusSession = TimerSharedManager.shared.loadFocusSessions()
     if let idx = focusSession.map({ $0.id.description }).firstIndex(of: activity.rawValue) {
       let today = Date()
       let calendar = Calendar.current
       let weekdayNumber = calendar.component(.weekday, from: today)
-      if focusSession[idx].repeatDays.split(separator: ",").contains("\(weekdayNumber)") {
+      NSLog("\(focusSession[idx]) ::: ")
+      if focusSession[idx].repeatDays.split(separator: ",").contains("\(weekdayNumber)") || focusSession[idx].timerCode == .IMMEDIATE {
+        let newStore = ManagedSettingsStore(named: .total)
+        newStore.clearAllSettings()
+        
+        if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pickedApps.key) {
+          let decoder = JSONDecoder()
+          if let apps = try? decoder.decode([PickedAppModel].self, from: data) {
+            var set = Set<ApplicationToken>()
+            apps.forEach {
+              if let token = $0.token {
+                set.insert(token)
+              }
+            }
+            newStore.shield.applications = set
+          }
+        }
         TimerSharedManager.shared.saveTimeringSession(focusSession[idx])
+        SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.isTimering.key)
+        SharedData.defaultsGroup?.set(activity.rawValue, forKey: SharedData.Keys.nowTimerKey.key)
       }
       
     }
@@ -84,7 +84,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
       do {
         SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
         TimerObserver.shared.stopTimer()
-        TimerSharedManager.shared.deleteTimerSession(timerSessionId: 0)
+        TimerSharedManager.shared.saveTimeringSession(nil)
         
         
         if let dotNotNoti = SharedData.defaultsGroup?.bool(forKey: "doNotNoti"), !dotNotNoti {

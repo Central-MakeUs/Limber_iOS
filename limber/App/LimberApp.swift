@@ -23,7 +23,6 @@ struct LimberApp: App {
   @StateObject var scheduleExVM = ScheduleExVM()
   @StateObject var labVM = LabVM()
   @StateObject var settingVM = SettingVM()
-  @StateObject var timerObserver = TimerObserver()
   
   @State private var showSplash = true
 
@@ -83,7 +82,6 @@ struct LimberApp: App {
             .environmentObject(appDelegate)
             .environmentObject(router)
             .environmentObject(blockVM)
-            .environmentObject(timerObserver)
             .background(Color.white)
             
             

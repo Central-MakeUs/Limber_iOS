@@ -19,20 +19,21 @@ struct TimerRequestDto: Codable {
 }
 
 struct TimerResponseDto: Codable, Hashable {
-    let id: Int
-    let title: String
-    let focusTypeId: Int
-    let repeatCycleCode: RepeatCycleCode
-    let repeatDays: String
-    var startTime: String
-    var endTime: String
-    var status: TimerStatus
+  let id: Int
+  let title: String
+  let focusTypeId: Int
+  let repeatCycleCode: RepeatCycleCode
+  let repeatDays: String
+  var startTime: String
+  var endTime: String
+  var status: TimerStatus
+  var timerCode: TimerCode?
   
   
   func getDays() -> String {
     
     let days = ["일", "월", "화", "수", "목", "금", "토"]
-
+    
     return repeatDays.split(separator: ",")
       .compactMap { Int($0) }
       .map { days[$0] }
@@ -48,9 +49,9 @@ struct TimerResponseDto: Codable, Hashable {
   }
 }
 struct LocalTime: Codable {
-    let hour: Int
-    let minute: Int
-    let second: Int
-    let nano: Int
-    
+  let hour: Int
+  let minute: Int
+  let second: Int
+  let nano: Int
+  
 }

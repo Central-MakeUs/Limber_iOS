@@ -117,6 +117,7 @@ class TimerVM: ObservableObject {
     do {
       for m in self.checkedModels {
         try await self.timerRepository.deleteTimer(id: m.id)
+        SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
         deviceActivityCenter.stopMonitoring([.init(m.id.description)])
         TimerSharedManager.shared.deleteTimerSession(timerSessionId: m.id)
       }
@@ -127,6 +128,18 @@ class TimerVM: ObservableObject {
       delAlert = false
       isEdit = false
       action()
+    }
+  }
+  
+  
+  func allCheckerTapped() {
+    isAllChecker.toggle()
+    if isAllChecker {
+      _ = timers.map {
+        checkedModels.insert($0)
+      }
+    } else {
+      checkedModels.removeAll()
     }
   }
 }

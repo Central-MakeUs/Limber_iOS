@@ -40,7 +40,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
-
+    TimerObserver.shared.stopTimer()
     if isForeGround {
       router?.push(.circularTimer)
       isForeGround = false

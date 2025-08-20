@@ -101,7 +101,7 @@ struct BlockAppsSheet: View {
         } label: {
           HStack(spacing: 8) {
             Spacer()
-            Image( "pencil")
+            Image("pencil")
               .resizable()
               .frame(width: 16,height: 16)
               .foregroundColor(.gray500)
@@ -140,8 +140,9 @@ struct BlockAppsSheet: View {
               do {
                 NSLog("request::: \(request)")
 
-                var reponseDto = try await timerVM.timerRepository.createTimer(request)
                 
+                var reponseDto = try await timerVM.timerRepository.createTimer(request)
+                reponseDto.timerCode = request.timerCode
 //                let pair = TimeManager.shared
 //                  .makeTimerTimes(
 //                    start: reponseDto.startTime,

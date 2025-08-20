@@ -242,7 +242,7 @@ struct TimerView: View {
           
         } else {
           CellAllChecker(timerVM: timerVM, action: {
-            allCheckerTapped()
+            timerVM.allCheckerTapped()
           })
           Text("전체선택")
             .font(.suitHeading3Small)
@@ -396,6 +396,8 @@ struct TimerView: View {
       .cornerRadius(100)
       
       Button {
+        timerVM.isAllChecker = false
+        timerVM.checkedModels.removeAll()
         timerVM.isEdit = false
       } label: {
         HStack {
@@ -449,16 +451,7 @@ struct TimerView: View {
   }
   
   
-  func allCheckerTapped() {
-    timerVM.isAllChecker.toggle()
-    if timerVM.isAllChecker {
-      _ = timerVM.timers.map {
-        timerVM.checkedModels.insert($0)
-      }
-    } else {
-      timerVM.checkedModels.removeAll()
-    }
-  }
+
   
 }
 

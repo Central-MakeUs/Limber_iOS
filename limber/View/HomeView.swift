@@ -15,8 +15,9 @@ struct HomeView: View {
   @ObservedObject var deviceActivityReportVM = DeviceActivityReportVM()
   @EnvironmentObject var router: AppRouter
   @EnvironmentObject var blockVM: BlockVM
-  @EnvironmentObject var timerObserver: TimerObserver
   @State var showPicker = false
+
+  var timerObserver = TimerObserver.shared
 
   var body: some View {
     GeometryReader { geo in

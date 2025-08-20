@@ -23,10 +23,10 @@ class ScheduleExVM: ObservableObject {
   private var cancellables = Set<AnyCancellable>()
   
   let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND]
-    
+  let timeSelect: [String] = ["시작", "종료", "반복"]
+
   @Published var textFieldName: String = ""
   @Published var selectedCategory: String = ""
-  @Published var timeSelect: [String] = ["시작", "종료", "반복"]
   @Published var allTime: [String] = [
     "",
     "",
@@ -59,8 +59,8 @@ class ScheduleExVM: ObservableObject {
   
   //MARK: BottomBtn
   @Published var scheduleExBtnEnable = false
-  @Published var timeBtnEnable = false
-  @Published var repeatBtnEnable = false
+  @Published var timeBtnEnable = true
+  @Published var repeatBtnEnable = true
   @Published var timesNotEmpty = false
   
   @Published var toastOn = false
@@ -76,13 +76,16 @@ class ScheduleExVM: ObservableObject {
   init() {
     
     $allTime
-        .map { !$0.contains { $0.isEmpty } }
+        .map { arr in
+            let firstTwo = arr.prefix(2)
+            return !firstTwo.contains { $0.isEmpty }
+        }
         .assign(to: &$timesNotEmpty)
     
-    $selectedDays
-      .map { !$0.isEmpty }
-      .assign(to: &$repeatBtnEnable)
-    
+//    $selectedDays
+//      .map { !$0.isEmpty }
+//      .assign(to: &$repeatBtnEnable)
+//    
     Publishers.CombineLatest($selectedMinute, $selectedHour)
       .map { m, h in
 //        m != 0 || h != 0
@@ -203,27 +206,21 @@ class ScheduleExVM: ObservableObject {
     let startTimeStr = allTime[0].replacingOccurrences(of: " ", with: "")
     let endTimeStr = allTime[1].replacingOccurrences(of: " ", with: "")
     
-    
-    
     let intervalStart = TimeManager.shared.timeStringToDateComponents(startTimeStr) ?? DateComponents()
     let intervalEnd = TimeManager.shared.timeStringToDateComponents(endTimeStr) ?? DateComponents()
     
  
-    let schedule = DeviceActivitySchedule(
-      intervalStart: intervalStart,
-      intervalEnd: intervalEnd,
-      repeats: true)
+
+    
     if !isAtLeast15MinutesApart(intervalStart, intervalEnd) {
       completion(nil)
       return false
     }
     
-
-    
     let days = selectedDays.compactMap {
       weekdayTextToNumber[$0]
     }
-    
+  
     let daysText = days.sorted().joined(separator: ",")
     
     let model = TimerModel(
@@ -236,10 +233,25 @@ class ScheduleExVM: ObservableObject {
     
       do {
         let dto =  model.getRequestDto(userId: userId, timerCode: .SCHEDULED)
-        let reponseDto = try await timerRepository.createTimer(dto)
+        var reponseDto = try await timerRepository.createTimer(dto)
+        
+        
+ 
+        
+        let daysEmpty = selectedDays.isEmpty
+        
+        let schedule = DeviceActivitySchedule(
+          intervalStart: intervalStart,
+          intervalEnd: intervalEnd,
+          repeats: !daysEmpty)
+        
+        if daysEmpty {
+          reponseDto.timerCode = .IMMEDIATE
+        }
         
         TimerSharedManager.shared.addTimer(dto: reponseDto)
         TimerSharedManager.shared.saveTimeringSession(reponseDto)
+        
         try deviceActivityCenter.startMonitoring(.init(reponseDto.id.description) , during: schedule)
         
         if reponseDto.status == .OFF {
@@ -261,6 +273,8 @@ class ScheduleExVM: ObservableObject {
       
     
   }
+  
+
   
   func isAtLeast15MinutesApart(_ first: DateComponents, _ second: DateComponents) -> Bool {
       let calendar = Calendar.current
@@ -322,8 +336,8 @@ extension ScheduleExVM {
     selectedOption = nil
     
     scheduleExBtnEnable = false
-    timeBtnEnable = false
-    repeatBtnEnable = false
+    timeBtnEnable = true
+    repeatBtnEnable = true
   }
   
 }

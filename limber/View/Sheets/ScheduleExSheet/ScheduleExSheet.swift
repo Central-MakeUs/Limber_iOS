@@ -130,7 +130,7 @@
         }
         .padding(.bottom, 20)
         
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
             ForEach(StaticValManager.titleTextDic, id: \.self) { text in
               Button {

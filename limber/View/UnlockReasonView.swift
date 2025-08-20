@@ -27,7 +27,6 @@ struct UnlockReasonView: View {
   
   var timerId: String
   
-  
   var body: some View {
     VStack(alignment: .center, spacing: 0) {
       HStack {
@@ -180,7 +179,6 @@ struct UnlockReasonView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         
-        // 2) 위쪽 텍스트
         VStack(spacing: 8) {
           Text("아쉽지만 실험을 중단했어요")
             .font(.suitHeading3)
@@ -193,7 +191,6 @@ struct UnlockReasonView: View {
         .padding(.top, 60)
         .frame(maxHeight: .infinity, alignment: .top)
         
-        // 3) 아래쪽 버튼
         HStack(spacing: 12) {
           Button("화면 닫기") {
             router.poptoRoot()
