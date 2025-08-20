@@ -132,6 +132,7 @@ struct UnlockReasonView: View {
         
       }, rightAction: {
         router.poptoRoot()
+        router.selectedTab = .home
       }, topText: "이대로 잠금을 풀면 실험이 종료돼요", bottomText: "실험을 중단할까요?", leftBtnText: "잠금 풀기", rightBtnText: "실험 유지하기")
       .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
       .background(Color.black.opacity(0.3))
