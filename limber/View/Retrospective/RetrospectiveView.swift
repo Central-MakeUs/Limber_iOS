@@ -15,8 +15,7 @@ struct RetrospectiveView: View {
   @StateObject var vm: RetrospectiveVM
   
   @State var saveAlertSheet = false
-  @State var beakerImages = ["20Beaker","60Beaker","100Beaker"]
-
+  private let beakerImages = ["20Beaker","60Beaker","100Beaker"]
   private let stepImages = ["20Balloon","60Balloon","100Balloon"]
 
   

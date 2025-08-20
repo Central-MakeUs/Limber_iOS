@@ -29,8 +29,8 @@ struct LimberApp: App {
   private var bootstrapper = AppBootstrapper()
   
   init() {
-         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  // 현재 선택된 점
-         UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray            // 비선택 점
+         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  
+         UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray
      }
   
   var body: some Scene {
@@ -69,8 +69,8 @@ struct LimberApp: App {
                   case .focusTypes:
                     FocusTypesView()
                       .toolbar(.hidden, for: .navigationBar)
-                  case .unlockEndView:
-                    UnlockEndView()
+                  case .unlockEndView(let timerId):
+                    UnlockEndView(timerId: timerId)
                   case .limberLevelView:
                     LimberLevelView()
                       .toolbar(.hidden, for: .navigationBar)
