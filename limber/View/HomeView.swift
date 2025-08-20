@@ -131,14 +131,12 @@ struct HomeView: View {
         endTimeStr = session.endTime.appendingSecondsIfNeeded()
       } 
       
-      if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , let endDate = TimeManager.shared.parseTimeString(endTimeStr) {
+      if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , var endDate = TimeManager.shared.parseTimeString(endTimeStr) {
         
         if endDate < startDate {
-          homeVM.endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
-        } else {
-          homeVM.endDate = endDate
+          endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
         }
-        
+        homeVM.endDate = endDate
         timerObserver.startDate = startDate
         timerObserver.endDate = endDate
         timerObserver.startTimer()

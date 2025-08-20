@@ -24,8 +24,8 @@ struct TimerResponseDto: Codable, Hashable {
     let focusTypeId: Int
     let repeatCycleCode: RepeatCycleCode
     let repeatDays: String
-    let startTime: String
-    let endTime: String
+    var startTime: String
+    var endTime: String
     var status: TimerStatus
   
   

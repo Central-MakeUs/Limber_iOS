@@ -132,6 +132,7 @@ struct BlockAppsSheet: View {
             let endTime = TimeManager.shared.HHmmFormatter.string(from: endDate)
      
             
+            
             let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
             let request = TimerRequestDto(userId: userId, title: "", focusTypeId: self.focusTypeId, timerCode: .IMMEDIATE, repeatCycleCode: .NONE, repeatDays: "", startTime: startTime , endTime: endTime)
             
@@ -139,7 +140,16 @@ struct BlockAppsSheet: View {
               do {
                 NSLog("request::: \(request)")
 
-                let reponseDto = try await timerVM.timerRepository.createTimer(request)
+                var reponseDto = try await timerVM.timerRepository.createTimer(request)
+                
+//                let pair = TimeManager.shared
+//                  .makeTimerTimes(
+//                    start: reponseDto.startTime,
+//                    end: reponseDto.endTime
+//                  )
+//                reponseDto.startTime = pair?.startTimeHHmm ?? reponseDto.startTime
+//                reponseDto.endTime = pair?.endTimeHHmm ?? reponseDto.endTime
+                
                 TimerSharedManager.shared.addTimer(dto: reponseDto)
                 TimerSharedManager.shared.saveTimeringSession(reponseDto)
                 

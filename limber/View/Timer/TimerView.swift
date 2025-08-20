@@ -81,7 +81,7 @@ struct TimerView: View {
 
      
     }
-    .modifier(ToastModifier(isPresented: $schedulExVM.offDtoModifier, message: "현재 실험이 진행되고 있어요. 나중에 변경해주세요", duration: 2, isWarning: false))
+    .modifier(ToastModifier(isPresented: $schedulExVM.offDtoModifier, message: "지금은 시작할 수 없어요.", duration: 2, isWarning: false))
     .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
     .fullScreenCover(isPresented: $showModal) {
       BlockAppsSheet(blockVM: blockVM, deviceReportActivityVM: deviceReportActivityVM, timerVM: timerVM, untilHour: timerVM.selectingH, untilMinute: timerVM.selectingM, focusTypeId: (StaticValManager.titleTextDic.firstIndex(of: timerVM.selectedCategory) ?? 0 ) + 1, showModal: $showModal)
