@@ -14,6 +14,7 @@ struct CircularTimerView: View {
   @EnvironmentObject var blockVM: BlockVM
   @Environment(\.dismiss) var dismiss
   @State var isFinished: Bool = false
+  @State var focusTitle: String = ""
   var timer = TimerObserver.shared
   
   @State var name: String = ""
@@ -140,26 +141,22 @@ struct CircularTimerView: View {
           .frame(height: 54)
         HStack(spacing: 0) {
           
-          //          Label(title: {
-          //            Text(name)
-          //              .font(.suitHeading3Small)
-          //              .foregroundStyle(.limberPurple)
-          //          }, icon: {
-          //            Image("note")
-          //          })
-          //
           if isFinished {
             Text("실험이 종료되었어요!")
               .font(.suitHeading3Small)
               .foregroundStyle(.white)
           } else {
-            Text("실험이 진행중이에요!")
+            Image(focusTitle)
+            Spacer().frame(width: 8)
+            Text(focusTitle)
+              .font(.suitHeading3Small)
+              .foregroundStyle(.limberPurple)
+            Text("에 집중하는 실험")
               .font(.suitHeading3Small)
               .foregroundStyle(.white)
           }
-          
         }
-        .frame(width: 220, height: 50)
+        .frame(maxWidth: 220, maxHeight: 50)
         .background(Color.primaryDark)
         .cornerRadius(100)
         
@@ -180,7 +177,6 @@ struct CircularTimerView: View {
         Spacer()
           .frame(height: 30)
         
-        
         HStack(spacing: 12) {
           Button {
             router.poptoRoot()
@@ -194,7 +190,6 @@ struct CircularTimerView: View {
               .cornerRadius(10)
               .padding(.bottom)
           }
-          
           
           if (timer.totalTime - timer.elapsed) == 0 {
             Button {
@@ -237,17 +232,16 @@ struct CircularTimerView: View {
                 .padding(.bottom)
             }
           }
-          
         }
         .padding(.horizontal, 20)
-        
-        
-        
-        
       }
       .onAppear {
         self.isFinished = (timer.totalTime - timer.elapsed) == 0
-        
+        if let nowSession = TimerSharedManager.shared.getTimeringSession() {
+          self.focusTitle = nowSession.getFocusTitle()
+
+        }
+
       }
       .sheet(isPresented: $showBlockedAppSheet) {
         BlockedAppSheet(blockVM: blockVM)
@@ -258,61 +252,7 @@ struct CircularTimerView: View {
     }
     
     
-    
   }
   
 }
-import SwiftUI
 
-struct BlockedAppSheet: View {
-  @Environment(\.dismiss) var dismiss
-  @ObservedObject var blockVM: BlockVM
-  
-  var body: some View {
-    VStack(spacing: 0) {
-      Spacer()
-        .frame(height: 25)
-      ZStack {
-        Text("직접 추가")
-          .font(.suitHeading3Small)
-          .foregroundStyle(.gray800)
-        HStack {
-          Spacer()
-          Button {
-            dismiss()
-          } label: {
-            Image("xmark")
-          }.padding(.trailing, 20)
-        }
-        
-      }.frame(height: 33)
-      
-      ScrollView(.horizontal, showsIndicators: false) {
-        HStack(alignment: .center) {
-          ForEach(blockVM.pickedApps, id: \.self) { app in
-            if let token = app.token {
-              VStack(spacing: 0) {
-                Spacer()
-                Label(token)
-                  .labelStyle(iconLabelStyle())
-                Label(token)
-                  .labelStyle(textLabelStyle())
-                  .scaleEffect(CGSize(width: 0.4, height: 0.4))
-                Spacer()
-              }
-              .frame(width: 100, height: 76, alignment: .center)
-              .background(Color.gray100)
-              .cornerRadius(8)
-              
-            }
-          }
-        }
-      }
-      .frame(height: 76)
-      .padding(20)
-      
-      Spacer()
-    }
-    .frame(maxHeight: 200)
-  }
-}
