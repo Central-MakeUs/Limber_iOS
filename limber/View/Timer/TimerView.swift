@@ -428,6 +428,7 @@ struct TimerView: View {
         let deviceActivityCenter = DeviceActivityCenter()
         
         if result.status != .ON {
+          SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
           deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
         } else {
           
