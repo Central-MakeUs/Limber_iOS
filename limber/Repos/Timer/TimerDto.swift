@@ -31,13 +31,14 @@ struct TimerResponseDto: Codable, Hashable {
   
   
   func getDays() -> String {
-    
+    let repeatCyCleCode = StaticValManager.repeatTitleStrDic[self.repeatCycleCode] ?? ""
     let days = ["일", "월", "화", "수", "목", "금", "토"]
     let result = repeatDays.split(separator: ",")
       .compactMap { Int($0) }
       .map { days[$0] }
       .joined(separator: " ")
-    return result.isEmpty ? "없음" : result
+    
+    return !repeatCyCleCode.isEmpty ? repeatCyCleCode : !result.isEmpty ? result : "없음"
   }
   func getFocusTitle() -> String {
     return StaticValManager.titleDic[self.focusTypeId] ?? ""

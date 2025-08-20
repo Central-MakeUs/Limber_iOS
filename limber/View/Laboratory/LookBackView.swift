@@ -70,29 +70,19 @@ struct LookBackView: View {
                   
                   VStack {
                     ZStack(alignment: .center) {
-                      Circle()
-                        .frame(width: 56, height: 56)
-                        .foregroundStyle(Color.primaryVivid)
+                      Image("upFromRibbon")
+                        .frame(width: 60, height: 60)
                       
                       Image(StaticValManager.titleDic[history.focusTypeId] ?? "")
                         .resizable()
-                        .frame(width: 40, height: 40)
+                        .frame(width: 32, height: 32)
+          
+                        Image(history.getImmersionImg())
+                          .resizable()
+                          .scaledToFit()
+                          .frame(width: 74, height: 74)
+                          .offset(y: 36)
                       
-                      
-                      //                    ZStack {
-                      //                      Image("ribbon")
-                      //                        .resizable()
-                      //                        .frame(width: 100, height: 80)
-                      //
-                      //                    }
-                      
-                      Text("\(history.retrospectImmersion ?? 0)% 집중")
-                        .frame(width: 66, height: 25, alignment: .center)
-                        .font(.suitBody3)
-                        .foregroundStyle(Color.white)
-                        .background(Color.LimberPurple)
-                        .cornerRadius(2)
-                        .offset(y: 34)
                     }
                     .offset(y: -10)
                     .frame(maxHeight: 80)

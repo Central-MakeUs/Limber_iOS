@@ -11,4 +11,6 @@ class StaticValManager {
   static let titleCntDic: [String: Int] = ["학습":1,"업무":2,"회의":3,"작업":4,"독서": 5]
   static let titleTextDic: [String] = ["학습","업무","회의","작업","독서"]
   
+  static let repeatTitleStrDic: [RepeatCycleCode: String] = [.EVERY:"매일", .WEEKEND:"주말",.WEEKDAY :"평일", .NONE: ""]
 }
+

@@ -48,6 +48,12 @@ struct TimerHistoryResponseDto: Codable, Identifiable {
   let retrospectComment: String?
   let focusTypeTitle: String
   let retrospectSummary: String
+  
+  
+  func getImmersionImg() -> String {
+    let immersion = retrospectImmersion ?? 0
+    return immersion > 20 ? "60Ribbon" : immersion > 60 ? "100Ribbon" : "20Ribbon"
+  }
 
 }
 
