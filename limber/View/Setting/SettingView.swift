@@ -90,16 +90,16 @@ struct SettingView: View {
           .background(Color.white)
           .cornerRadius(8)
 
-//          FeatureButton(
-//            icon: "settingAI_Coaching",
-//            title: "AI 집중 코칭",
-//            action: {
-//              
-//            }
-//          )
-//          .frame(width: 106)
-//          .background(Color.white)
-//          .cornerRadius(8)
+          FeatureButton(
+            icon: "settingAI_Coaching",
+            title: "AI 집중 코칭",
+            action: {
+              
+            }
+          )
+          .frame(width: 106)
+          .background(Color.white)
+          .cornerRadius(8)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 20)
@@ -112,14 +112,14 @@ struct SettingView: View {
         .frame(height: 10)
       // 메뉴 리스트
       VStack(spacing: 0) {
-//        MenuRow(title: "림버의 스토리", hasChevron: true)
+        MenuRow(title: "림버의 스토리", hasChevron: true, onTap: {})
         MenuRow(title: "FAQ", hasChevron: true, onTap: {
           if let url = URL(string: "https://www.notion.so/248907c3c029806d93c7e1aacc5aafaa") {
             UIApplication.shared.open(url)
           }
           
         })
-//        MenuRow(title: "이용 약관", hasChevron: true)
+        MenuRow(title: "이용 약관", hasChevron: true, onTap: {})
         MenuRow(title: "개인 정보 처리 방침", hasChevron: true, onTap: {
           if let url = URL(string: "https://www.notion.so/243907c3c0298031aa27f916366a2d5b?source=copy_link") {
             UIApplication.shared.open(url)

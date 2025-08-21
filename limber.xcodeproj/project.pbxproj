@@ -121,6 +121,7 @@
 				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
+				Customs/TimerObserver.swift,
 				Manager/TimerSharedManager.swift,
 				Manager/URLManager.swift,
 				Repos/Timer/TimerDto.swift,
@@ -140,6 +141,7 @@
 				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
+				Customs/TimerObserver.swift,
 				Manager/URLManager.swift,
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
@@ -156,6 +158,7 @@
 				Customs/StaticValManager.swift,
 				Customs/Styles/LabelStyle.swift,
 				Customs/TimeManager.swift,
+				Customs/TimerObserver.swift,
 				Manager/URLManager.swift,
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
@@ -724,7 +727,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -751,7 +754,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationEx/ShieldConfigurationEx.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldConfigurationEx/Info.plist;
@@ -779,7 +782,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionEx.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -808,7 +811,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShieldActionEx/ShieldActionExRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShieldActionEx/Info.plist;
@@ -958,7 +961,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -997,7 +1000,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber/limber.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1034,7 +1037,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1063,7 +1066,7 @@
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityMonitor/limber_ActivityMonitor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityMonitor/Info.plist;
@@ -1091,7 +1094,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
@@ -1118,7 +1121,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = limber_ActivityReport/limber_ActivityReport.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YH4A87H8M4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = limber_ActivityReport/Info.plist;
