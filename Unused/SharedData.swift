@@ -26,6 +26,7 @@ class SharedData {
     case timerModels = "timerModels"
     case historyTimer = "historyTimer"
     case historyTimerKey = "historyTimerKey"
+    case doNotNoti = "doNotNoti"
 
     
     var key: String {

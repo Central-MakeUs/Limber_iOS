@@ -88,7 +88,7 @@ struct LimberApp: App {
           } else {
             OnBoardingView(onComplete: {
               hasSeenMain = true
-              SharedData.defaultsGroup?.set(false, forKey: "doNotNoti")
+              SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
             })
             
 

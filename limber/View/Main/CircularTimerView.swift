@@ -15,7 +15,7 @@ struct CircularTimerView: View {
   @Environment(\.dismiss) var dismiss
   @State var isFinished: Bool = false
   @State var focusTitle: String = ""
-  var timer = TimerObserver.shared
+  @StateObject var timer = TimerObserver.shared
   
   @State var name: String = ""
   @State var showBlockedAppSheet: Bool = false

@@ -118,9 +118,13 @@ struct UnlockReasonView: View {
           do {
             try await repo.unlockTimer(timerId: self.timerId, failReason: failReason)
             
-            SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
+            SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.doNotNoti.key)
             let deviceActivityCenter = DeviceActivityCenter()
             deviceActivityCenter.stopMonitoring([.init(self.timerId.description)])
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+              SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
+            })
+
             blockVM.removeForShieldRestrictions()
             TimerObserver.shared.stopTimer()
             

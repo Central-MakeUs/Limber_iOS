@@ -98,6 +98,8 @@ class LabVM: ObservableObject {
       totalFailureCount = 0
       let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
       let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
+      self.weeklyDate = TimeManager.shared.weekRangeString(for: .now, weekOffset: weekCount)
+
       focusTimeWeekly = [
         (day: "월", value: 0.0),
         (day: "화", value: 0.0),
@@ -117,12 +119,14 @@ class LabVM: ObservableObject {
         (day: "일", value: 0.0)
       ]
       
-         self.weeklyDate = startStr + "-" + endStr
+
+      
+      
          let dto = try await repo.totalImmersion(.init(userId: userId, start: startStr, end: endStr)).data
          self.totalActualMinutes = Double(dto.totalActualMinutes)
          self.totalScheduledTimes =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes)
          self.averageAttentionTime =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes / 7)
-         self.averageAttentionImmersion = (dto.ratio * 100).description + "%"
+         self.averageAttentionImmersion = (Int(dto.ratio * 100)).description + "%"
       
       
       let reasonData = try await repo.failReasons(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.count > $1.count }).enumerated().map { index, element in

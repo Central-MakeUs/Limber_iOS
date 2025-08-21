@@ -17,7 +17,7 @@ struct BlockedAppSheet: View {
       Spacer()
         .frame(height: 25)
       ZStack {
-        Text("직접 추가")
+        Text("차단 중인 앱")
           .font(.suitHeading3Small)
           .foregroundStyle(.gray800)
         HStack {

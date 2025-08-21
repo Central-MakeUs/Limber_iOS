@@ -61,7 +61,7 @@ struct AlertSheet: View {
         }
         .foregroundStyle(.white)
         .frame(height: 54)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 12)
         .padding(.bottom, 12)
         
         
@@ -74,7 +74,6 @@ struct AlertSheet: View {
       
     }
     .background(ClearBackground())
-    
     
   }
   
@@ -119,7 +118,7 @@ struct NotiAlertSheet: View {
         }
         .foregroundStyle(.white)
         .frame(height: 54)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 12)
         .padding(.bottom, 12)
         
         
@@ -191,7 +190,7 @@ struct ReAskAlertSheet: View {
         }
         .foregroundStyle(.white)
         .frame(height: 54)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 12)
         .padding(.bottom, 12)
         
       }

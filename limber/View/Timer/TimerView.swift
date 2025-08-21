@@ -23,15 +23,21 @@ struct TimerView: View {
   
   var body: some View {
     VStack {
-      HStack(spacing: 0) {
+      HStack(alignment: .bottom, spacing: 0) {
         Button {
           topPick = 0
         } label: {
-          Text("지금 시작")
-            .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
-            .font(.suitHeading3Small)
+          VStack {
+            Spacer()
+            Text("지금 시작")
+              .tint(topPick == 0 ? Color.gray800 : Color.limberLightGray)
+              .font(.suitHeading3Small)
+              .padding(.bottom, 12)
+          }
+ 
+            
         }
-        .frame(maxWidth: .infinity, maxHeight: 40)
+        .frame(maxWidth: .infinity, maxHeight: 56)
         .overlay(
           Rectangle()
             .frame(height: topPick == 0 ? 2: 1 )
@@ -41,12 +47,16 @@ struct TimerView: View {
         Button {
           topPick = 1
         } label: {
+          VStack {
+            Spacer()
           Text("예약 설정")
             .tint(topPick == 1 ? Color.gray800 : Color.limberLightGray)
             .font(.suitHeading3Small)
+            .padding(.bottom, 12)
+        }
           
         }
-        .frame(maxWidth: .infinity, maxHeight: 40)
+        .frame(maxWidth: .infinity, maxHeight: 56)
         .overlay(
           Rectangle()
             .frame(height: topPick == 1 ? 2: 1 )
@@ -78,8 +88,6 @@ struct TimerView: View {
           }
         }
         .background(Color.gray50)
-
-     
     }
     .modifier(ToastModifier(isPresented: $schedulExVM.offDtoModifier, message: "지금은 시작할 수 없어요.", duration: 2, isWarning: false))
     .modifier(ToastModifier(isPresented: $timerVM.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
@@ -98,6 +106,7 @@ struct TimerView: View {
         .ignoresSafeArea(.all)
     }
     .onAppear {
+      topPick = 0
       timerVM.onAppear()
     }
     
@@ -145,12 +154,10 @@ struct TimerView: View {
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 8) {
           ForEach(StaticValManager.titleTextDic, id: \.self) { text in
-            
             HStack(spacing: 7){
               Image(text)
                 .frame(width: 24, height: 24)
               Text(text)
-              
 
             }
             .foregroundStyle(timerVM.selectedCategory == text ? Color.white : Color.gray500)
@@ -158,10 +165,10 @@ struct TimerView: View {
             .frame(maxHeight: .infinity)
             .overlay(
               RoundedRectangle(cornerRadius: 100)
-                .stroke((timerVM.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                .stroke((timerVM.selectedCategory == text ? Color.primaryVivid : Color.gray300), lineWidth:
                           timerVM.selectedCategory == text ? 2 : 1.2)
             )
-            .background(timerVM.selectedCategory == text ? Color.LimberPurple : nil)
+            .background(timerVM.selectedCategory == text ? Color.primaryVivid : nil)
             .cornerRadius(100)
             .onTapGesture {
               timerVM.selectedCategory = text
@@ -428,8 +435,12 @@ struct TimerView: View {
         let deviceActivityCenter = DeviceActivityCenter()
         
         if result.status != .ON {
-          SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
+          SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.doNotNoti.key)
           deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
+          DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
+          })
+
         } else {
           
           let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()

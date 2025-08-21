@@ -86,15 +86,15 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
         TimerObserver.shared.stopTimer()
         TimerSharedManager.shared.saveTimeringSession(nil)
         
-        
-        if let dotNotNoti = SharedData.defaultsGroup?.bool(forKey: "doNotNoti"), !dotNotNoti {
+        if let dotNotNoti = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.doNotNoti.key), !dotNotNoti {
           let request = UNNotificationRequest(identifier: "intervalDidEnd", content: content, trigger: nil)
           try await UNUserNotificationCenter.current().add(request)
         }
-        SharedData.defaultsGroup?.set(false, forKey: "doNotNoti")
+        SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
 
       } catch {
         NSLog("::: error \(error)")
+ 
       }
     
       

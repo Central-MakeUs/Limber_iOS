@@ -41,10 +41,6 @@ struct TimeSelectView: View {
             Spacer()
                 .frame(height: 30)
 
-            Text("시작할 시간을 선택해주세요")
-                .foregroundStyle(.gray800)
-                .font(.suitHeading3)
-                .padding(.leading, 20)
 
             ZStack {
                 Rectangle()

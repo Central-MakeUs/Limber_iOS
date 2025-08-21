@@ -17,7 +17,7 @@ struct HomeView: View {
   @EnvironmentObject var blockVM: BlockVM
   @State var showPicker = false
 
-  var timerObserver = TimerObserver.shared
+  @StateObject var timerObserver = TimerObserver.shared
 
   var body: some View {
     GeometryReader { geo in
@@ -58,12 +58,16 @@ struct HomeView: View {
           }
           .padding(.horizontal, 24)
           
+          
           Image("Limber_Level1")
             .resizable()
             .frame(maxWidth: isSmallScreen ? 140 : 168, maxHeight: isSmallScreen ? 140 : 168)
           
           Spacer()
             .frame(maxHeight: isSmallScreen ? 8 : 12)
+          
+          
+          //TODO: 버튼이랑 시계 icon leading
           Button(action: {
             if homeVM.isTimering {
               router.push(.circularTimer)
@@ -73,31 +77,37 @@ struct HomeView: View {
           }) {
             if homeVM.isTimering {
               HStack(spacing: 0) {
+                Spacer()
+                  .frame(width: 12)
                 Image("timer")
                   .frame(width: 36, height: 36)
                   .foregroundStyle(Color.limerLightPurple)
                   .background(Color.primaryMiddleDark)
                   .cornerRadius(100, corners: .allCorners)
                 Spacer()
-                  .frame(width: 20)
+                  .frame(maxWidth: 16)
                 Text(TimeManager.shared
-                  .timeString(from: timerObserver.totalTime - timerObserver.elapsed))
+                  .timeString(from: self.timerObserver.totalTime - self.timerObserver.elapsed))
+                .frame(maxWidth: 78)
                 .foregroundStyle(.white)
                 .font(.suitHeading3Small)
                 Spacer()
                   .frame(width: 8)
                 Image("chevron")
                   .foregroundStyle(Color.white)
+                
+              Spacer()
               }
             } else {
               Text("집중 시작하기")
-                .kerning(-1.2)
+                .lineLimit(1)
+                .kerning(-0.2)
                 .font(.suitHeading3Small)
                 .foregroundColor(.white)
-                .padding(.horizontal,isSmallScreen ? 0 : 52)
+                .padding(.horizontal,isSmallScreen ? 0 : 50)
             }
-          }
-          .frame(maxWidth: isSmallScreen ? 160: 200, maxHeight: isSmallScreen ? 44: 56)
+          }.buttonStyle(.plain)
+          .frame(maxWidth: isSmallScreen ? 140: 200, maxHeight: isSmallScreen ? 44: 56)
           .background(
             LinearGradient(
               stops: [

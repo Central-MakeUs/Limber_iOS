@@ -45,7 +45,7 @@ class RetrospectiveVM: ObservableObject {
         
         if sliderValue > 60 {
           immersion = 100
-        } else if 60 > sliderValue {
+        } else if 50 > sliderValue {
           immersion = 20
         }
         

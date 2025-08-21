@@ -1,59 +1,11 @@
 //
-//  Time.swift
+//  TimeManager 2.swift
 //  limber
 //
-//  Created by 양승완 on 7/31/25.
+//  Created by 양승완 on 8/21/25.
 //
 
-import Foundation
-import Combine
-
-class TimerObserver: ObservableObject {
-  
-  static let shared = TimerObserver()
-    
-  @Published var totalTime: TimeInterval = 0
-  @Published var elapsed: TimeInterval = 0
-  @Published var isFinished: Bool = false
-  
-  @Published var startDate: Date = .now
-  @Published var endDate: Date = .now
-  
-  private var cancellable: AnyCancellable?
-  
-  func startTimer() {
-    
-    let nowDate = TimeManager.shared.parseFullDateTimeString(TimeManager.shared.fullDateTimeFormatter.string(from: .now))!
-    let totalTime = endDate.timeIntervalSince(startDate)
-    let nowtime = nowDate.timeIntervalSince(startDate)
-    self.totalTime = totalTime
-    self.elapsed = nowtime
-    cancellable = Timer
-      .publish(every: 1.0, on: .main, in: .common)
-      .autoconnect()
-      .sink { [weak self] now in
-        guard let self else { return }
-        
-        let nowDate = TimeManager.shared.parseFullDateTimeString(TimeManager.shared.fullDateTimeFormatter.string(from: now))!
-        self.elapsed = nowDate.timeIntervalSince(self.startDate)
-        
-        if self.elapsed >= self.totalTime {
-          self.elapsed = self.totalTime
-          self.isFinished = true
-          SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
-          self.cancellable?.cancel()
-        }
-      }
-  }
-  func stopTimer() {
-    totalTime = 0
-    elapsed = 0
-    cancellable?.cancel()
-    cancellable = nil
-  }
-  
-  
-}
+import SwiftUI
 
 class TimeManager: ObservableObject {
   
@@ -66,6 +18,13 @@ class TimeManager: ObservableObject {
   var timer: Timer?
   
   
+  let yyyyMMddFormatter: DateFormatter = {
+      let formatter = DateFormatter()
+      formatter.locale = Locale(identifier: "ko_KR")
+      formatter.timeZone = TimeZone.current
+      formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+      return formatter
+  }()
   
   let HHmmssFormatter = {
     let formatter = DateFormatter()
@@ -92,6 +51,13 @@ class TimeManager: ObservableObject {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "ko_KR")
     formatter.dateFormat = "M'월' d'일'"
+    return formatter
+  }()
+  
+  let yyyyMMddStr = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "ko_KR")
+    formatter.dateFormat = "yyyy년 MM월 dd일"
     return formatter
   }()
   
@@ -291,6 +257,52 @@ class TimeManager: ObservableObject {
       startTimeHHmm: toHHmm(h: sh, m: sm),
       endTimeHHmm:   toHHmm(h: eh, m: em)
     )
+  }
+  func weekRangeString(for date: Date,
+                       weekOffset: Int = 0,
+                       timeZone: TimeZone = TimeZone(identifier: "Asia/Seoul")!) -> String {
+      var cal = Calendar(identifier: .iso8601)
+      cal.timeZone = timeZone
+      
+      // 주간 구간
+      guard let interval = cal.dateInterval(of: .weekOfYear, for: date),
+            let shiftedStart = cal.date(byAdding: .weekOfYear, value: weekOffset, to: interval.start) else {
+          return ""
+      }
+      let endDate = cal.date(byAdding: .day, value: 6, to: shiftedStart)!
+      
+      // 포맷터
+      let fullFormatter = DateFormatter()
+      fullFormatter.locale = Locale(identifier: "ko_KR")
+      fullFormatter.timeZone = timeZone
+      fullFormatter.dateFormat = "yyyy년 MM월 dd일"
+      
+      let monthDayFormatter = DateFormatter()
+      monthDayFormatter.locale = Locale(identifier: "ko_KR")
+      monthDayFormatter.timeZone = timeZone
+      monthDayFormatter.dateFormat = "MM월 dd일"
+      
+      let dayFormatter = DateFormatter()
+      dayFormatter.locale = Locale(identifier: "ko_KR")
+      dayFormatter.timeZone = timeZone
+      dayFormatter.dateFormat = "dd일"
+      
+      // 비교
+      let startYear = cal.component(.year, from: shiftedStart)
+      let startMonth = cal.component(.month, from: shiftedStart)
+      let endYear = cal.component(.year, from: endDate)
+      let endMonth = cal.component(.month, from: endDate)
+      
+      if startYear == endYear && startMonth == endMonth {
+          // 연,월 동일 → yyyy년 MM월 dd일 - dd일
+          return "\(fullFormatter.string(from: shiftedStart)) - \(dayFormatter.string(from: endDate))"
+      } else if startYear == endYear {
+          // 연만 동일 → yyyy년 MM월 dd일 - MM월 dd일
+          return "\(fullFormatter.string(from: shiftedStart)) - \(monthDayFormatter.string(from: endDate))"
+      } else {
+          // 연도 다름 → 둘 다 full
+          return "\(fullFormatter.string(from: shiftedStart)) - \(fullFormatter.string(from: endDate))"
+      }
   }
 
   

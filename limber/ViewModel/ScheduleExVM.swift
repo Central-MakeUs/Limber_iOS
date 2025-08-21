@@ -22,7 +22,7 @@ class ScheduleExVM: ObservableObject {
 
   private var cancellables = Set<AnyCancellable>()
   
-  let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND]
+  let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND, "없음": .NONE, "": .NONE]
   let timeSelect: [String] = ["시작", "종료", "반복"]
 
   @Published var textFieldName: String = ""
@@ -30,8 +30,7 @@ class ScheduleExVM: ObservableObject {
   @Published var allTime: [String] = [
     "",
     "",
-    ""]
-  
+    "없음"]
   @Published var changeSheet = false
   @Published var bottomSheetTitle = "시작"
   @Published var isStartTime = false
@@ -135,7 +134,8 @@ class ScheduleExVM: ObservableObject {
   }
   
   func on700() {
-      self.allTime[2] = weekdays.filter { selectedDays.contains($0) }.reduce("") { $0 + " " + $1 }
+    let filtered = weekdays.filter { selectedDays.contains($0) }.reduce("") { $0 + " " + $1 }
+    self.allTime[2] = filtered.isEmpty ? "없음" :filtered
     heights = [.height(700), .height(432)]
     detents = .height(700)
     
@@ -197,7 +197,7 @@ class ScheduleExVM: ObservableObject {
   }
   
   func repeatPicked() {
-    allTime[2] = "\(repeatTime)"
+    allTime[2] = repeatTime.isEmpty ? "없음" : repeatTime
   }
   
   func goBack700H() {
@@ -329,7 +329,7 @@ extension ScheduleExVM {
     textFieldName = ""
     selectedCategory = ""
     
-    allTime = ["", "", ""]
+    allTime = ["", "", "없음"]
     
     changeSheet = false
     bottomSheetTitle = "시작"

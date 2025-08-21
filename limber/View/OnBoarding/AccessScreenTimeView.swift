@@ -33,33 +33,49 @@ struct AccessScreenTimeView: View {
           Spacer()
             .frame(height: 40)
           
-          HStack {
-            Image(systemName: "phone")
-              .padding()
-            Text("스크린타임 데이터")
-              .font(Font.custom("SUIT", size: 16)
-                .weight(.semibold))
+          HStack(spacing: 0) {
+            Image("phone_Fill_Color")
+              .frame(width: 40, height: 40)
+              .padding(.horizontal)
+              .padding(.vertical, 19)
+            VStack(alignment: .leading, spacing: 0) {
+              Text("스크린 타임 데이터")
+                .font(.suitHeading3Small)
+                .foregroundStyle(Color.gray800)
+
+              Text("앱 별 사용 시간 조회, 앱 차단 기능 제공")
+                .foregroundStyle(Color.gray500)
+                .font(.suitBody2)
+
+            }
             Spacer()
-          }.padding()
-            .cornerRadius(10)
+          }.cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10)
               .inset(by: 0.5)
               .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
             )
+
           
-//          HStack {
-//            Image(systemName: "phone")
-//              .padding()
-//            Text("알림 허용")
-//              .font(Font.custom("SUIT", size: 16)
-//                .weight(.semibold))
-//            Spacer()
-//          }.padding()
-//            .cornerRadius(10)
-//            .overlay(RoundedRectangle(cornerRadius: 10)
-//              .inset(by: 0.5)
-//              .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
-//            )
+          HStack(spacing: 0) {
+            Image("bell_Fill_Color")
+              .frame(width: 40, height: 40)
+              .padding(.horizontal)
+              .padding(.vertical, 19)
+            VStack(alignment: .leading, spacing: 0) {
+              Text("알림 허용")
+                .foregroundStyle(Color.gray800)
+                .font(.suitHeading3Small)
+              Text("푸시 알림 수신, 메시지 수신")
+                .foregroundStyle(Color.gray500)
+                .font(.suitBody2)
+            }
+   
+            Spacer()
+          }.cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10)
+              .inset(by: 0.5)
+              .stroke(Color(red: 0.92, green: 0.9, blue: 0.93), lineWidth: 1)
+            )
           Spacer()
           BottomBtn(isEnable: $isEnable, title: "동의하고 시작하기" ) {
             Task {
@@ -78,7 +94,7 @@ struct AccessScreenTimeView: View {
         }
         .fullScreenCover(isPresented: $isAlert) {
           NotiAlertSheet(action: {
-            self.step = 1
+            self.step = 3
           }, isAlert: $isAlert)
             .frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
             .background(Color.black.opacity(0.3))

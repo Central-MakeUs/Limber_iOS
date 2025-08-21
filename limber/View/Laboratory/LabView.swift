@@ -48,11 +48,15 @@ struct LabView: View {
               Button {
                 topPick = 0
               } label: {
-                Text("주간 리포트")
-                  .tint(topPick == 0 ? .gray800 : .limberLightGray)
-                  .font(.suitHeading3Small)
+                VStack {
+                  Spacer()
+                  Text("주간 리포트")
+                    .tint(topPick == 0 ? .gray800 : .limberLightGray)
+                    .font(.suitHeading3Small).padding(.bottom, 12)
+                }
+      
               }
-              .frame(maxWidth: .infinity, maxHeight: 40)
+              .frame(maxWidth: .infinity, maxHeight: 48)
               .overlay(
                 Rectangle()
                   .frame(height: topPick == 0 ? 2: 1 )
@@ -62,12 +66,17 @@ struct LabView: View {
               Button {
                 topPick = 1
               } label: {
-                Text("실험 회고")
-                  .tint(topPick == 1 ? .gray800 : .limberLightGray)
-                  .font(.suitHeading3Small)
+                VStack {
+                  Spacer()
+                  Text("실험 회고")
+                    .tint(topPick == 1 ? .gray800 : .limberLightGray)
+                    .font(.suitHeading3Small)
+                    .padding(.bottom, 12)
+                }
+         
                 
               }
-              .frame(maxWidth: .infinity, maxHeight: 40)
+              .frame(maxWidth: .infinity, maxHeight: 48)
               .overlay(
                 Rectangle()
                   .frame(height: topPick == 1 ? 2: 1 )
@@ -76,10 +85,12 @@ struct LabView: View {
           }
         }
         .background(
+          
+          //TODO: 스케일 꽉차고 안찌그러지게 수정.
           Image("Lab_Background")
-            .resizable()
-            .ignoresSafeArea()
-            .scaledToFill()
+              .resizable()
+              .ignoresSafeArea()
+              .aspectRatio(contentMode: .fill)
           //
           //                    LinearGradient(
           //                        stops: [
