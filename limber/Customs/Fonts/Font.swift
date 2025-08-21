@@ -42,6 +42,5 @@ extension Font {
   static var suitBody2: Font { .custom("SUIT-Medium", size: 15) }
   static var suitBody2_sb: Font { .custom("SUIT-SemiBold", size: 15) }
   static var suitBody3: Font { .custom("SUIT-Medium", size: 13) }
-  
   static var suitCaption1: Font { .custom("SUIT-Medium", size: 11) }
 }

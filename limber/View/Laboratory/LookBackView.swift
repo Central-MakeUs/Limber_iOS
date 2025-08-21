@@ -33,7 +33,8 @@ struct LookBackView: View {
    
       }
       .padding(.horizontal, 20)
-      .padding(.vertical, 20)
+      .padding(.top, 20)
+      .padding(.bottom, 14)
       
       ScrollView {
         if !labVM.histories.isEmpty {

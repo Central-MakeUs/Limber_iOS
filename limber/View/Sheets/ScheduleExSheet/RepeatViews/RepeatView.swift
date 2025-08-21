@@ -43,11 +43,7 @@ struct RepeatView: View {
       
       Spacer()
         .frame(height: 30)
-      
-      Text("반복할 주기를 선택해주세요")
-        .foregroundStyle(.gray800)
-        .font(.suitHeading3)
-        .padding(.leading, 20)
+
       
       RepeatSelectorView(vm: vm)
       

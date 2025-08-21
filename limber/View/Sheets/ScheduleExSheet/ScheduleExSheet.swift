@@ -149,10 +149,10 @@
                 .frame(maxHeight: .infinity)
                 .overlay(
                   RoundedRectangle(cornerRadius: 100)
-                    .stroke((vm.selectedCategory == text ? Color.LimberPurple : Color.gray300), lineWidth:
+                    .stroke((vm.selectedCategory == text ? Color.primaryVivid : Color.gray300), lineWidth:
                               timerVM.selectedCategory == text ? 2 : 1.2)
                 )
-                .background(vm.selectedCategory == text ? Color.LimberPurple : nil)
+                .background(vm.selectedCategory == text ? Color.primaryVivid : nil)
                 .cornerRadius(100)
                
               }

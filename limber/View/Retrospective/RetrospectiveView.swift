@@ -12,6 +12,7 @@ import SwiftUI
 struct RetrospectiveView: View {
   @Environment(\.dismiss) var dismiss
   @EnvironmentObject var router: AppRouter
+
   @StateObject var vm: RetrospectiveVM
   
   @State var saveAlertSheet = false
@@ -20,8 +21,6 @@ struct RetrospectiveView: View {
 
   
   var body: some View {
-
-    
       
       VStack(spacing: 0) {
         ZStack(alignment: .center) {
@@ -40,6 +39,8 @@ struct RetrospectiveView: View {
           }
           .padding(.trailing, 20)
         }
+        .padding(.top, 44)
+
 
         
         Spacer().frame(height: 50)

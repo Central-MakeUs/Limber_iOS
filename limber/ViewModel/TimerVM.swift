@@ -117,8 +117,11 @@ class TimerVM: ObservableObject {
     do {
       for m in self.checkedModels {
         try await self.timerRepository.deleteTimer(id: m.id)
-        SharedData.defaultsGroup?.set(true, forKey: "doNotNoti")
+        SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.doNotNoti.key)
         deviceActivityCenter.stopMonitoring([.init(m.id.description)])
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+          SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
+        })
         TimerSharedManager.shared.deleteTimerSession(timerSessionId: m.id)
       }
     } catch {

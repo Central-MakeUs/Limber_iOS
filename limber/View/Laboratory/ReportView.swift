@@ -73,6 +73,7 @@ struct ReportView: View {
                             
                           Text(labVM.averageAttentionTime)
                                 .foregroundColor(.primaryDark)
+                                .font(.suitHeading3)
                         }
                         .padding()
                         Spacer()
@@ -94,6 +95,7 @@ struct ReportView: View {
                             
                           Text(labVM.averageAttentionImmersion)
                                 .foregroundColor(.primaryDark)
+                                .font(.suitHeading3)
                             
                         }
                         .padding()

@@ -18,17 +18,15 @@ struct ActivityRow: View {
       if (icon != nil) {
         Label(icon!)
           .labelStyle(.iconOnly)
-        Spacer()
-          .frame(width: 16)
+
         
       } else {
         Text(name)
           .font(.suitCaption1)
           .foregroundStyle(Color.gray500)
-        Spacer()
-          .frame(width: 16)
+
       }
-      
+      Spacer().frame(width: 10)
       Text(time)
         .font(.suitBody3)
         .foregroundColor(.gray400)

@@ -23,7 +23,6 @@ import SwiftUI
    }
 
 
-//TODO: 2차원배열로 넘기자 VM 에서
 @ViewBuilder
    func CenterView() -> some View {
        @State var testArr = [["1","2"], ["3","4"], ["5"]]

@@ -45,3 +45,6 @@ struct AppDeviceActivity: Identifiable {
   var numberOfPickups: Int
   var token: ApplicationToken?
 }
+//#Preview {
+//  TotalActivityView(activityReport: .init(totalDuration: <#T##TimeInterval#>, apps: <#T##[AppDeviceActivity]#>, focusTotalDuration: <#T##TimeInterval#>, focuses: <#T##[TimerModel]#>), focusTotalDuration: <#T##Double#>, dopaminePer: <#T##Double#>, focusPer: <#T##Double#>)
+//}
