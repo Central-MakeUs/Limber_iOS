@@ -41,12 +41,14 @@ class RetrospectiveVM: ObservableObject {
   func save() {
     Task {
       do {
-        var immersion = 60
+        var immersion = 0
         
-        if sliderValue > 60 {
-          immersion = 100
-        } else if 50 > sliderValue {
+        if sliderValue < 0.5 {
           immersion = 20
+        } else if 1 > sliderValue {
+          immersion = 60
+        } else {
+          immersion = 100
         }
         
         if let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
