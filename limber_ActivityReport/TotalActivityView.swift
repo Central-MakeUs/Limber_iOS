@@ -101,8 +101,7 @@ struct TotalActivityView: View {
           VStack {
             VStack(alignment: .leading) {
               ForEach(
-                
-                activityReport.focuses.sorted {  $0.totalDuration ?? 0.0 > $1.totalDuration ?? 0.0 }.prefix(3), id: \.id ) { model in
+                activityReport.focuses.sorted { $0.totalDuration ?? 0.0 > $1.totalDuration ?? 0.0 }.prefix(3), id: \.id ) { model in
                   ActivityRow(name: model.focusTitle , time: (model.totalDuration ?? 0.0).toString(), icon: nil)
                 }
             }

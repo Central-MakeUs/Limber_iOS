@@ -17,9 +17,11 @@ struct SettingView: View {
   @ObservedObject var vm: SettingVM
   @EnvironmentObject var router: AppRouter
   @EnvironmentObject var blockVM: BlockVM
-
+  @State private var tapCount = 0
+  @State private var lastTapDate: Date? = nil
+  @State private var showHiddenFeature = false
   @State var showPicker: Bool = false
-  
+
   var body: some View {
     VStack(spacing: 0) {
       VStack(spacing: 0) {
@@ -112,21 +114,44 @@ struct SettingView: View {
         .frame(height: 10)
       // 메뉴 리스트
       VStack(spacing: 0) {
-        MenuRow(title: "림버의 스토리", hasChevron: true, onTap: {})
+//        MenuRow(title: "림버의 스토리", hasChevron: true)
         MenuRow(title: "FAQ", hasChevron: true, onTap: {
           if let url = URL(string: "https://www.notion.so/248907c3c029806d93c7e1aacc5aafaa") {
             UIApplication.shared.open(url)
           }
           
         })
-        MenuRow(title: "이용 약관", hasChevron: true, onTap: {})
+//        MenuRow(title: "이용 약관", hasChevron: true)
         MenuRow(title: "개인 정보 처리 방침", hasChevron: true, onTap: {
           if let url = URL(string: "https://www.notion.so/243907c3c0298031aa27f916366a2d5b?source=copy_link") {
             UIApplication.shared.open(url)
           }
         })
-//        MenuRow(title: "로그아웃", hasChevron: false, isDestructive: true)
-//        MenuRow(title: "회원 탈퇴", hasChevron: false, isDestructive: true)
+        MenuRow(title: "로그아웃", hasChevron: false, isDestructive: true, onTap: {})
+        MenuRow(title: "회원 탈퇴", hasChevron: false, isDestructive: true, onTap: {
+          let now = Date()
+          
+          if let last = lastTapDate, now.timeIntervalSince(last) <= 2 {
+            tapCount += 1
+          } else {
+            tapCount = 1 // 새 시퀀스 시작
+          }
+          
+          lastTapDate = now
+          print("탭 횟수: \(tapCount)")
+          
+          if tapCount >= 7 {
+            tapCount = 0
+            lastTapDate = nil
+            showHiddenFeature = true
+          }
+        })
+        .alert("RESET", isPresented: $showHiddenFeature) {
+          Button("확인", role: .cancel) {
+                     //TODO: 리셋
+                     
+                   }
+               }
       }
       .padding(.horizontal, 20)
 

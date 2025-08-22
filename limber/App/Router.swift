@@ -75,7 +75,7 @@ enum SomeRoute: Hashable {
   case circularTimer
   case retrospective(id: Int, historyId: Int, date: String, focusType: String)
   case focusTypes
-  case unlockEndView(timerId: String)
+  case unlockEndView
   case limberLevelView
 }
 
