@@ -18,6 +18,7 @@ struct HomeView: View {
   @State var showPicker = false
 
   @StateObject var timerObserver = TimerObserver.shared
+  var bootstrapper = AppBootstrapper()
 
   var body: some View {
     GeometryReader { geo in
@@ -134,26 +135,29 @@ struct HomeView: View {
       }
     }
     .onAppear {
-      var startTimeStr = ""
-      var endTimeStr = ""
-      
-      if let session = TimerSharedManager.shared.getTimeringSession() {
-        startTimeStr = session.startTime.appendingSecondsIfNeeded()
-        endTimeStr = session.endTime.appendingSecondsIfNeeded()
-      } 
-      
-      if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , var endDate = TimeManager.shared.parseTimeString(endTimeStr) {
+      Task {
+        await bootstrapper.run()
+        deviceActivityReportVM.contextTotalActivity = .totalActivity
+        var startTimeStr = ""
+        var endTimeStr = ""
         
-        if endDate < startDate {
-          endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
+        if let session = TimerSharedManager.shared.getTimeringSession() {
+          startTimeStr = session.startTime.appendingSecondsIfNeeded()
+          endTimeStr = session.endTime.appendingSecondsIfNeeded()
         }
-        homeVM.endDate = endDate
-        timerObserver.startDate = startDate
-        timerObserver.endDate = endDate
-        timerObserver.startTimer()
+        
+        if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , var endDate = TimeManager.shared.parseTimeString(endTimeStr) {
+          
+          if endDate < startDate {
+            endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
+          }
+          homeVM.endDate = endDate
+          timerObserver.startDate = startDate
+          timerObserver.endDate = endDate
+          timerObserver.startTimer()
+        }
+        homeVM.onAppear()
       }
-      
-      homeVM.onAppear()
       
     }
     .sheet(isPresented: $showPicker) {
@@ -165,6 +169,6 @@ struct HomeView: View {
 }
 
 
-#Preview {
-  HomeView(homeVM: HomeVM())
-}
+//#Preview {
+//  HomeView(homeVM: HomeVM())
+//}

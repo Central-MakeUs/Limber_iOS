@@ -19,6 +19,7 @@ struct LookBackView: View {
         Spacer()
         HStack {
           Button(action: {
+            
             labVM.isChecked.toggle()
             labVM.fetchHistories()
           }) {
@@ -37,100 +38,33 @@ struct LookBackView: View {
       .padding(.bottom, 14)
       
       ScrollView {
-        if !labVM.histories.isEmpty {
-          VStack(spacing: 12) {
-            ForEach(labVM.histories) { history in
-              HStack {
-                VStack(alignment: .leading, spacing: 8) {
-                  Text(history.retrospectSummary)
-                    .font(.suitBody2)
-                    .foregroundColor(.gray500)
-                  
-                  HStack(spacing: 0) {
-                    Text(history.focusTypeTitle)
-                      .foregroundColor(.limberPurple)
-                    Text("에 집중한 실험")
-                      .foregroundColor(.black)
-                  }
-                  .font(.suitHeading3Small)
-                  
-                  Spacer()
-                    .frame(maxHeight: 10)
-                  
-                  if history.hasRetrospect {
-                    Text(history.retrospectComment ?? "")
-                      .font(.suitBody2)
-                      .foregroundColor(.gray700)
-                  }
-                }
-                .padding(20)
-                
-                Spacer()
-                
-                if history.hasRetrospect {
-                  
-                  VStack {
-                    ZStack(alignment: .center) {
-                      Image("upFromRibbon")
-                        .frame(width: 60, height: 60)
-                      
-                      Image(StaticValManager.titleDic[history.focusTypeId] ?? "")
-                        .resizable()
-                        .frame(width: 32, height: 32)
-          
-                        Image(history.getImmersionImg())
-                          .resizable()
-                          .scaledToFit()
-                          .frame(width: 74, height: 74)
-                          .offset(y: 36)
-                      
-                    }
-                    .offset(y: -10)
-                    .frame(maxHeight: 80)
-                    .padding()
-                  }
-                  
-                } else {
-                  VStack {
-                    Spacer()
-                    Button {
-                      let mmddStr = TimeManager.shared.isoToMMdd(history.historyDt)
-                      
-                      router.push(.retrospective(id: history.timerId, historyId: history.id, date: mmddStr ?? "", focusType: history.focusTypeTitle) )
-                      
-                    } label: {
-                      Text("회고하기")
-                        .font(.suitBody1)
-                        .foregroundStyle(Color.primaryVivid)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                      
-                    }
-                    .frame(minWidth: 88, minHeight: 42)
-                    .background(Color.primayBGNormal)
-                    .cornerRadius(100)
-                    .padding([.trailing, .bottom], 20)
-                  }
-                  
-                }
-              }
-              .frame(maxWidth: .infinity, maxHeight: 116)
-              .background(Color.white)
-              .cornerRadius(10)
-              .shadow(color: .gray.opacity(0.1), radius: 2, x: 0, y: 2)
-            }
+        if labVM.isAll {
+          if ( !labVM.histories.isEmpty ) {
+            AllHistoriesView(histories: labVM.histories, router: router)
+              .transition(.identity)
+              .padding(20)
+          }  else {
+            RetrospectEmptyView()
+              .transition(.identity)
           }
-          .padding()
+          
           
         } else {
-          RetrospectEmptyView()
+          if ( !labVM.weekHistories.isEmpty ) {
+            WeekHistoriesView(weekHistories: labVM.weekHistories, router: router)
+              .transition(.identity)
+              .padding(20)
+          } else {
+            RetrospectEmptyView()
+              .transition(.identity)
+
+          }
         }
       }
-      
     }
     .background(!labVM.histories.isEmpty ? .gray50 : .white)
     .onAppear {
-      labVM.fetchHistories()
+      labVM.onAppear()
     }
     
   }
@@ -150,8 +84,8 @@ struct LookBackToggle: View {
     HStack(spacing: 8) {
       Button(action: {
         withAnimation(.easeInOut(duration: 0.4)) {
-          isAll = true
           event()
+          isAll = true
         }
       }) {
         Text(leftText)
@@ -167,8 +101,8 @@ struct LookBackToggle: View {
       
       Button(action: {
         withAnimation(.easeInOut(duration: 0.4)) {
-          isAll = false
           event()
+          isAll = false
         }
       }) {
         Text(rightText)
@@ -182,5 +116,118 @@ struct LookBackToggle: View {
           )
       }
     }
+  }
+}
+struct HistoryRow: View {
+    let history: TimerHistoryResponseDto
+    let router: AppRouter
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(history.retrospectSummary)
+                    .font(.suitBody2)
+                    .foregroundColor(.gray500)
+                
+                HStack(spacing: 0) {
+                    Text(history.focusTypeTitle)
+                        .foregroundColor(.limberPurple)
+                    Text("에 집중한 실험")
+                        .foregroundColor(.black)
+                }
+                .font(.suitHeading3Small)
+                
+                Spacer().frame(maxHeight: 10)
+                
+                if history.hasRetrospect {
+                    Text(history.retrospectComment ?? "")
+                        .font(.suitBody2)
+                        .foregroundColor(.gray700)
+                }
+            }
+            .padding(20)
+            
+            Spacer()
+            
+            if history.hasRetrospect {
+                VStack {
+                    ZStack(alignment: .center) {
+                        Image("upFromRibbon")
+                            .frame(width: 60, height: 60)
+                        Image(StaticValManager.titleDic[history.focusTypeId] ?? "")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                        Image(history.getImmersionImg())
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 74, height: 74)
+                            .offset(y: 36)
+                    }
+                    .offset(y: -10)
+                    .frame(maxHeight: 80)
+                    .padding()
+                }
+            } else {
+                VStack {
+                    Spacer()
+                    Button {
+                        let mmddStr = TimeManager.shared.isoToMMdd(history.historyDt)
+                        router.push(.retrospective(
+                            id: history.timerId,
+                            historyId: history.id,
+                            date: mmddStr ?? "",
+                            focusType: history.focusTypeTitle
+                        ))
+                    } label: {
+                        Text("회고하기")
+                            .font(.suitBody1)
+                            .foregroundStyle(Color.primaryVivid)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                    }
+                    .frame(minWidth: 88, minHeight: 42)
+                    .background(Color.primayBGNormal)
+                    .cornerRadius(100)
+                    .padding([.trailing, .bottom], 20)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: 116)
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(color: .gray.opacity(0.2), radius: 6, x: 0, y: 0)
+    }
+}
+
+struct AllHistoriesView: View {
+  let histories: [TimerHistoryResponseDto]
+  let router: AppRouter
+  var body: some View {
+    VStack(spacing: 12) {
+      ForEach(histories) { history in
+        HistoryRow(history: history, router: router)
+      }
+    }
+  }
+}
+struct WeekHistoriesView: View {
+  let weekHistories: [TimerWeeklyHistoryResponseDto]
+  @State var router: AppRouter
+  var body: some View {
+      VStack(spacing: 24) {
+        ForEach(weekHistories) { week in
+          VStack(alignment: .leading, spacing: 12) {
+            Text("\(week.weekStart)~\(week.weekEnd)")
+              .font(.suitHeading3Small)
+              .foregroundColor(.gray800)
+            
+            VStack(spacing: 12) {
+              ForEach(week.items) { history in
+                HistoryRow(history: history, router: router)
+              }
+            }
+          }
+        }
+      }
   }
 }

@@ -33,6 +33,7 @@ class LabVM: ObservableObject {
   
   
   @Published var histories: [TimerHistoryResponseDto] = []
+  @Published var weekHistories: [TimerWeeklyHistoryResponseDto] = []
   
   @Published var studyData: [RankItem] = []
   @Published var reasonData: [RankItem] = []
@@ -81,10 +82,28 @@ class LabVM: ObservableObject {
     
   }
   
+  func onAppear() {
+    Task {
+      do {
+          histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
+          weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
+      } catch {
+        print("error:::\(error)")
+      }
+      
+    }
+  }
+  
   func fetchHistories() {
     Task {
       do {
-        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange: self.isAll ? "ALL" : "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
+        if self.isAll {
+          histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
+        } else {
+          weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
+        }
+ 
+  
       } catch {
         print("error:::\(error)")
       }

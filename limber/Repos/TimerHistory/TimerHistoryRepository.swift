@@ -69,8 +69,36 @@ final class TimerHistoryRepository {
       let (data, response) = try await session.data(for: request)
       try validate(response: response)
 
-      let res = try jsonDecoder.decode(TimerHistoryResponse.self, from: data)
+      let res = try jsonDecoder.decode(TimerAllHistoryResponse.self, from: data)
       return res.data
+  }
+  
+  func getHistoriesWeekly(_ dto: TimerHistorySearchDto) async throws -> [TimerWeeklyHistoryResponseDto] {
+    var comps = URLComponents(
+           url: baseURL.appendingPathComponent("/search"),
+//      url: URL(string: "http://3.35.146.79:8888/api/timer-histories/search?userId=14F4568D-AA21-4108-874C-7700915A3D62&searchRange=ALL&onlyIncompleteRetrospect=false")!,
+           resolvingAgainstBaseURL: false
+       )
+       comps?.queryItems = [
+           URLQueryItem(name: "userId", value: dto.userId),
+           URLQueryItem(name: "searchRange", value: dto.searchRange),
+           URLQueryItem(
+               name: "onlyIncompleteRetrospect",
+               value: dto.onlyIncompleteRetrospect ? "true" : "false"
+           ),
+       ]
+       guard let url = comps?.url else { throw URLError(.badURL) }
+
+       var request = URLRequest(url: url)
+       request.httpMethod = "GET"
+       request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+      let (data, response) = try await session.data(for: request)
+      try validate(response: response)
+
+      let res = try jsonDecoder.decode(TimerWeeklyHistoryResponse.self, from: data)
+    
+    return res.data
   }
   
     /// 공통 HTTP 응답 검증 (200–299 이외는 오류 던짐)

@@ -26,11 +26,10 @@ struct LimberApp: App {
   
   @State private var showSplash = true
 
-  private var bootstrapper = AppBootstrapper()
   
   init() {
-         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  // 현재 선택된 점
-         UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray            // 비선택 점
+         UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  
+         UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray
      }
   
   var body: some Scene {
@@ -50,11 +49,14 @@ struct LimberApp: App {
         if hasSeenMain {
             NavigationStack(path: $router.path) {
               MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
-                .task { await bootstrapper.run() }
+                .onAppear {
+                  
+                }
                 .navigationDestination(for: SomeRoute.self) { route in
                   switch route {
                   case .home:
                     HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActiveReportVM)
+                  
                   case .main:
                     MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
                   case .unlock:
@@ -103,9 +105,7 @@ struct LimberApp: App {
         }
         appDelegate.router = router
       }
-      
     }
-     
       
       
     }

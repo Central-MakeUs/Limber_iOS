@@ -10,8 +10,8 @@ import ManagedSettings
 import SwiftData
 
 struct TotalActivityView: View {
-  @State var activityReport: ActivityReport = .init(totalDuration: TimeInterval(), apps: [], focusTotalDuration: TimeInterval(), focuses: [])
-  @State var labelType: Int
+  var activityReport: ActivityReport = .init(totalDuration: TimeInterval(), apps: [], focusTotalDuration: TimeInterval(), focuses: [])
+  var labelType: Int
   var focusTotalDuration: TimeInterval
   var dopaminePer: Double
   var focusPer: Double
@@ -22,6 +22,7 @@ struct TotalActivityView: View {
     self.dopaminePer = dopaminePer
     self.focusPer = focusPer
     labelType = (activityReport.focusTotalDuration + activityReport.totalDuration == 0) ? 0 : activityReport.totalDuration > activityReport.focusTotalDuration ? 2 : 1
+    NSLog("init:::\(activityReport.focusTotalDuration)")
   }
   var body: some View {
     mainViewTopLabel(labelType: labelType)
