@@ -54,10 +54,11 @@ struct TotalActivityScene: DeviceActivityReportScene {
       let models = TimerSharedManager.shared.getTimerModels()
       
       var focusTotalDuration = 0.0
+      
       models.forEach {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
-    
+      NSLog("focusTotal::: \(focusTotalDuration)")
       
       return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: models)
     }

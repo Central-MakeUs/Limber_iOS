@@ -50,6 +50,9 @@ struct LimberApp: App {
         if hasSeenMain {
             NavigationStack(path: $router.path) {
               MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
+                .onAppear {
+                  
+                }
                 .task { await bootstrapper.run() }
                 .navigationDestination(for: SomeRoute.self) { route in
                   switch route {
@@ -103,9 +106,7 @@ struct LimberApp: App {
         }
         appDelegate.router = router
       }
-      
     }
-     
       
       
     }

@@ -117,6 +117,7 @@ struct RetrospectiveView: View {
           .foregroundStyle(.gray500)
         
         BottomBtn(isEnable: $vm.isEnable, title: "저장하기", action: {
+          
           vm.save()
           saveAlertSheet = true
           

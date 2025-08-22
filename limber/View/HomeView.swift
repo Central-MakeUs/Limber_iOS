@@ -152,7 +152,6 @@ struct HomeView: View {
         timerObserver.endDate = endDate
         timerObserver.startTimer()
       }
-      
       homeVM.onAppear()
       
     }
