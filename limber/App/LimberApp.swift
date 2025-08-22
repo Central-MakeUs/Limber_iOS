@@ -26,7 +26,6 @@ struct LimberApp: App {
   
   @State private var showSplash = true
 
-  private var bootstrapper = AppBootstrapper()
   
   init() {
          UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple  
@@ -53,11 +52,11 @@ struct LimberApp: App {
                 .onAppear {
                   
                 }
-                .task { await bootstrapper.run() }
                 .navigationDestination(for: SomeRoute.self) { route in
                   switch route {
                   case .home:
                     HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActiveReportVM)
+                  
                   case .main:
                     MainView(timerVM: timerVM, deviceActivityReportVM: deviceActiveReportVM, scheduleExVM: scheduleExVM, labVM: labVM, homeVM: homeVM, settingVM: settingVM)
                   case .unlock:
