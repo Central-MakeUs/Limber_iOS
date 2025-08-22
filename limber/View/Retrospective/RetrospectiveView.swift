@@ -135,6 +135,7 @@ struct RetrospectiveView: View {
     .fullScreenCover(isPresented: $saveAlertSheet, content: {
       SaveAlertSheet(leftAction: {
         router.poptoRoot()
+        router.selectedTab = .home
       }, rightAction: {
         router.poptoRoot()
         router.selectedTab = .laboratory

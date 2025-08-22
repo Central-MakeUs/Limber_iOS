@@ -53,7 +53,7 @@ struct TimeSelectView: View {
                     Spacer()
                     HStack {
                         HStack {
-                            AmPmPickerWrapper(selectedRow: 0, selectedData: $vm.selectedAMPM)
+                          AmPmPickerWrapper(selectedRow: vm.selectedAMPM == "오전" ? 0 : 1, selectedData: $vm.selectedAMPM)
                                 .frame(width: 20, height: 20)
                             Spacer()
                                 .frame(width: 30)
