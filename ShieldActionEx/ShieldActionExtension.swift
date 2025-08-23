@@ -13,6 +13,7 @@ import UserNotifications
 // The system provides a default response for any functions that your subclass doesn't override.
 // Make sure that your class name matches the NSExtensionPrincipalClass in your Info.plist.
 class ShieldActionExtension: ShieldActionDelegate {
+  
     override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let defaults = UserDefaults(suiteName: "group.com.limber")
         switch action {

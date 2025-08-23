@@ -14,15 +14,21 @@ import SwiftUI
 // Make sure that your class name matches the NSExtensionPrincipalClass in your Info.plist.
 class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
+      
+      let customColor = UIColor(hex: "#342440")
+
         let defaults = UserDefaults(suiteName: "group.com.limber")
             let isUnlockRequested = defaults?.bool(forKey: "changeView") ?? false
             NSLog("config':")
             if isUnlockRequested {
               let image = UIImage(named: "block_iOS_2")
-              return ShieldConfiguration(backgroundColor: .blockBackground, icon: image, title: .init(text: "잠금 해제를 위해\n알림을 눌러 이동해주세요", color: .gray100), subtitle: .init(text: "알림이 잘 보이지 않는다면\n 설정 > 알림 > '림버' 알림 허용을 켜주세요.", color: .gray100), primaryButtonLabel: .init(text: "알림 다시 전송하기", color: .black) , primaryButtonBackgroundColor: .gray100, secondaryButtonLabel: .init(text: "취소", color: .gray100))
+              return ShieldConfiguration(backgroundColor: customColor, icon: image, title: .init(text: "잠금 해제를 위해\n알림을 눌러 이동해주세요", color: .gray), subtitle: .init(text: "알림이 잘 보이지 않는다면\n 설정 > 알림 > '림버' 알림 허용을 켜주세요.", color: .gray), primaryButtonLabel: .init(text: "알림 다시 전송하기", color: .black) , primaryButtonBackgroundColor: .gray100, secondaryButtonLabel: .init(text: "취소", color: .gray100))
+              
+              
+              
             } else {
                 let image = UIImage(named: "block_iOS")
-              return ShieldConfiguration(backgroundColor: .blockBackground, icon: image, title: .init(text: "차단 중...", color: .gray100), subtitle: .init(text: "집중을 끝까지 이어나가면\n만족스러운 하루가 될거에요.", color: .gray100), primaryButtonLabel: .init(text: "잠금 풀기", color: .black) , primaryButtonBackgroundColor: .gray100, secondaryButtonLabel: .init(text: "계속 집중하기", color: .gray100))
+              return ShieldConfiguration(backgroundColor: customColor, icon: image, title: .init(text: "차단 중...", color: .gray), subtitle: .init(text: "집중을 끝까지 이어나가면\n만족스러운 하루가 될거에요.", color: .gray), primaryButtonLabel: .init(text: "잠금 풀기", color: .black) , primaryButtonBackgroundColor: .gray100, secondaryButtonLabel: .init(text: "계속 집중하기", color: .gray100))
             }
     
     }
@@ -35,5 +41,23 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
         // Customize the shield as needed for web domains shielded because of their category.
         ShieldConfiguration()
+    }
+}
+extension UIColor {
+    convenience init(hex: String, alpha: CGFloat = 1.0) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if hexSanitized.hasPrefix("#") {
+            hexSanitized.remove(at: hexSanitized.startIndex)
+        }
+        
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+        
+        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(rgb & 0x0000FF) / 255.0
+        
+        self.init(red: r, green: g, blue: b, alpha: alpha)
     }
 }

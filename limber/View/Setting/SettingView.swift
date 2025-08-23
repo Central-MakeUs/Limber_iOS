@@ -148,8 +148,18 @@ struct SettingView: View {
         })
         .alert("RESET", isPresented: $showHiddenFeature) {
           Button("확인", role: .cancel) {
-                     //TODO: 리셋
-                     
+            Task {
+              do {
+                
+                let deviceID = try DeviceID.shared.getOrCreate()
+                let repo = TimerHistoryAnalyticsAPI()
+                _ = try await repo.delete(userId: deviceID)
+              } catch {
+                
+              }
+            }
+         
+
                    }
                }
       }
