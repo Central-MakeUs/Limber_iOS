@@ -144,7 +144,7 @@ struct UnlockReasonView: View {
       .ignoresSafeArea(.all)
       .autoDismissOverlay(isPresented: $showOverlay, duration: 2, onDismiss: {
         isSheet = false
-        router.push(.unlockEndView)
+        router.push(.unlockEndView(timerId: self.timerId))
 
       }) {
         ZStack {
@@ -173,7 +173,8 @@ struct UnlockReasonView: View {
   
   struct UnlockEndView: View {
     @EnvironmentObject var router: AppRouter
-    
+    private let historyRepo = TimerHistoryRepository()
+    let timerId: String
     var body: some View {
       ZStack {
         VStack {
@@ -206,10 +207,40 @@ struct UnlockReasonView: View {
           .cornerRadius(8)
           .font(.suitHeading3Small)
           
-          Button("새 타이머 시작") {
+          Button("회고하기") {
+            Task {
+              do {
+                let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+
+                if let repo = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId) {
+                  let mmddStr = TimeManager.shared.isoToMMdd(repo.historyDt)
+                  DispatchQueue.main.async {
+                    router.push(.retrospective(
+                      id: repo.timerId,
+                      historyId: repo.id,
+                      date: mmddStr ?? "",
+                      focusType: repo.focusTypeTitle
+                    ))
+                  }
+                } else {
+                  DispatchQueue.main.async {
+                    router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                  }
+                }
+              } catch {
+                NSLog("error::: \(error)")
+                DispatchQueue.main.async {
+                  router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
+                }
+              }
+            }
+     
             
-            router.poptoRoot()
-            router.selectedTab = .timer
+//            router.push(.retrospective(id: <#T##Int#>, historyId: <#T##Int#>, date: <#T##String#>, focusType: <#T##String#>))
+            
+            
+//            router.poptoRoot()
+//            router.selectedTab = .timer
             
           }
           .frame(maxWidth: .infinity, maxHeight: 54)
@@ -229,7 +260,5 @@ struct UnlockReasonView: View {
     }
   }
 
-#Preview {
-  UnlockEndView()
-}
+
 

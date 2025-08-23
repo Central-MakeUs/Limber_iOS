@@ -71,10 +71,10 @@ struct LimberApp: App {
                   case .focusTypes:
                     FocusTypesView()
                       .toolbar(.hidden, for: .navigationBar)
-                  case .unlockEndView:
+                  case .unlockEndView(let timerId):
                     UnlockEndView()
                   case .limberLevelView:
-                    LimberLevelView()
+                    LimberLevelView(timerId: timerId)
                       .toolbar(.hidden, for: .navigationBar)
 
                   }
