@@ -58,12 +58,6 @@ struct FailReasonCountDto: Decodable {
     let failReason: String
     let count: Int
 }
-struct APIResponse<T: Decodable>: Decodable {
-    let success: Bool
-    let data: T
-    let error: String?
-}
-
 
 // MARK: - API 클라이언트
 struct TimerHistoryAnalyticsAPI {
@@ -84,7 +78,7 @@ struct TimerHistoryAnalyticsAPI {
         self.decoder = decoder
     }
 
-    // POST 공통 헬퍼
+  
     private func post<Req: Encodable, Res: Decodable>(
         _ path: String,
         body: Req

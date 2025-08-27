@@ -37,7 +37,8 @@ struct TimerModel: Codable {
       let start = TimeManager.shared.timeStringToDate(startTime),
       let end = TimeManager.shared.timeStringToDate(endTime)
     else { return nil }
-    return end.timeIntervalSince(start)
+    
+    return start < end ? end.timeIntervalSince(start) : start.timeIntervalSince(end)
   }
 
   

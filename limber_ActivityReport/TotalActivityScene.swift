@@ -50,15 +50,23 @@ struct TotalActivityScene: DeviceActivityReportScene {
         }
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
-      
+      let timerHistoryRepo = TimerHistoryRepository()
       let models = TimerSharedManager.shared.getTimerModels()
-      
       var focusTotalDuration = 0.0
       models.forEach {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
-    
-      
+      let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+      do {
+        let histories = try await timerHistoryRepo.getHistoriesAll(
+          .init(userId: deviceID, searchRange: "ALL", onlyIncompleteRetrospect: false)
+        )
+        NSLog("histories::: \(histories)")
+      }
+      catch {
+        NSLog("catch:::: \(error)")
+      }
+   
       return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: models)
     }
 }

@@ -7,6 +7,7 @@
 
 
 import Foundation
+
 protocol TimerRepositoryProtocol {
   func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto
   func getUserTimers(userId: String) async throws -> [TimerResponseDto]
@@ -15,9 +16,12 @@ protocol TimerRepositoryProtocol {
   func getTimerStatus(id: Int) async throws -> TimerStatus
   func deleteTimer(id: Int) async throws
 }
+typealias TimerResponseList = [TimerResponseDto]
 
 final class TimerRepository: TimerRepositoryProtocol {
+  private let networkManager: NetworkManagerP = NetworkManager()
   private let baseURL = URLManager.baseURL.appendingPathComponent("/api/timers")
+  private let timerBaseURL = "/api/timers"
   private let session: URLSession
   private let jsonDecoder: JSONDecoder
   private let jsonEncoder: JSONEncoder
@@ -32,28 +36,17 @@ final class TimerRepository: TimerRepositoryProtocol {
     jsonEncoder.dateEncodingStrategy = .iso8601
   }
   
+  
   func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto {
-    let url = baseURL
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (data, response) = try await session.data(for: request)
-    try validate(response: response)
-    let timerResponse = try jsonDecoder.decode(TimerOnceDecoder.self, from: data)
-    return timerResponse.data
-    
+    try await networkManager.requestValidated(.init(path: self.timerBaseURL, method: .POST, query: nil, body: dto))
   }
   
   func getUserTimers(userId: String) async throws -> [TimerResponseDto] {
-    let url = baseURL.appendingPathComponent("/user/\(userId)")
-    let (data, response) = try await session.data(from: url)
-    
-    try validate(response: response)
-    let timerResponse = try jsonDecoder.decode(TimerArrayDecoder.self, from: data)
-    
-    return timerResponse.data
+    let url = timerBaseURL + "/user/\(userId)"
+    let response: [TimerResponseDto] = try await networkManager.requestValidated(
+        .init(path: "/api/timer-histories/user/\(userId)", method: .GET, query: nil, body: nil)
+    )
+    return response
   }
   
   func getTimer(by id: Int) async throws -> TimerResponseDto {

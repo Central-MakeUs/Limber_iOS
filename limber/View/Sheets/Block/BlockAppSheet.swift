@@ -138,7 +138,6 @@ struct BlockAppsSheet: View {
             
             Task {
               do {
-                NSLog("request::: \(request)")
 
                 
                 var reponseDto = try await timerVM.timerRepository.createTimer(request)

@@ -10,9 +10,7 @@ import Foundation
 
 // MARK: - Protocol
 protocol FocusTypeRepositoryProtocol {
-  /// 집중유형 등록
   func createFocusType(_ dto: FocusTypeRequestDto) async throws -> FocusTypeResponseDto
-  /// 유저의 집중유형 목록 조회
   func getFocusTypes(userId: Int) async throws -> [FocusTypeResponseDto]
 }
 
