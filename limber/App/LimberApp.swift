@@ -99,6 +99,7 @@ struct LimberApp: App {
           .environmentObject(appDelegate)
           .environmentObject(router)
           .environmentObject(blockVM)
+          .environmentObject(appBootStrapper)
           .background(Color.white)
           
           
@@ -153,7 +154,6 @@ final class AppBootstrapper: ObservableObject {
   }
   
   func run() async {
-    
     do {
       let deviceID = try DeviceID.shared.getOrCreate()
       
