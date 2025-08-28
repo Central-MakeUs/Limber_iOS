@@ -48,11 +48,7 @@ struct TimerArrayDecoder: Codable {
   let error: String?
 }
 
-struct TimerAllFetchStatusDecoder: Codable {
-  let success: Bool
-  let data: TimerAllFetchStatusResponse
-  let error: String?
-}
+
 
 struct TimerUnlockDecoder: Codable {
   let success: Bool

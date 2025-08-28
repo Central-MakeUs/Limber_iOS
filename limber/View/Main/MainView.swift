@@ -20,11 +20,12 @@ struct MainView: View {
   @ObservedObject var labVM: LabVM
   @ObservedObject var homeVM: HomeVM
   @ObservedObject var settingVM: SettingVM
+  @EnvironmentObject var appBootStrapper: AppBootstrapper
   
   var body: some View {
     
     TabView(selection: $router.selectedTab) {
-      HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActivityReportVM)
+      HomeView(homeVM: homeVM, deviceActivityReportVM: deviceActivityReportVM, bootstrapper: appBootStrapper)
         .tag(AppRouter.Tab.home)
         .tabItem { Label("홈", image: "home") }
       TimerView(deviceReportActivityVM: deviceActivityReportVM, timerVM: timerVM, schedulExVM: scheduleExVM)

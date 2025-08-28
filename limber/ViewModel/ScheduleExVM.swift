@@ -17,9 +17,8 @@ import DeviceActivity
 
 class ScheduleExVM: ObservableObject {
     
+  private let timerRepository: TimerRepositoryProtocol
   private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-  private let timerRepository = TimerRepository()
-
   private var cancellables = Set<AnyCancellable>()
   
   let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND, "없음": .NONE, "": .NONE]
@@ -76,7 +75,8 @@ class ScheduleExVM: ObservableObject {
   
   
   //Binding
-  init() {
+  init(timerRepository: TimerRepositoryProtocol) {
+    self.timerRepository = timerRepository
     
     $allTime
         .map { arr in

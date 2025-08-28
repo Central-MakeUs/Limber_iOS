@@ -16,42 +16,22 @@ protocol FocusTypeRepositoryProtocol {
 
 // MARK: - Repository 구현
 final class FocusTypeRepository: FocusTypeRepositoryProtocol {
-  private let baseURL = URLManager.baseURL.appendingPathComponent("/api/focus-types")
-  private let session: URLSession
-  private let jsonDecoder: JSONDecoder
-  private let jsonEncoder: JSONEncoder
+  private let baseURL = "/api/focus-types"
+  private let networkManager: NetworkManagerP
   
-  init(session: URLSession = .shared) {
-    self.session = session
-    self.jsonDecoder = JSONDecoder()
-    self.jsonEncoder = JSONEncoder()
+  init(networkManager: NetworkManagerP) {
+    self.networkManager = networkManager
   }
   
   /// 집중유형 생성 (POST /api/focus-types)
   func createFocusType(_ dto: FocusTypeRequestDto) async throws -> FocusTypeResponseDto {
-    var request = URLRequest(url: baseURL)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (data, response) = try await session.data(for: request)
-    try validate(response: response)
-    return try jsonDecoder.decode(FocusTypeResponseDto.self, from: data)
+    try await networkManager.requestValidated(.init(path: baseURL, method: .POST, query: nil, body: nil))
   }
   
   /// 유저의 집중유형 목록 조회 (GET /api/focus-types/{userId})
   func getFocusTypes(userId: Int) async throws -> [FocusTypeResponseDto] {
-    let url = baseURL.appendingPathComponent("\(userId)")
-    let (data, response) = try await session.data(from: url)
-    try validate(response: response)
-    return try jsonDecoder.decode([FocusTypeResponseDto].self, from: data)
+    try await networkManager.requestValidated(.init(path: baseURL + "\(userId)", method: .GET, query: nil, body: nil))
+
   }
-  
-  /// 공통 HTTP 응답 검증 (200–299 아니면 오류 던짐)
-  private func validate(response: URLResponse) throws {
-    guard let http = response as? HTTPURLResponse,
-          200..<300 ~= http.statusCode else {
-      throw URLError(.badServerResponse)
-    }
-  }
+
 }

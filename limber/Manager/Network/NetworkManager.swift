@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkManagerP {
-  func request<T: Decodable>(_ endpoint: Endpoint) async throws -> T
+  func request(_ endpoint: Endpoint) async throws -> Bool
   func requestValidated<T: Decodable>(_ endpoint: Endpoint) async throws -> T
 }
 
@@ -22,10 +22,11 @@ final class NetworkManager: NetworkManagerP {
   }
   
   //Decodable 타입만
-  func request<T>(_ endpoint: Endpoint) async throws -> T where T : Decodable {
+  @discardableResult
+  func request(_ endpoint: Endpoint) async throws -> Bool {
     let (data, res) = try await session.data(for: endpoint.urlRequest)
     try validate(response: res)
-    return try decoder.decode(T.self, from: data)
+    return true
   }
   //Response Wrapping
   func requestValidated<T: Decodable>(_ endpoint: Endpoint) async throws -> T where T : Decodable {

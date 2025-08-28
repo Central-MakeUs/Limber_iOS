@@ -16,6 +16,8 @@ struct TotalActivityScene: DeviceActivityReportScene {
   
   let content: (ActivityReport) -> TotalActivityView
   
+  let timerHistoryRepo = TimerHistoryRepository(networkManager: NetworkManager())
+  
   func makeConfiguration(
     representing data: DeviceActivityResults<DeviceActivityData>) async -> ActivityReport {
       var totalActivityDuration: Double = 0
@@ -50,7 +52,6 @@ struct TotalActivityScene: DeviceActivityReportScene {
         }
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
-      let timerHistoryRepo = TimerHistoryRepository()
       let models = TimerSharedManager.shared.getTimerModels()
       var focusTotalDuration = 0.0
       models.forEach {

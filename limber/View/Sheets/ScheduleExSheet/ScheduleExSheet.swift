@@ -1,230 +1,224 @@
-  //
-  //  ScheduleExSheet.swift
-  //  limber
-  //
-  //  Created by 양승완 on 7/4/25.
-  //
+//
+//  ScheduleExSheet.swift
+//  limber
+//
+//  Created by 양승완 on 7/4/25.
+//
 
-  import Foundation
-  import SwiftUI
-  import SwiftData
-  let weekdayTextToNumber: [String: String] = [
-      "일": "0",
-      "월": "1",
-      "화": "2",
-      "수": "3",
-      "목": "4",
-      "금": "5",
-      "토": "6"
-  ]
-  struct ScheduleExSheet: View {
- 
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
-    
-    @ObservedObject var timerVM: TimerVM
-    @ObservedObject var vm: ScheduleExVM
-    
-    @State var showSheet = false
-    @FocusState private var isFocused: Bool
-    
-    var body: some View {
-      GeometryReader { _ in
-        ZStack {
-          if vm.changeSheet {
-            BottomSheet4320H(vm: vm)
-          } else {
-
-            VStack {
-              Spacer()
-                .frame(height: 30)
-              ZStack {
-                Text("실험 예약하기")
-                  .font(.suitHeading3Small)
-                  .foregroundStyle(.gray800)
-                HStack {
-                  Spacer()
-                  Button {
-                    dismiss()
-                  } label: {
-                    Image("xmark")
-                  }.padding(.trailing)
-                }
-                
-              }.frame(height: 24)
-              Spacer()
-                .frame(height: 30)
-
-              ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                  TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $vm.textFieldName)
-                    .focused($isFocused)
-                    .padding()
-                    .overlay(
-                      RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray300, lineWidth: 1)
-                    )
-                  Text("50자 이내로 입력해주세요.")
-                    .font(.suitBody3)
-                    .foregroundColor(.gray500)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 52)
-                
-                category
-                  .padding(.bottom, 48)
-                
-                bottom
-              }
-                Spacer()
-                
-                BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
-                  Task {
-                    if await vm.tapReservingBtn(completion: { errCode in
-                      if errCode == 409 {
-                        DispatchQueue.main.async {
-                          vm.dontReserveToastOn = true
-                        }
-                      }  else if !vm.toastOn {
-                        DispatchQueue.main.async {
-                          vm.toastOn = true
-                        }
-                      }
-                    }) {
-                      timerVM.onAppear()
-                      dismiss()
-                    }
-                    
-                  }
-                
-                  
-                })
-              .padding(20)
-            }
-            
-          }
+import Foundation
+import SwiftUI
+import SwiftData
+let weekdayTextToNumber: [String: String] = [
+  "일": "0",
+  "월": "1",
+  "화": "2",
+  "수": "3",
+  "목": "4",
+  "금": "5",
+  "토": "6"
+]
+struct ScheduleExSheet: View {
+  
+  @Environment(\.dismiss) private var dismiss
+  @Environment(\.modelContext) private var context
+  
+  @ObservedObject var timerVM: TimerVM
+  @ObservedObject var vm: ScheduleExVM
+  
+  @State var showSheet = false
+  @FocusState private var isFocused: Bool
+  
+  var body: some View {
+    GeometryReader { _ in
+      ZStack {
+        if vm.changeSheet {
+          BottomSheet4320H(vm: vm)
+        } else {
           
-        }
-      }
-      .ignoresSafeArea(.keyboard, edges: .bottom)
-      .background(Color.white)
-      .cornerRadius(24)
-      .hideKeyboardOnTap()
-      .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
-      .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "선택한 시간에는 다른 실험이 예정되어 있어요.", duration: 2, isWarning: true))
-
-
-      
-      
-    }
-    
-    @ViewBuilder
-    var category: some View {
-      
-      VStack(alignment: .leading, spacing: 0) {
-        HStack {
-          Text("무엇에 집중하고 싶으신가요?")
-            .font(.suitHeading3Small)
-          
-          Spacer()
-        }
-        .padding(.bottom, 20)
-        
-        ScrollView(.horizontal, showsIndicators: false) {
-          HStack(spacing: 8) {
-            ForEach(StaticValManager.titleTextDic, id: \.self) { text in
-              Button {
-                vm.selectedCategory = text
-                isFocused = false
-                
-              } label: {
-                HStack(spacing: 7) {
-                  Image(text)
-                    .frame(width: 24, height: 24)
-                  
-                  Text(text)
-                }
-                .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
-                .frame(width: 90)
-                .frame(maxHeight: .infinity)
-                .overlay(
-                  RoundedRectangle(cornerRadius: 100)
-                    .stroke((vm.selectedCategory == text ? Color.primaryVivid : Color.gray300), lineWidth:
-                              timerVM.selectedCategory == text ? 2 : 1.2)
-                )
-                .background(vm.selectedCategory == text ? Color.primaryVivid : nil)
-                .cornerRadius(100)
-               
-              }
-              
-            }
-            
-            //                    Label("직접추가", systemImage: "plus")
-            //                        .foregroundStyle(Color.gray500)
-            //                        .frame(width: 112)
-            //                        .frame(maxHeight: .infinity)
-            //                        .background(Color.gray200)
-            //                        .cornerRadius(100)
-            //                        .onTapGesture {
-            //                            showSheet = true
-            //                        }
-            //                        .sheet(isPresented: $showSheet) {
-            //                            AutoFocusSheet()
-            //                                .presentationDetents([.height(700), ])
-            //                                .presentationCornerRadius(24)
-            //                                .interactiveDismissDisabled(true)
-            //
-            //                        }
-          }
-        }
-        .frame(height: 38)
-        
-      }
-      .padding(.horizontal, 20)
-      
-    }
-    
-    @ViewBuilder
-    var bottom: some View {
-      VStack(alignment: .leading, spacing: 12) {
-        Text("얼마동안 집중하시겠어요?")
-          .font(.suitHeading3Small)
-          .foregroundColor(.gray800)
-        
-        ForEach(0..<vm.timeSelect.count, id: \.self) { i in
-          
-          Button {
-            vm.focusCategoryTapped(idx: i)
-          } label: {
-            HStack {
-              Text(vm.timeSelect[i])
-                .foregroundStyle(.gray600)
-                .font(.suitBody1)
-              Spacer()
-              
-              Text(vm.allTime[i])
-                .foregroundStyle(.gray800)
+          VStack {
+            Spacer()
+              .frame(height: 30)
+            ZStack {
+              Text("실험 예약하기")
                 .font(.suitHeading3Small)
+                .foregroundStyle(.gray800)
+              HStack {
+                Spacer()
+                Button {
+                  dismiss()
+                } label: {
+                  Image("xmark")
+                }.padding(.trailing)
+              }
               
-              Image("chevron")
-                .resizable()
-                .frame(width: 24, height: 24)
-                .padding(.leading, 8)
-                .frame(width: 32, height: 32)
+            }.frame(height: 24)
+            Spacer()
+              .frame(height: 30)
+            
+            ScrollView {
+              VStack(alignment: .leading, spacing: 8) {
+                TextField("예약할 실험 타이머의 제목을 설정해주세요", text: $vm.textFieldName)
+                  .focused($isFocused)
+                  .padding()
+                  .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                      .stroke(.gray300, lineWidth: 1)
+                  )
+                Text("50자 이내로 입력해주세요.")
+                  .font(.suitBody3)
+                  .foregroundColor(.gray500)
+              }
+              .padding(.horizontal, 20)
+              .padding(.bottom, 52)
+              
+              category
+                .padding(.bottom, 48)
+              
+              bottom
             }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
+            Spacer()
+            
+            BottomBtn(isEnable: $vm.scheduleExBtnEnable, title: "예약하기", action: {
+              Task {
+                if await vm.tapReservingBtn(completion: { errCode in
+                  if errCode == 409 {
+                    DispatchQueue.main.async {
+                      vm.dontReserveToastOn = true
+                    }
+                  }  else if !vm.toastOn {
+                    DispatchQueue.main.async {
+                      vm.toastOn = true
+                    }
+                  }
+                }) {
+                  timerVM.onAppear()
+                  dismiss()
+                }
+                
+              }
+              
+              
+            })
+            .padding(20)
           }
+          
+        }
+        
+      }
+    }
+    .ignoresSafeArea(.keyboard, edges: .bottom)
+    .background(Color.white)
+    .cornerRadius(24)
+    .hideKeyboardOnTap()
+    .modifier(ToastModifier(isPresented: $vm.toastOn, message: "실험 범위는 15분 이상부터 설정할 수 있습니다.", duration: 2, isWarning: true))
+    .modifier(ToastModifier(isPresented: $vm.dontReserveToastOn, message: "선택한 시간에는 다른 실험이 예정되어 있어요.", duration: 2, isWarning: true))
+    
+    
+    
+    
+  }
+  
+  @ViewBuilder
+  var category: some View {
+    
+    VStack(alignment: .leading, spacing: 0) {
+      HStack {
+        Text("무엇에 집중하고 싶으신가요?")
+          .font(.suitHeading3Small)
+        
+        Spacer()
+      }
+      .padding(.bottom, 20)
+      
+      ScrollView(.horizontal, showsIndicators: false) {
+        HStack(spacing: 8) {
+          ForEach(StaticValManager.titleTextDic, id: \.self) { text in
+            Button {
+              vm.selectedCategory = text
+              isFocused = false
+              
+            } label: {
+              HStack(spacing: 7) {
+                Image(text)
+                  .frame(width: 24, height: 24)
+                
+                Text(text)
+              }
+              .foregroundStyle(vm.selectedCategory == text ? Color.white : Color.gray500)
+              .frame(width: 90)
+              .frame(maxHeight: .infinity)
+              .overlay(
+                RoundedRectangle(cornerRadius: 100)
+                  .stroke((vm.selectedCategory == text ? Color.primaryVivid : Color.gray300), lineWidth:
+                            timerVM.selectedCategory == text ? 2 : 1.2)
+              )
+              .background(vm.selectedCategory == text ? Color.primaryVivid : nil)
+              .cornerRadius(100)
+              
+            }
+            
+          }
+          
+          //                    Label("직접추가", systemImage: "plus")
+          //                        .foregroundStyle(Color.gray500)
+          //                        .frame(width: 112)
+          //                        .frame(maxHeight: .infinity)
+          //                        .background(Color.gray200)
+          //                        .cornerRadius(100)
+          //                        .onTapGesture {
+          //                            showSheet = true
+          //                        }
+          //                        .sheet(isPresented: $showSheet) {
+          //                            AutoFocusSheet()
+          //                                .presentationDetents([.height(700), ])
+          //                                .presentationCornerRadius(24)
+          //                                .interactiveDismissDisabled(true)
+          //
+          //                        }
         }
       }
-      .padding(.horizontal)
+      .frame(height: 38)
       
     }
+    .padding(.horizontal, 20)
+    
   }
-
-
-  #Preview {
-    ScheduleExSheet(timerVM: TimerVM(), vm: ScheduleExVM())
+  
+  @ViewBuilder
+  var bottom: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      Text("얼마동안 집중하시겠어요?")
+        .font(.suitHeading3Small)
+        .foregroundColor(.gray800)
+      
+      ForEach(0..<vm.timeSelect.count, id: \.self) { i in
+        
+        Button {
+          vm.focusCategoryTapped(idx: i)
+        } label: {
+          HStack {
+            Text(vm.timeSelect[i])
+              .foregroundStyle(.gray600)
+              .font(.suitBody1)
+            Spacer()
+            
+            Text(vm.allTime[i])
+              .foregroundStyle(.gray800)
+              .font(.suitHeading3Small)
+            
+            Image("chevron")
+              .resizable()
+              .frame(width: 24, height: 24)
+              .padding(.leading, 8)
+              .frame(width: 32, height: 32)
+          }
+          .padding()
+          .background(Color.gray.opacity(0.1))
+          .cornerRadius(12)
+        }
+      }
+    }
+    .padding(.horizontal)
+    
   }
-
+}

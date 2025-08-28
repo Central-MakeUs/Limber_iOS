@@ -139,9 +139,8 @@ struct BlockAppsSheet: View {
             Task {
               do {
 
-                
-                var reponseDto = try await timerVM.timerRepository.createTimer(request)
-                reponseDto.timerCode = request.timerCode
+                var responseDto = try await timerVM.getResponseDto(request: request)
+                responseDto.timerCode = request.timerCode
 //                let pair = TimeManager.shared
 //                  .makeTimerTimes(
 //                    start: reponseDto.startTime,
@@ -150,10 +149,10 @@ struct BlockAppsSheet: View {
 //                reponseDto.startTime = pair?.startTimeHHmm ?? reponseDto.startTime
 //                reponseDto.endTime = pair?.endTimeHHmm ?? reponseDto.endTime
                 
-                TimerSharedManager.shared.addTimer(dto: reponseDto)
-                TimerSharedManager.shared.saveTimeringSession(reponseDto)
+                TimerSharedManager.shared.addTimer(dto: responseDto)
+                TimerSharedManager.shared.saveTimeringSession(responseDto)
                 
-                try deviceActivityCenter.startMonitoring(.init(reponseDto.id.description) , during: schedule)
+                try deviceActivityCenter.startMonitoring(.init(responseDto.id.description) , during: schedule)
                 
                 timerVM.isTimering = true
                 

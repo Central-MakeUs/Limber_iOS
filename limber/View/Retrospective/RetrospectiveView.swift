@@ -153,7 +153,3 @@ struct RetrospectiveView: View {
   
   
 }
-#Preview {
-  RetrospectiveView(vm: RetrospectiveVM(date: "", labName: "", timerId: 0, historyId: 0))
-}
-

@@ -7,33 +7,26 @@
 
 
 import Foundation
-
+//TODO: 동작 테스트
 protocol TimerRepositoryProtocol {
   func createTimer(_ dto: TimerRequestDto) async throws -> TimerResponseDto
   func getUserTimers(userId: String) async throws -> [TimerResponseDto]
   func getTimer(by id: Int) async throws -> TimerResponseDto
+  func getFetchAll(dto: TimerAllFetchStatusRequest) async throws -> TimerAllFetchStatusResponse
   func updateTimerStatus(id: Int, dto: TimerStatusUpdateDto) async throws -> TimerResponseDto
   func getTimerStatus(id: Int) async throws -> TimerStatus
   func deleteTimer(id: Int) async throws
+  func unlockTimer(timerId: String, failReason: String) async throws
 }
 typealias TimerResponseList = [TimerResponseDto]
 
 final class TimerRepository: TimerRepositoryProtocol {
-  private let networkManager: NetworkManagerP = NetworkManager()
-  private let baseURL = URLManager.baseURL.appendingPathComponent("/api/timers")
+  private let networkManager: NetworkManagerP
   private let timerBaseURL = "/api/timers"
-  private let session: URLSession
-  private let jsonDecoder: JSONDecoder
-  private let jsonEncoder: JSONEncoder
+
   
-  init(session: URLSession = .shared) {
-    self.session = session
-    
-    jsonDecoder = JSONDecoder()
-    jsonDecoder.dateDecodingStrategy = .iso8601
-    
-    jsonEncoder = JSONEncoder()
-    jsonEncoder.dateEncodingStrategy = .iso8601
+  init(networkManager: NetworkManagerP) {
+    self.networkManager = networkManager
   }
   
   
@@ -42,7 +35,6 @@ final class TimerRepository: TimerRepositoryProtocol {
   }
   
   func getUserTimers(userId: String) async throws -> [TimerResponseDto] {
-    let url = timerBaseURL + "/user/\(userId)"
     let response: [TimerResponseDto] = try await networkManager.requestValidated(
         .init(path: "/api/timer-histories/user/\(userId)", method: .GET, query: nil, body: nil)
     )
@@ -50,83 +42,29 @@ final class TimerRepository: TimerRepositoryProtocol {
   }
   
   func getTimer(by id: Int) async throws -> TimerResponseDto {
-    let url = baseURL.appendingPathComponent("/\(id)")
-    let (data, response) = try await session.data(from: url)
-    try validate(response: response)
-    let timerResponse = try jsonDecoder.decode(TimerOnceDecoder.self, from: data)
-    return timerResponse.data
+    try await networkManager.requestValidated(.init(path: self.timerBaseURL + "/\(id)", method: .GET, query: nil, body: nil))
   }
   
   func updateTimerStatus(id: Int, dto: TimerStatusUpdateDto) async throws -> TimerResponseDto {
-    let url = baseURL.appendingPathComponent("/\(id)/status")
-    var request = URLRequest(url: url)
-    request.httpMethod = "PATCH"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (data, response) = try await session.data(for: request)
-    try validate(response: response)
-    let timerResponse = try jsonDecoder.decode(TimerOnceDecoder.self, from: data)
-    
-    
-    return timerResponse.data
+    try await networkManager.requestValidated(.init(path: self.timerBaseURL + "/\(id)/status", method: .PATCH, query: nil, body: dto))
   }
-  
 
   func getFetchAll(dto: TimerAllFetchStatusRequest) async throws -> TimerAllFetchStatusResponse {
-    let url = baseURL.appendingPathComponent("/status")
-    var request = URLRequest(url: url)
-    request.httpMethod = "PATCH"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (data, response) = try await session.data(for: request)
-    try validate(response: response)
-    let timerResponse = try jsonDecoder.decode(TimerAllFetchStatusDecoder.self, from: data)
-        
-    return timerResponse.data
+    try await networkManager.requestValidated(.init(path: self.timerBaseURL + "/status", method: .PATCH, query: nil, body: dto))
   }
   
   func getTimerStatus(id: Int) async throws -> TimerStatus {
-    let url = baseURL.appendingPathComponent("/\(id)/status")
-    let (data, response) = try await session.data(from: url)
-    try validate(response: response)
-
-    return try jsonDecoder.decode(TimerStatus.self, from: data)
+    try await networkManager.requestValidated(.init(path: self.timerBaseURL + "/\(id)/status", method: .GET, query: nil, body: nil))
   }
   
   func deleteTimer(id: Int) async throws {
-    let url = baseURL.appendingPathComponent("/\(id)")
-    var request = URLRequest(url: url)
-    request.httpMethod = "DELETE"
-    
-    let (_, response) = try await session.data(for: request)
-    try validate(response: response)
+   _ = try await networkManager.request(.init(path: self.timerBaseURL + "/\(id)", method: .DELETE, query: nil, body: nil))
   }
   
   func unlockTimer(timerId: String, failReason: String) async throws {
-    let url = baseURL.appendingPathComponent("/unlock")
-    let dto = TimerFailDto(timerId: Int(timerId) ?? 0, failReason: failReason)
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (_, response) = try await session.data(for: request)
-    try validate(response: response)
-    
-    
+    _ = try await networkManager.request(.init(path: self.timerBaseURL + "/unlock", method: .POST, query: nil, body: nil))
   }
   
-  // 공통 응답 코드 검증
-  private func validate(response: URLResponse) throws {
-    guard let http = response as? HTTPURLResponse else { return }
-    guard 200..<300 ~= http.statusCode else {
-      throw TimerRepositoryError.httpError(code: http.statusCode)
-    }
-  }
-  
-
 }
 enum FailReason: String {
     case lackOfFocusIntention = "집중 의지가 부족해요"

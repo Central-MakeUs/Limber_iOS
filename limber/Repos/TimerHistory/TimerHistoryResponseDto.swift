@@ -8,50 +8,6 @@
 import Foundation
 
 
-// MARK: - DTO
-
-struct TimerAllHistoryResponse: Decodable {
-
-    let data: [TimerHistoryResponseDto]
-
-    private enum CodingKeys: String, CodingKey {
-        case data
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let array = try? container.decode([TimerHistoryResponseDto].self, forKey: .data) {
-            self.data = array
-        }
-        else if let single = try? container.decode(TimerHistoryResponseDto.self, forKey: .data) {
-            self.data = [single]
-        }
-        else {
-            self.data = []
-        }
-    }
-}
-struct TimerWeeklyHistoryResponse: Decodable {
-
-    let data: [TimerWeeklyHistoryResponseDto]
-
-    private enum CodingKeys: String, CodingKey {
-        case data
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let array = try? container.decode([TimerWeeklyHistoryResponseDto].self, forKey: .data) {
-            self.data = array
-        }
-        else if let single = try? container.decode(TimerWeeklyHistoryResponseDto.self, forKey: .data) {
-            self.data = [single]
-        }
-        else {
-            self.data = []
-        }
-    }
-}
 
 struct TimerHistoryResponseDto: Codable, Identifiable {
   let id: Int
@@ -80,19 +36,53 @@ struct TimerHistoryResponseDto: Codable, Identifiable {
   }
 
 }
-
 struct TimerHistorySearchDto: Codable {
-  
   let userId: String
   let searchRange: String
   let onlyIncompleteRetrospect: Bool  
-  
 }
 struct TimerWeeklyHistoryResponseDto: Codable, Identifiable {
   var id: String { UUID().description }
-
   let weekStart: String
   let weekEnd: String
   let items: [TimerHistoryResponseDto]
-
 }
+struct WeekdayActualDto: Decodable {
+    let weekdayIndex: Int
+    let dayOfWeek: String
+    let totalActualMinutes: Int
+}
+
+struct WeekdayImmersionDto: Decodable {
+    let weekdayIndex: Int
+    let dayOfWeek: String
+    let totalActualMinutes: Int
+    let totalScheduledMinutes: Int
+    /// ratio = 실제 / 예정
+    let ratio: Double
+}
+
+struct TotalActualDto: Decodable {
+    let totalMinutes: Int
+    /// 사람이 읽기 좋은 "X시간 Y분"
+    let label: String
+}
+
+struct TotalImmersionDto: Decodable {
+    let totalActualMinutes: Int
+    let totalScheduledMinutes: Int
+    let ratio: Double
+}
+
+struct FocusDistributionDto: Decodable {
+  let focusTypeId: Int
+  let focusTypeName: String
+  let totalActualMinutes: Int
+}
+
+struct FailReasonCountDto: Decodable {
+    let failReason: String
+    let count: Int
+}
+
+

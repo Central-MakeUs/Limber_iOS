@@ -7,110 +7,88 @@
 
 
 import Foundation
+protocol TimerHistoryRepositoryProtocol {
+  func getLatestHistory(userId: String, timerId: String) async throws -> TimerHistoryResponseDto?
+  func getHistoriesAll(_ dto: TimerHistorySearchDto) async throws -> [TimerHistoryResponseDto]
+  func getHistoriesWeekly(_ dto: TimerHistorySearchDto) async throws -> [TimerWeeklyHistoryResponseDto]
+  
+  //POST
+  func actualByWeekday(_ req: RangeRequest) async throws -> [WeekdayActualDto]
+  func immersionByWeekday(_ req: RangeRequest) async throws -> [WeekdayImmersionDto]
+  func totalActual(_ req: RangeRequest) async throws -> TotalActualDto
+  func totalImmersion(_ req: RangeRequest) async throws -> TotalImmersionDto
+  func focusDistribution(_ req: RangeRequest) async throws -> [FocusDistributionDto]
+  func failReasons(_ req: RangeRequest) async throws -> [FailReasonCountDto]
 
-final class TimerHistoryRepository {
-  private let baseURL = URLManager.baseURL.appendingPathComponent("/api/timer-histories")
-    private let session: URLSession
-    private let jsonDecoder: JSONDecoder
-  private let jsonEncoder: JSONEncoder
-
-  init(session: URLSession = .shared) {
-    self.session = session
-    self.jsonDecoder = JSONDecoder()
-    self.jsonEncoder = JSONEncoder()
+}
+final class TimerHistoryRepository: TimerHistoryRepositoryProtocol {
+  private let baseURL = "/api/timer-histories"
+  private let networkManager: NetworkManagerP
+  
+  init(networkManager: NetworkManagerP) {
+    self.networkManager = networkManager
   }
- 
+  
   func getLatestHistory(userId: String, timerId: String) async throws -> TimerHistoryResponseDto? {
-
-    
-    var comps = URLComponents(
-           url: baseURL.appendingPathComponent("/latest-id"),
-           resolvingAgainstBaseURL: false
-       )
-       comps?.queryItems = [
-        URLQueryItem(name: "userId", value: userId),
-        URLQueryItem(name: "timerId", value: timerId),
-       ]
-       guard let url = comps?.url else { throw URLError(.badURL) }
-
-       var request = URLRequest(url: url)
-       request.httpMethod = "GET"
-       request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-      let (data, response) = try await session.data(for: request)
-      try validate(response: response)
-
-    let res = try jsonDecoder.decode(LatestDecoder.self, from: data)
-    return res.data
+    try await networkManager.requestValidated(.init(path: baseURL + "/latest-id", method: .GET, query: [
+      URLQueryItem(name: "userId", value: userId),
+      URLQueryItem(name: "timerId", value: timerId),
+    ], body: nil))
     
   }
   
   func getHistoriesAll(_ dto: TimerHistorySearchDto) async throws -> [TimerHistoryResponseDto] {
+    try await networkManager.requestValidated(.init(path: baseURL + "/search", method: .GET, query: [
+      URLQueryItem(name: "userId", value: dto.userId),
+      URLQueryItem(name: "searchRange", value: dto.searchRange),
+      URLQueryItem(
+        name: "onlyIncompleteRetrospect",
+        value: dto.onlyIncompleteRetrospect ? "true" : "false"
+      ),
+    ], body: nil))
     
-    var comps = URLComponents(
-           url: baseURL.appendingPathComponent("/search"),
-//      url: URL(string: "http://3.35.146.79:8888/api/timer-histories/search?userId=14F4568D-AA21-4108-874C-7700915A3D62&searchRange=ALL&onlyIncompleteRetrospect=false")!,
-           resolvingAgainstBaseURL: false
-       )
-       comps?.queryItems = [
-           URLQueryItem(name: "userId", value: dto.userId),
-           URLQueryItem(name: "searchRange", value: dto.searchRange),
-           URLQueryItem(
-               name: "onlyIncompleteRetrospect",
-               value: dto.onlyIncompleteRetrospect ? "true" : "false"
-           ),
-       ]
-       guard let url = comps?.url else { throw URLError(.badURL) }
-
-       var request = URLRequest(url: url)
-       request.httpMethod = "GET"
-       request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-      let (data, response) = try await session.data(for: request)
-      try validate(response: response)
-
-      let res = try jsonDecoder.decode(TimerAllHistoryResponse.self, from: data)
-      return res.data
   }
   
   func getHistoriesWeekly(_ dto: TimerHistorySearchDto) async throws -> [TimerWeeklyHistoryResponseDto] {
-    var comps = URLComponents(
-           url: baseURL.appendingPathComponent("/search"),
-//      url: URL(string: "http://3.35.146.79:8888/api/timer-histories/search?userId=14F4568D-AA21-4108-874C-7700915A3D62&searchRange=ALL&onlyIncompleteRetrospect=false")!,
-           resolvingAgainstBaseURL: false
-       )
-       comps?.queryItems = [
-           URLQueryItem(name: "userId", value: dto.userId),
-           URLQueryItem(name: "searchRange", value: dto.searchRange),
-           URLQueryItem(
-               name: "onlyIncompleteRetrospect",
-               value: dto.onlyIncompleteRetrospect ? "true" : "false"
-           ),
-       ]
-       guard let url = comps?.url else { throw URLError(.badURL) }
-
-       var request = URLRequest(url: url)
-       request.httpMethod = "GET"
-       request.setValue("application/json", forHTTPHeaderField: "Accept")
-
-      let (data, response) = try await session.data(for: request)
-      try validate(response: response)
-
-      let res = try jsonDecoder.decode(TimerWeeklyHistoryResponse.self, from: data)
     
-    return res.data
+    try await networkManager.requestValidated(.init(path: baseURL + "/search", method: .GET, query: [
+      URLQueryItem(name: "userId", value: dto.userId),
+      URLQueryItem(name: "searchRange", value: dto.searchRange),
+      URLQueryItem(
+        name: "onlyIncompleteRetrospect",
+        value: dto.onlyIncompleteRetrospect ? "true" : "false"
+      ),
+    ], body: nil))
+    
   }
   
-    /// 공통 HTTP 응답 검증 (200–299 이외는 오류 던짐)
-    private func validate(response: URLResponse) throws {
-        guard let http = response as? HTTPURLResponse,
-              200..<300 ~= http.statusCode else {
-            throw URLError(.badServerResponse)
-        }
-    }
-}
-struct LatestDecoder: Codable {
-  let success: Bool
-  let data: TimerHistoryResponseDto?
-  let error: String?
+  // (1) /actual-by-weekday
+  func actualByWeekday(_ req: RangeRequest) async throws -> [WeekdayActualDto] {
+    try await networkManager.requestValidated(.init(path: baseURL + "/actual-by-weekday", method: .POST, query: nil, body: req))
+  }
+// (2) /immersion-by-weekday
+  func immersionByWeekday(_ req: RangeRequest) async throws -> [WeekdayImmersionDto] {
+    try await networkManager.requestValidated(.init(path: baseURL + "/immersion-by-weekday", method: .POST, query: nil, body: req))
+  }
+
+  // (3) /total-actual
+  func totalActual(_ req: RangeRequest) async throws -> TotalActualDto {
+    try await networkManager.requestValidated(.init(path: baseURL + "/total-actual", method: .POST, query: nil, body: req))
+  }
+
+  // (4) /total-immersion
+  func totalImmersion(_ req: RangeRequest) async throws -> TotalImmersionDto {
+    try await networkManager.requestValidated(.init(path: baseURL + "/total-immersion", method: .POST, query: nil, body: req))
+  }
+
+  // (5) /focus-distribution
+  func focusDistribution(_ req: RangeRequest) async throws -> [FocusDistributionDto] {
+    try await networkManager.requestValidated(.init(path: baseURL + "/focus-distribution", method: .POST, query: nil, body: req))
+  }
+
+  // (6) /fail-reasons
+  func failReasons(_ req: RangeRequest) async throws -> [FailReasonCountDto] {
+    try await networkManager.requestValidated(.init(path: baseURL + "/fail-reasons", method: .POST, query: nil, body: req))
+  }
+  
 }

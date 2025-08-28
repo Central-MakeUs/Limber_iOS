@@ -18,7 +18,7 @@ struct HomeView: View {
   @State var showPicker = false
 
   @StateObject var timerObserver = TimerObserver.shared
-  var bootstrapper = AppBootstrapper()
+  @StateObject var bootstrapper: AppBootstrapper
 
   var body: some View {
     GeometryReader { geo in

@@ -9,9 +9,9 @@ import SwiftUI
 import Combine
 
 struct BottomSheet4320H: View {
-    @Environment(\.dismiss) private var dismiss
-    @StateObject var vm = ScheduleExVM()
-    @State var isEnabled = false
+  @Environment(\.dismiss) private var dismiss
+  @StateObject var vm: ScheduleExVM
+  @State var isEnabled = false
 
     var body: some View {
         VStack {

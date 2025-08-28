@@ -311,7 +311,7 @@ struct TimerView: View {
                     set: { newValue in
                       
                       Task {
-                        await toggleChanged(id: model.id, newValue: newValue)
+                        await timerVM.toggleChanged(id: model.id, newValue: newValue)
                       }
                     }
                   ))
@@ -423,44 +423,7 @@ struct TimerView: View {
   }
   
   
-  //TODO: 백엔드 도입 후 다시 ViewModel 로 이동
-  func toggleChanged(id: Int, newValue: Bool) async {
-    
-    if let index = timerVM.timers.firstIndex(where: { $0.id == id }) {
-      do {
-        let result = try await self.timerVM.timerRepository.updateTimerStatus(id: id, dto: TimerStatusUpdateDto(status: timerVM.timers[index].status == .OFF ? .ON : .OFF))
-        
-        timerVM.timers[index].status = result.status
 
-        let deviceActivityCenter = DeviceActivityCenter()
-        
-        if result.status != .ON {
-          SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.doNotNoti.key)
-          deviceActivityCenter.stopMonitoring([.init(timerVM.timers[index].id.description)])
-          DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-            SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
-          })
-
-        } else {
-          
-          let intervalStart = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
-          let intervalEnd = TimeManager.shared.timeStringToDateComponents(timerVM.timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
-          
-          
-          try deviceActivityCenter.startMonitoring(.init(timerVM.timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
-        }
-      } catch TimerRepositoryError.httpError(let code) {
-        if code == 409 {
-//          timerVM.dontReserveToastOn = true
-
-        }
-      } catch {
-        
-      }
-  
-
-    }
-  }
   
   
 

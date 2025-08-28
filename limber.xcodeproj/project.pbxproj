@@ -131,6 +131,7 @@
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
 				Repos/Timer/Types.swift,
+				Repos/TimerHistory/RangeRequest.swift,
 				Repos/TimerHistory/TimerHistoryRepository.swift,
 				Repos/TimerHistory/TimerHistoryResponseDto.swift,
 				TimerModel.swift,
@@ -154,6 +155,7 @@
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
 				Repos/Timer/Types.swift,
+				Repos/TimerHistory/RangeRequest.swift,
 				TimerModel.swift,
 			);
 			target = 6049716D2E1AAF3900AB2731 /* ShieldConfigurationEx */;
@@ -175,6 +177,7 @@
 				Repos/Timer/TimerDto.swift,
 				Repos/Timer/TimerRepository.swift,
 				Repos/Timer/Types.swift,
+				Repos/TimerHistory/RangeRequest.swift,
 				TimerModel.swift,
 			);
 			target = 604971B32E27CB1900AB2731 /* ShieldActionEx */;
@@ -197,6 +200,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				App/AppDelegate.swift,
+				App/AppDIContainer.swift,
 				App/LimberApp.swift,
 				"Customs/Extension/VIew+.swift",
 				"GoogleService-Info.plist",

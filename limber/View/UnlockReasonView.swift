@@ -21,9 +21,16 @@ struct UnlockReasonView: View {
   @State var isEnable: Bool = false
   @State var showOverlay: Bool = false
   
+  private let repo: TimerRepositoryProtocol
+
+  
   private let staticFailCodes: [String :String] = [FailReason.lackOfFocusIntention.rawValue :"LACK_OF_FOCUS_INTENTION", FailReason.needBreak.rawValue: "NEED_BREAK", FailReason.finishedEarly.rawValue: "FINISHED_EARLY", FailReason.emergency.rawValue: "EMERGENCY", FailReason.externalDisturbance.rawValue: "EXTERNAL_DISTURBANCE" ]
   
-  
+  init(blockVM: BlockVM, repo: TimerRepositoryProtocol, timerId: String) {
+    self.blockVM = blockVM
+    self.repo = repo
+    self.timerId = timerId
+  }
   
   var timerId: String
   
@@ -112,7 +119,6 @@ struct UnlockReasonView: View {
     .fullScreenCover(isPresented: $isSheet ) {
       ReAskAlertSheet(leftAction: {
         showOverlay = true
-        let repo = TimerRepository()
         Task {
           let failReason = staticFailCodes[checkedReason] ?? "NONE"
           do {
