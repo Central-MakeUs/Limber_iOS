@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+@MainActor
 class CircularTimerVM: ObservableObject {
   
   @Published var dto: TimerHistoryResponseDto?
@@ -21,7 +22,7 @@ class CircularTimerVM: ObservableObject {
   
   func onAppear() async {
     do {
-      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+      let userId = try await FirebaseAuthManager.shared.ensureUserId()
       let timerId = TimerSharedManager.shared.getHistoryTimerKey() ?? ""
       self.dto = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId)
       self.mmddStr = TimeManager.shared.isoToMMdd(dto?.historyDt ?? "")
@@ -277,4 +278,3 @@ struct CircularTimerView: View {
     
   }
   
-

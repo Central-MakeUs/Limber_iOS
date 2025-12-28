@@ -86,20 +86,15 @@ struct OnBoardingView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .animation(.easeInOut, value: step)
     .onAppear {
-      if let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
-        Task {
-          do {
-            _ = try await timerRepository.getFetchAll(dto: TimerAllFetchStatusRequest(userId: userId, timerCode: "IMMEDIATE", status: "OFF"))
-          } catch {
-            print("error::: \(error)")
-          }
-          
+      Task {
+        do {
+          let userId = try await FirebaseAuthManager.shared.ensureUserId()
+          _ = try await timerRepository.getFetchAll(dto: TimerAllFetchStatusRequest(userId: userId, timerCode: "IMMEDIATE", status: "OFF"))
+        } catch {
+          print("error::: \(error)")
         }
-        
-        
       }
     }
   }
   
 }
-

@@ -54,11 +54,9 @@ class RetrospectiveVM: ObservableObject {
           immersion = 100
         }
         
-        if let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
-          if let _ = try await repo.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
-            await appBootStrapper.run()
-          }
-          
+        let deviceID = try await FirebaseAuthManager.shared.ensureUserId()
+        if let _ = try await repo.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
+          await appBootStrapper.run()
         }
       } catch {
         print("cath \(error)")

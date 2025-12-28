@@ -10,7 +10,6 @@ import Foundation
 class LabVM: ObservableObject {
   
   private let historyRepo: TimerHistoryRepositoryProtocol
-  private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
   private var failReasonIcons = ["firstMedal", "secondMedal", "thirdMedal"]
   private var totalActualMinutes: Double = 1.0
   
@@ -73,20 +72,14 @@ class LabVM: ObservableObject {
       (day: "토", value: 0.0),
       (day: "일", value: 0.0)
     ]
-    
-    self.fetchHistories()
-    Task {
-      await fetchReports()
-    }
-    
-    
   }
   
   func onAppear() {
     Task {
       do {
-          histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
-          weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
+        let userId = try await FirebaseAuthManager.shared.ensureUserId()
+        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
+        weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
       } catch {
         print("error:::\(error)")
       }
@@ -97,6 +90,7 @@ class LabVM: ObservableObject {
   func fetchHistories() {
     Task {
       do {
+        let userId = try await FirebaseAuthManager.shared.ensureUserId()
         if self.isAll {
           histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
         } else {
@@ -114,6 +108,7 @@ class LabVM: ObservableObject {
   
   func fetchReports() async {
     do {
+      let userId = try await FirebaseAuthManager.shared.ensureUserId()
       totalFailureCount = 0
       let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
       let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
@@ -208,6 +203,4 @@ class LabVM: ObservableObject {
     
   }
 }
-
-
 

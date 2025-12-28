@@ -9,6 +9,7 @@ import SwiftUI
 import FamilyControls
 import ManagedSettings
 import _DeviceActivity_SwiftUI
+import FirebaseCore
 
 @main
 struct LimberApp: App {
@@ -32,6 +33,9 @@ struct LimberApp: App {
   
   
   init() {
+    if FirebaseApp.app() == nil {
+      FirebaseApp.configure()
+    }
     UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemPurple
     UIPageControl.appearance().pageIndicatorTintColor = UIColor.lightGray
     let di: AppDIContainer = AppDIContainer()
@@ -155,7 +159,15 @@ final class AppBootstrapper: ObservableObject {
   
   func run() async {
     do {
-      let deviceID = try DeviceID.shared.getOrCreate()
+      let deviceID = try await FirebaseAuthManager.shared.ensureSignedIn()
+      SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
+      if let historyRepo = timerHistoryRepo as? TimerHistoryRepository {
+        do {
+          try await historyRepo.flushPendingHistories()
+        } catch {
+          NSLog("pending history sync error: \(error)")
+        }
+      }
       
       async let timers = timerRepo.getUserTimers(userId: deviceID)
       async let histories = timerHistoryRepo.getHistoriesAll(
@@ -169,14 +181,24 @@ final class AppBootstrapper: ObservableObject {
       TimerSharedManager.shared.saveFocusSessions(timersVal)
       
       
-      let models: [TimerModel] = historiesVal.map {
-        TimerModel(id: $0.id,
-                   title: $0.title,
-                   focusTitle: StaticValManager.titleDic[$0.focusTypeId] ?? "기타",
-                   startTime: $0.startTime,
-                   endTime: $0.endTime,
-                   repeatDays: $0.repeatDays,
-                   repeatCycleCode: RepeatCycleCode(rawValue: $0.repeatCycleCode) ?? .NONE)
+      let models: [TimerModel] = historiesVal.map { history in
+        let window = Self.actualWindow(
+          historyDt: history.historyDt,
+          startTime: history.startTime,
+          endTime: history.endTime
+        )
+        return TimerModel(
+          id: history.id,
+          title: history.title,
+          focusTitle: StaticValManager.titleDic[history.focusTypeId] ?? "기타",
+          startTime: history.startTime,
+          endTime: history.endTime,
+          repeatDays: history.repeatDays,
+          repeatCycleCode: RepeatCycleCode(rawValue: history.repeatCycleCode) ?? .NONE,
+          actualDuration: window?.duration,
+          historyTimestamp: window?.end.timeIntervalSince1970,
+          actualStartTimestamp: window?.start.timeIntervalSince1970
+        )
       }
       
       TimerSharedManager.shared.saveTimerModels(models)
@@ -186,5 +208,43 @@ final class AppBootstrapper: ObservableObject {
       NSLog("bootstrap error: \(error)")
       isReady = true
     }
+  }
+
+  private static func actualWindow(historyDt: String, startTime: String, endTime: String) -> (start: Date, end: Date, duration: TimeInterval)? {
+    guard let endDate = parseHistoryDate(historyDt) else { return nil }
+    var calendar = Calendar.current
+    calendar.timeZone = TimeZone(identifier: "Asia/Seoul") ?? .current
+    let baseDate = calendar.startOfDay(for: endDate)
+    guard let start = combine(date: baseDate, time: startTime, zone: calendar.timeZone) else { return nil }
+    let startMinutes = minutes(from: startTime) ?? 0
+    let endMinutes = calendar.component(.hour, from: endDate) * 60 + calendar.component(.minute, from: endDate)
+    var actualStart = start
+    if endMinutes < startMinutes {
+      actualStart = calendar.date(byAdding: .day, value: -1, to: actualStart) ?? actualStart
+    }
+    let duration = endDate.timeIntervalSince(actualStart)
+    return duration >= 0 ? (start: actualStart, end: endDate, duration: duration) : nil
+  }
+
+  private static func parseHistoryDate(_ historyDt: String) -> Date? {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(identifier: "Asia/Seoul") ?? .current
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    return formatter.date(from: historyDt)
+  }
+
+  private static func combine(date: Date, time: String, zone: TimeZone) -> Date? {
+    let parts = time.split(separator: ":").compactMap { Int($0) }
+    guard parts.count >= 2 else { return nil }
+    var cal = Calendar.current
+    cal.timeZone = zone
+    return cal.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: date)
+  }
+
+  private static func minutes(from time: String) -> Int? {
+    let parts = time.split(separator: ":").compactMap { Int($0) }
+    guard parts.count >= 2 else { return nil }
+    return parts[0] * 60 + parts[1]
   }
 }

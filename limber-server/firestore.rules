@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /timers/{timerId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /timerHistories/{historyId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /timerRetrospects/{retrospectId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /focusTypes/{focusTypeId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}

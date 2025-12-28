@@ -7,7 +7,6 @@
 
 import DeviceActivity
 import SwiftUI
-import FirebaseCore
 
 @main
 struct limber_ActivityReport: DeviceActivityReportExtension {

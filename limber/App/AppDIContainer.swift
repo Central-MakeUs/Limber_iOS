@@ -7,17 +7,15 @@
 
 
 struct AppDIContainer {
-  let networkManager: NetworkManagerP
   let timerRepo: TimerRepositoryProtocol
   let focusTypeRepo: FocusTypeRepositoryProtocol
   let timerRetrospectRepo: TimerRetrospectRepoProtocol
   let timerHistoryRepo: TimerHistoryRepositoryProtocol
   
   init() {
-    self.networkManager = NetworkManager()
-    self.timerRepo = TimerRepository(networkManager: networkManager)
-    self.focusTypeRepo = FocusTypeRepository(networkManager: networkManager)
-    self.timerRetrospectRepo = TimerRetrospectRepo(networkManager: networkManager)
-    self.timerHistoryRepo = TimerHistoryRepository(networkManager: networkManager)
+    self.timerRepo = TimerRepository()
+    self.focusTypeRepo = FocusTypeRepository()
+    self.timerRetrospectRepo = TimerRetrospectRepo()
+    self.timerHistoryRepo = TimerHistoryRepository()
   }
 }

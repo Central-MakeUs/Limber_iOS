@@ -91,10 +91,10 @@ class TimerVM: ObservableObject {
   //    }
   
   func onAppear() {
-      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
     Task { @MainActor [weak self] in
       guard let self else {return}
           do {
+            let userId = try await FirebaseAuthManager.shared.ensureUserId()
             timers = try await timerRepository.getUserTimers(userId: userId)
           } catch {
               

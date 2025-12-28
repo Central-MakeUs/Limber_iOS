@@ -133,11 +133,12 @@ struct BlockAppsSheet: View {
      
             
             
-            let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-            let request = TimerRequestDto(userId: userId, title: "", focusTypeId: self.focusTypeId, timerCode: .IMMEDIATE, repeatCycleCode: .NONE, repeatDays: "", startTime: startTime , endTime: endTime)
-            
             Task {
               do {
+                let stored = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+                let uid = stored.isEmpty ? (try await FirebaseAuthManager.shared.ensureSignedIn()) : stored
+                SharedData.defaultsGroup?.set(uid, forKey: SharedData.Keys.UDID.key)
+                let request = TimerRequestDto(userId: uid, title: "", focusTypeId: self.focusTypeId, timerCode: .IMMEDIATE, repeatCycleCode: .NONE, repeatDays: "", startTime: startTime , endTime: endTime)
 
                 var responseDto = try await timerVM.getResponseDto(request: request)
                 responseDto.timerCode = request.timerCode
@@ -235,4 +236,3 @@ class ClearBackgroundView: UIView {
     parentView.backgroundColor = .clear
   }
 }
-

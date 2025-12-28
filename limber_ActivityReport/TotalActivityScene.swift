@@ -15,17 +15,18 @@ struct TotalActivityScene: DeviceActivityReportScene {
   let context: DeviceActivityReport.Context = .totalActivity
   
   let content: (ActivityReport) -> TotalActivityView
-  
-  let timerHistoryRepo = TimerHistoryRepository(networkManager: NetworkManager())
+  private let excludedBundleIds: Set<String> = ["com.seungwan.limber"]
   
   func makeConfiguration(
     representing data: DeviceActivityResults<DeviceActivityData>) async -> ActivityReport {
       var totalActivityDuration: Double = 0
       var list: [AppDeviceActivity] = []
+      var intervals: [DateInterval] = []
       /// DeviceActivityResults 데이터에서 화면에 보여주기 위해 필요한 내용을 추출해줍니다.
       for await eachData in data {
         /// 특정 시간 간격 동안 사용자의 활동
         for await activitySegment in eachData.activitySegments {
+          intervals.append(activitySegment.dateInterval)
           /// 활동 세그먼트 동안 사용자의 카테고리 별 Device Activity
           for await categoryActivity in activitySegment.categories {
             /// 이 카테고리의 totalActivityDuration에 기여한 사용자의 application Activity
@@ -35,6 +36,10 @@ struct TotalActivityScene: DeviceActivityReportScene {
               let numberOfPickups = applicationActivity.numberOfPickups
               let token = applicationActivity.application.token
               let duration = applicationActivity.totalActivityDuration
+
+              if excludedBundleIds.contains(bundle) {
+                continue
+              }
               
               let appActivity = AppDeviceActivity(
                 id: bundle,
@@ -53,23 +58,35 @@ struct TotalActivityScene: DeviceActivityReportScene {
       }
       let sortedList = list.sorted { $0.duration > $1.duration }
       let models = TimerSharedManager.shared.getTimerModels()
+      let filteredModels: [TimerModel] = models.compactMap { model in
+        guard let startTs = model.actualStartTimestamp,
+              let endTs = model.historyTimestamp else { return nil }
+        let start = Date(timeIntervalSince1970: startTs)
+        let end = Date(timeIntervalSince1970: endTs)
+        let overlap = overlapSeconds(start: start, end: end, intervals: intervals)
+        if overlap <= 0 { return nil }
+        var adjusted = model
+        adjusted.actualDuration = overlap
+        return adjusted
+      }
       var focusTotalDuration = 0.0
-      models.forEach {
+      filteredModels.forEach {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
-      let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-      do {
-        let histories = try await timerHistoryRepo.getHistoriesAll(
-          .init(userId: deviceID, searchRange: "ALL", onlyIncompleteRetrospect: false)
-        )
-        NSLog("histories::: \(histories)")
-      }
-      catch {
-        NSLog("catch:::: \(error)")
-      }
-   
-      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: models)
+      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: filteredModels)
     }
+}
+
+private func overlapSeconds(start: Date, end: Date, intervals: [DateInterval]) -> TimeInterval {
+  var total: TimeInterval = 0
+  for interval in intervals {
+    let overlapStart = max(start, interval.start)
+    let overlapEnd = min(end, interval.end)
+    if overlapEnd > overlapStart {
+      total += overlapEnd.timeIntervalSince(overlapStart)
+    }
+  }
+  return total
 }
 
 struct BlockedScrollView: View {
