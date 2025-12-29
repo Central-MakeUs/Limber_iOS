@@ -17,9 +17,10 @@ import DeviceActivity
 
 class ScheduleExVM: ObservableObject {
     
-  private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
-  private let timerRepository = TimerRepository()
-
+  private let timerRepository: TimerRepositoryProtocol
+  private var userId: String {
+    SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+  }
   private var cancellables = Set<AnyCancellable>()
   
   let selectedOptionDic: [String: RepeatCycleCode] = ["매일": .EVERY, "평일": .WEEKDAY, "주말": .WEEKEND, "없음": .NONE, "": .NONE]
@@ -76,7 +77,8 @@ class ScheduleExVM: ObservableObject {
   
   
   //Binding
-  init() {
+  init(timerRepository: TimerRepositoryProtocol) {
+    self.timerRepository = timerRepository
     
     $allTime
         .map { arr in
@@ -247,7 +249,9 @@ class ScheduleExVM: ObservableObject {
       repeatCycleCode: selectedOptionDic[selectedOption ?? ""] ?? .NONE)
     
       do {
-        let dto =  model.getRequestDto(userId: userId, timerCode: .SCHEDULED)
+        let uid = userId.isEmpty ? (try await FirebaseAuthManager.shared.ensureSignedIn()) : userId
+        SharedData.defaultsGroup?.set(uid, forKey: SharedData.Keys.UDID.key)
+        let dto =  model.getRequestDto(userId: uid, timerCode: .SCHEDULED)
         var reponseDto = try await timerRepository.createTimer(dto)
         
         

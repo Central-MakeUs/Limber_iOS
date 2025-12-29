@@ -7,53 +7,84 @@
 
 
 import Foundation
+import FirebaseFirestore
 
 // MARK: - Protocol
 protocol FocusTypeRepositoryProtocol {
-  /// 집중유형 등록
   func createFocusType(_ dto: FocusTypeRequestDto) async throws -> FocusTypeResponseDto
-  /// 유저의 집중유형 목록 조회
   func getFocusTypes(userId: Int) async throws -> [FocusTypeResponseDto]
 }
 
 // MARK: - Repository 구현
 final class FocusTypeRepository: FocusTypeRepositoryProtocol {
-  private let baseURL = URLManager.baseURL.appendingPathComponent("/api/focus-types")
-  private let session: URLSession
-  private let jsonDecoder: JSONDecoder
-  private let jsonEncoder: JSONEncoder
-  
-  init(session: URLSession = .shared) {
-    self.session = session
-    self.jsonDecoder = JSONDecoder()
-    self.jsonEncoder = JSONEncoder()
-  }
+  private let db = Firestore.firestore()
+
+  init() {}
   
   /// 집중유형 생성 (POST /api/focus-types)
   func createFocusType(_ dto: FocusTypeRequestDto) async throws -> FocusTypeResponseDto {
-    var request = URLRequest(url: baseURL)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpBody = try jsonEncoder.encode(dto)
-    
-    let (data, response) = try await session.data(for: request)
-    try validate(response: response)
-    return try jsonDecoder.decode(FocusTypeResponseDto.self, from: data)
+    let focusId = Self.makeId()
+    let ref = focusTypesCollection(userId: dto.userId).document(String(focusId))
+    let data: [String: Any] = [
+      "id": focusId,
+      "title": dto.title,
+      "userId": dto.userId,
+      "defaultFlag": "N",
+      "sequence": dto.sequence,
+    ]
+    try await FirestoreAsync.setData(ref, data: data)
+    return FocusTypeResponseDto(
+      id: focusId,
+      title: dto.title,
+      userId: dto.userId,
+      defaultFlag: "N",
+      sequence: dto.sequence
+    )
   }
   
   /// 유저의 집중유형 목록 조회 (GET /api/focus-types/{userId})
   func getFocusTypes(userId: Int) async throws -> [FocusTypeResponseDto] {
-    let url = baseURL.appendingPathComponent("\(userId)")
-    let (data, response) = try await session.data(from: url)
-    try validate(response: response)
-    return try jsonDecoder.decode([FocusTypeResponseDto].self, from: data)
-  }
-  
-  /// 공통 HTTP 응답 검증 (200–299 아니면 오류 던짐)
-  private func validate(response: URLResponse) throws {
-    guard let http = response as? HTTPURLResponse,
-          200..<300 ~= http.statusCode else {
-      throw URLError(.badServerResponse)
+    let snapshot = try await FirestoreAsync.getDocuments(focusTypesCollection(userId: userId))
+    return snapshot.documents.compactMap { doc in
+      let data = doc.data()
+      guard
+        let id = Self.intValue(from: data["id"]) ?? Int(doc.documentID),
+        let title = data["title"] as? String,
+        let userId = Self.intValue(from: data["userId"]),
+        let defaultFlag = data["defaultFlag"] as? String,
+        let sequence = Self.intValue(from: data["sequence"])
+      else { return nil }
+      return FocusTypeResponseDto(
+        id: id,
+        title: title,
+        userId: userId,
+        defaultFlag: defaultFlag,
+        sequence: sequence
+      )
     }
+
   }
+
+  private func focusTypesCollection(userId: Int) -> CollectionReference {
+    db.collection("users").document(String(userId)).collection("focusTypes")
+  }
+
+  private static func makeId() -> Int {
+    let millis = Int(Date().timeIntervalSince1970 * 1000)
+    return millis * 1000 + Int.random(in: 0..<1000)
+  }
+
+  private static func intValue(from value: Any?) -> Int? {
+    if let value = value as? Int {
+      return value
+    }
+    if let value = value as? Int64 {
+      return Int(value)
+    }
+    if let value = value as? NSNumber {
+      return value.intValue
+    }
+    return nil
+  }
+
 }

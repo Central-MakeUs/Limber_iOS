@@ -13,6 +13,14 @@ struct OnBoardingView: View {
   @State private var page = 0
   @State private var showSplash = true
   
+  private let timerRepository: TimerRepositoryProtocol
+  
+  init(onComplete: @escaping () -> Void, timerRepository: TimerRepositoryProtocol) {
+    self.onComplete = onComplete
+    self.timerRepository = timerRepository
+  }
+
+  
   var body: some View {
     ZStack {
       
@@ -39,8 +47,6 @@ struct OnBoardingView: View {
            removal: .move(edge: .leading)
           )
       )
-
-
       }
       else if step == 3 {
         VStack {
@@ -80,21 +86,15 @@ struct OnBoardingView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .animation(.easeInOut, value: step)
     .onAppear {
-      let timerRepository = TimerRepository()
-      if let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
-        Task {
-          do {
-            _ = try await timerRepository.getFetchAll(dto: TimerAllFetchStatusRequest(userId: userId, timerCode: "IMMEDIATE", status: "OFF"))
-          } catch {
-            print("error::: \(error)")
-          }
-          
+      Task {
+        do {
+          let userId = try await FirebaseAuthManager.shared.ensureUserId()
+          _ = try await timerRepository.getFetchAll(dto: TimerAllFetchStatusRequest(userId: userId, timerCode: "IMMEDIATE", status: "OFF"))
+        } catch {
+          print("error::: \(error)")
         }
-        
-        
       }
     }
   }
   
 }
-

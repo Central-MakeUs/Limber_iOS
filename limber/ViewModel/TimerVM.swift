@@ -12,8 +12,12 @@ import SwiftData
 import DeviceActivity
 
 class TimerVM: ObservableObject {
+  private let timerRepository: TimerRepositoryProtocol
   
-  init() {
+  
+
+  init(timerRepository: TimerRepositoryProtocol) {
+    self.timerRepository = timerRepository
     $selectedCategory.map { !$0.isEmpty }
       .assign(to: &$btnEnable)
   }
@@ -42,8 +46,7 @@ class TimerVM: ObservableObject {
   @Published var cantTommorowToast = false
 
   @Published var timers: [TimerResponseDto] = []
-    
-    var timerRepository = TimerRepository()
+      
   
   func focusCategoryTapped(idx: Int) {
     switch idx {
@@ -88,10 +91,10 @@ class TimerVM: ObservableObject {
   //    }
   
   func onAppear() {
-      let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
     Task { @MainActor [weak self] in
       guard let self else {return}
           do {
+            let userId = try await FirebaseAuthManager.shared.ensureUserId()
             timers = try await timerRepository.getUserTimers(userId: userId)
           } catch {
               
@@ -145,6 +148,49 @@ class TimerVM: ObservableObject {
       checkedModels.removeAll()
     }
   }
+  
+  func toggleChanged(id: Int, newValue: Bool) async {
+    
+    if let index = timers.firstIndex(where: { $0.id == id }) {
+      do {
+        let result = try await self.timerRepository.updateTimerStatus(id: id, dto: TimerStatusUpdateDto(status: timers[index].status == .OFF ? .ON : .OFF))
+        
+        timers[index].status = result.status
+
+        let deviceActivityCenter = DeviceActivityCenter()
+        
+        if result.status != .ON {
+          SharedData.defaultsGroup?.set(true, forKey: SharedData.Keys.doNotNoti.key)
+          deviceActivityCenter.stopMonitoring([.init(timers[index].id.description)])
+          DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
+          })
+
+        } else {
+          
+          let intervalStart = TimeManager.shared.timeStringToDateComponents(timers[index].startTime, dateFormatStr: "HH:mm") ?? DateComponents()
+          let intervalEnd = TimeManager.shared.timeStringToDateComponents(timers[index].endTime, dateFormatStr: "HH:mm") ?? DateComponents()
+          
+          
+          try deviceActivityCenter.startMonitoring(.init(timers[index].id.description), during: .init(intervalStart: intervalStart, intervalEnd: intervalEnd, repeats: true))
+        }
+      } catch TimerRepositoryError.httpError(let code) {
+        if code == 409 {
+//          timerVM.dontReserveToastOn = true
+
+        }
+      } catch {
+        
+      }
+  
+
+    }
+  }
+  
+  func getResponseDto(request: TimerRequestDto) async throws -> TimerResponseDto {
+    try await timerRepository.createTimer(request)
+  }
+  
 }
 struct ToastModifier: ViewModifier {
   @Binding var isPresented: Bool

@@ -7,122 +7,96 @@
 
 
 import Foundation
+import FirebaseFirestore
 
-// MARK: - Request / Response DTO
-
-struct TimerRetrospectResponse: Decodable {
-  let data: [TimerRetrospectResponseDto]
-  
-  private enum CodingKeys: String, CodingKey {
-    case data
-  }
-  
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    if let array = try? container.decode([TimerRetrospectResponseDto].self, forKey: .data) {
-      self.data = array
-    }
-    else if let single = try? container.decode(TimerRetrospectResponseDto.self, forKey: .data) {
-      self.data = [single]
-    }
-    else {
-      self.data = []
-    }
-  }
+protocol TimerRetrospectRepoProtocol {
+  func saveRetrospect(_ body: TimerRetrospectRequestDto) async throws -> TimerRetrospectResponseDto?
+  func deleteRetrospect(id: Int64) async throws
 }
 
-struct TimerRetrospectRequestDto: Encodable {
-  let userId: String
-  let timerHistoryId: Int
-  let timerId: Int
-  let immersion: Int
-  let comment: String
-}
+struct TimerRetrospectRepo: TimerRetrospectRepoProtocol {
+  private let db = Firestore.firestore()
 
-struct TimerRetrospectResponseDto: Decodable {
-  let id: Int
-  let timerHistoryId: Int
-  let timerId: Int
-  let userId: String
-  let immersion: Int
-  let comment: String
-  let delFlag: String
-}
-
-// MARK: - API Client
-
-struct TimerRetrospectAPI {
-  private let baseURL: URL = URLManager.baseURL
-  private let session: URLSession
-  private let encoder = JSONEncoder()
-  private let decoder = JSONDecoder()
-  
-  init(session: URLSession = .shared) {
-    self.session = session
-  }
-  
+  init() {}
   /// POST /api/timer-retrospects
   func saveRetrospect(_ body: TimerRetrospectRequestDto) async throws -> TimerRetrospectResponseDto? {
-    let url = baseURL.appendingPathComponent("/api/timer-retrospects")
-    var req = URLRequest(url: url)
-    req.httpMethod = "POST"
-    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    req.httpBody = try encoder.encode(body)
-    
-    let (data, resp) = try await session.data(for: req)
-    guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-      throw makeHTTPError(resp: resp, data: data)
-    }
-    return try decoder.decode(TimerRetrospectResponse.self, from: data).data.first
+    let userId = body.userId
+    let retrospectId = Self.makeId()
+    let now = Timestamp(date: Date())
+    let retrospectRef = retrospectsCollection(userId: userId).document(String(retrospectId))
+    let data: [String: Any] = [
+      "id": retrospectId,
+      "timerHistoryId": body.timerHistoryId,
+      "timerId": body.timerId,
+      "userId": body.userId,
+      "immersion": body.immersion,
+      "comment": body.comment,
+      "delFlag": "N",
+      "historyDt": now,
+    ]
+    try await FirestoreAsync.setData(retrospectRef, data: data)
+
+    let historyRef = historyCollection(userId: userId).document(String(body.timerHistoryId))
+    try await FirestoreAsync.updateData(historyRef, data: [
+      "hasRetrospect": true,
+      "retrospectId": retrospectId,
+      "retrospectImmersion": body.immersion,
+      "retrospectComment": body.comment,
+    ])
+
+    return TimerRetrospectResponseDto(
+      id: retrospectId,
+      timerHistoryId: body.timerHistoryId,
+      timerId: body.timerId,
+      userId: body.userId,
+      immersion: body.immersion,
+      comment: body.comment,
+      delFlag: "N"
+    )
   }
-  
   /// DELETE /api/timer-retrospects/{timerRetrospectId}
   func deleteRetrospect(id: Int64) async throws {
-    let url = baseURL
-      .appendingPathComponent("/api/timer-retrospects")
-      .appendingPathComponent(String(id))
-    
-    var req = URLRequest(url: url)
-    req.httpMethod = "DELETE"
-    
-    let (_, resp) = try await session.data(for: req)
-    guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-      // 컨트롤러는 204(No Content) 반환 → 2xx면 성공으로 처리
-      throw makeHTTPError(resp: resp, data: nil)
+    let userId = try await FirebaseAuthManager.shared.ensureUserId()
+    let ref = retrospectsCollection(userId: userId).document(String(id))
+    let snapshot = try await FirestoreAsync.getDocument(ref)
+    try await FirestoreAsync.updateData(ref, data: [
+      "delFlag": "Y",
+    ])
+    if let historyId = Self.intValue(from: snapshot.data()?["timerHistoryId"]) {
+      let historyRef = historyCollection(userId: userId).document(String(historyId))
+      try await FirestoreAsync.updateData(historyRef, data: [
+        "hasRetrospect": false,
+        "retrospectId": NSNull(),
+        "retrospectImmersion": NSNull(),
+        "retrospectComment": NSNull(),
+      ])
     }
   }
-  
-  // 간단한 에러 생성 헬퍼
-  private func makeHTTPError(resp: URLResponse, data: Data?) -> NSError {
-    let code = (resp as? HTTPURLResponse)?.statusCode ?? -1
-    let message = data.flatMap { String(data: $0, encoding: .utf8) } ?? ""
-    return NSError(domain: "TimerRetrospectAPI",
-                   code: code,
-                   userInfo: [NSLocalizedDescriptionKey: "HTTP \(code): \(message)"])
-  }
-}
 
-// MARK: - 사용 예시
-/*
- let api = TimerRetrospectAPI(baseURL: URL(string: "https://your.server.com")!)
- 
- let req = TimerRetrospectRequestDto(
- userId: "USER_123",
- timerHistoryId: 1001,
- timerId: 777,
- immersion: 85,
- comment: "컨디션 좋았음"
- )
- 
- do {
- // 저장
- let saved = try await api.saveRetrospect(req)
- print("saved id =", saved.id)
- 
- // 삭제
- try await api.deleteRetrospect(id: saved.id)
- print("deleted")
- } catch {
- print("API error:", error)
- }
- */
+  private func retrospectsCollection(userId: String) -> CollectionReference {
+    db.collection("users").document(userId).collection("timerRetrospects")
+  }
+
+  private func historyCollection(userId: String) -> CollectionReference {
+    db.collection("users").document(userId).collection("timerHistories")
+  }
+
+  private static func makeId() -> Int {
+    let millis = Int(Date().timeIntervalSince1970 * 1000)
+    return millis * 1000 + Int.random(in: 0..<1000)
+  }
+
+  private static func intValue(from value: Any?) -> Int? {
+    if let value = value as? Int {
+      return value
+    }
+    if let value = value as? Int64 {
+      return Int(value)
+    }
+    if let value = value as? NSNumber {
+      return value.intValue
+    }
+    return nil
+  }
+
+}

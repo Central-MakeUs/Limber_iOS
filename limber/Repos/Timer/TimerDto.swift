@@ -48,10 +48,3 @@ struct TimerResponseDto: Codable, Hashable {
     return TimerModel(id: self.id, title: self.title, focusTitle: self.getFocusTitle(), startTime: self.startTime, endTime: self.endTime, repeatDays: self.getDays(), repeatCycleCode: self.repeatCycleCode)
   }
 }
-struct LocalTime: Codable {
-  let hour: Int
-  let minute: Int
-  let second: Int
-  let nano: Int
-  
-}

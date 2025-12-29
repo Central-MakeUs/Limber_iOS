@@ -82,6 +82,27 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     Task {
       NSLog("intervalDidEnd:::\(activity.rawValue)")
       do {
+        let skipHistory = SharedData.defaultsGroup?.bool(forKey: SharedData.Keys.doNotNoti.key) ?? false
+        if !skipHistory,
+           let session = TimerSharedManager.shared.getTimeringSession(),
+           let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
+          let pending = PendingTimerHistory(
+            timerId: session.id,
+            userId: userId,
+            title: session.title,
+            focusTypeId: session.focusTypeId,
+            repeatCycleCode: session.repeatCycleCode.rawValue,
+            repeatDays: session.repeatDays,
+            startTime: session.startTime,
+            endTime: session.endTime,
+            historyTimestamp: Date().timeIntervalSince1970,
+            historyStatus: "SENT",
+            failReason: nil,
+            focusTypeTitle: nil
+          )
+          TimerSharedManager.shared.appendPendingHistory(pending)
+        }
+
         SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.isTimering.key)
         TimerObserver.shared.stopTimer()
         TimerSharedManager.shared.saveTimeringSession(nil)

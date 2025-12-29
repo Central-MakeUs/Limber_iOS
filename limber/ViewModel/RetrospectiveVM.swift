@@ -8,6 +8,11 @@
 import Foundation
 import Combine
 class RetrospectiveVM: ObservableObject {
+  
+  private let repo: TimerRetrospectRepoProtocol
+  
+  private let appBootStrapper: AppBootstrapper
+
   @Published var date: String
   @Published var labName: String
   @Published var focusDetail: String = ""
@@ -20,17 +25,16 @@ class RetrospectiveVM: ObservableObject {
   @Published var previousIndex: Int = 0
   @Published var currentIndex: Int = 0
   
-  
   @Published var transitionAnimationName: String? = nil
   @Published var value: Double = 0.0
   
-  var api = TimerRetrospectAPI()
-  
-  init(date: String, labName: String, timerId: Int, historyId: Int) {
+  init(date: String, labName: String, timerId: Int, historyId: Int, repo: TimerRetrospectRepoProtocol, appBootStrapper: AppBootstrapper) {
     self.date = date
     self.labName = labName
     self.timerId = timerId
     self.historyId = historyId
+    self.repo = repo
+    self.appBootStrapper = appBootStrapper
     
     $focusDetail
       .map { !$0.isEmpty }
@@ -50,12 +54,9 @@ class RetrospectiveVM: ObservableObject {
           immersion = 100
         }
         
-        if let deviceID = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) {
-          if let _ = try await api.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
-            let bootstrapper = await AppBootstrapper()
-            await bootstrapper.run()
-          }
-          
+        let deviceID = try await FirebaseAuthManager.shared.ensureUserId()
+        if let _ = try await repo.saveRetrospect(TimerRetrospectRequestDto(userId: deviceID, timerHistoryId: self.historyId, timerId: self.timerId, immersion: immersion, comment: focusDetail)) {
+          await appBootStrapper.run()
         }
       } catch {
         print("cath \(error)")

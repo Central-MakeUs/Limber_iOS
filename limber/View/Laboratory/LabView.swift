@@ -139,6 +139,3 @@ struct LabView: View {
     }
   }
 }
-#Preview {
-  LabView(labVM: LabVM())
-}

@@ -106,7 +106,4 @@ struct CustomStepSlider: View {
     return nil
   }
 }
-#Preview {
-  RetrospectiveView(vm: RetrospectiveVM(date: "", labName: "", timerId: 0, historyId: 0))
-}
 

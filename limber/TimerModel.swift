@@ -19,8 +19,22 @@ struct TimerModel: Codable {
   var repeatDays: String
   var focusTypeId: Int
   let repeatCycleCode: RepeatCycleCode
+  var actualDuration: TimeInterval?
+  var historyTimestamp: TimeInterval?
+  var actualStartTimestamp: TimeInterval?
 
-  init(id: Int, title: String, focusTitle: String, startTime: String, endTime: String, repeatDays: String, repeatCycleCode: RepeatCycleCode) {
+  init(
+    id: Int,
+    title: String,
+    focusTitle: String,
+    startTime: String,
+    endTime: String,
+    repeatDays: String,
+    repeatCycleCode: RepeatCycleCode,
+    actualDuration: TimeInterval? = nil,
+    historyTimestamp: TimeInterval? = nil,
+    actualStartTimestamp: TimeInterval? = nil
+  ) {
     
     self.id = id
     self.title = title
@@ -29,15 +43,31 @@ struct TimerModel: Codable {
     self.endTime = endTime.replacingOccurrences(of: " ", with: "")
     self.repeatDays = repeatDays
     self.repeatCycleCode = repeatCycleCode
+    self.actualDuration = actualDuration
+    self.historyTimestamp = historyTimestamp
+    self.actualStartTimestamp = actualStartTimestamp
     focusTypeId = StaticValManager.titleCntDic[focusTitle] ?? 0
 
   }
   var totalDuration: TimeInterval? {
+    if let actualDuration {
+      return actualDuration
+    }
     guard
       let start = TimeManager.shared.timeStringToDate(startTime),
       let end = TimeManager.shared.timeStringToDate(endTime)
     else { return nil }
-    return end.timeIntervalSince(start)
+
+    if start == end {
+      return 24 * 60 * 60
+    }
+    if start < end {
+      return end.timeIntervalSince(start)
+    }
+    if let nextEnd = Calendar.current.date(byAdding: .day, value: 1, to: end) {
+      return nextEnd.timeIntervalSince(start)
+    }
+    return nil
   }
 
   

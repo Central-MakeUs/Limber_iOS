@@ -9,9 +9,7 @@ import Foundation
 @MainActor
 class LabVM: ObservableObject {
   
-  private let historyRepo = TimerHistoryRepository()
-  private let repo = TimerHistoryAnalyticsAPI()
-  private let userId = SharedData.defaultsGroup?.string(forKey: SharedData.Keys.UDID.key) ?? ""
+  private let historyRepo: TimerHistoryRepositoryProtocol
   private var failReasonIcons = ["firstMedal", "secondMedal", "thirdMedal"]
   private var totalActualMinutes: Double = 1.0
   
@@ -54,7 +52,8 @@ class LabVM: ObservableObject {
   @Published var isChecked = false
   
   
-  init() {
+  init(historyRepo: TimerHistoryRepositoryProtocol) {
+    self.historyRepo = historyRepo
     focusTimeWeekly = [
       (day: "월", value: 0.0),
       (day: "화", value: 0.0),
@@ -73,20 +72,14 @@ class LabVM: ObservableObject {
       (day: "토", value: 0.0),
       (day: "일", value: 0.0)
     ]
-    
-    self.fetchHistories()
-    Task {
-      await fetchReports()
-    }
-    
-    
   }
   
   func onAppear() {
     Task {
       do {
-          histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
-          weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
+        let userId = try await FirebaseAuthManager.shared.ensureUserId()
+        histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
+        weekHistories = try await historyRepo.getHistoriesWeekly(TimerHistorySearchDto(userId: userId, searchRange: "WEEKLY", onlyIncompleteRetrospect: self.isChecked))
       } catch {
         print("error:::\(error)")
       }
@@ -97,6 +90,7 @@ class LabVM: ObservableObject {
   func fetchHistories() {
     Task {
       do {
+        let userId = try await FirebaseAuthManager.shared.ensureUserId()
         if self.isAll {
           histories = try await historyRepo.getHistoriesAll(TimerHistorySearchDto(userId: userId, searchRange:  "ALL", onlyIncompleteRetrospect: self.isChecked))
         } else {
@@ -114,6 +108,7 @@ class LabVM: ObservableObject {
   
   func fetchReports() async {
     do {
+      let userId = try await FirebaseAuthManager.shared.ensureUserId()
       totalFailureCount = 0
       let startStr =  TimeManager.shared.weekStartString(for: .now, weekOffset: weekCount)
       let endStr =  TimeManager.shared.weekEndString(for: .now, weekOffset: weekCount)
@@ -141,14 +136,14 @@ class LabVM: ObservableObject {
 
       
       
-         let dto = try await repo.totalImmersion(.init(userId: userId, start: startStr, end: endStr)).data
+         let dto = try await historyRepo.totalImmersion(.init(userId: userId, start: startStr, end: endStr))
          self.totalActualMinutes = Double(dto.totalActualMinutes)
          self.totalScheduledTimes =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes)
          self.averageAttentionTime =  TimeManager.shared.minutesToHourMinuteString(dto.totalActualMinutes / 7)
          self.averageAttentionImmersion = (Int(dto.ratio * 100)).description + "%"
       
       
-      let reasonData = try await repo.failReasons(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.count > $1.count }).enumerated().map { index, element in
+      let reasonData = try await historyRepo.failReasons(.init(userId: userId, start: startStr, end: endStr)).sorted(by: { $0.count > $1.count }).enumerated().map { index, element in
         self.totalFailureCount += Double(element.count)
         return element
        }
@@ -163,7 +158,7 @@ class LabVM: ObservableObject {
         return RankItem(icon: failReasonIcons[index], title: convertDic[element.failReason] ?? "", duration: element.count.description + "회", progress: progress )
       }
       
-      self.studyData  = try await repo.focusDistribution(.init(userId: userId, start: startStr, end: endStr)).data.sorted(by: { $0.totalActualMinutes > $1.totalActualMinutes }).prefix(3).enumerated().map { index, element in
+      self.studyData  = try await historyRepo.focusDistribution(.init(userId: userId, start: startStr, end: endStr)).sorted(by: { $0.totalActualMinutes > $1.totalActualMinutes }).prefix(3).enumerated().map { index, element in
         if index == 0 {
           self.studyPer = Int(Double(element.totalActualMinutes) / (self.totalActualMinutes == 0 ? 1 : self.totalActualMinutes) * 100)
         }
@@ -171,11 +166,11 @@ class LabVM: ObservableObject {
         return RankItem(icon: StaticValManager.titleDic[element.focusTypeId] ?? "", title: element.focusTypeName, duration: TimeManager.shared.minutesToHourMinuteString(element.totalActualMinutes), progress: Double(element.totalActualMinutes) / self.totalActualMinutes )  }
       
       
-      try await repo.actualByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
+      try await historyRepo.actualByWeekday(.init(userId: userId, start: startStr, end: endStr)).enumerated().forEach { index, element in
         self.focusTimeWeekly[index == 0 ? focusTimeWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.totalActualMinutes) / 60 > 24 ? 24 : Double(element.totalActualMinutes) / 60)
       }
       
-      try await repo.immersionByWeekday(.init(userId: userId, start: startStr, end: endStr)).data.enumerated().forEach { index, element in
+      try await historyRepo.immersionByWeekday(.init(userId: userId, start: startStr, end: endStr)).enumerated().forEach { index, element in
         self.immersionWeekly[index == 0 ? immersionWeekly.count - 1 : index - 1] = (day: element.dayOfWeek.convertToKor(), value: Double(element.ratio) * 100)
         
         
@@ -207,8 +202,5 @@ class LabVM: ObservableObject {
     }
     
   }
-  
 }
-
-
 

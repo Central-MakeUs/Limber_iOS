@@ -26,11 +26,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
     UNUserNotificationCenter.current().delegate = self
-    do {
-      let deviceID = try DeviceID.shared.getOrCreate()
-      SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
-    } catch {
-      
+    if FirebaseApp.app() == nil {
+      FirebaseApp.configure()
+    }
+    Task {
+      do {
+        let uid = try await FirebaseAuthManager.shared.ensureSignedIn()
+        SharedData.defaultsGroup?.set(uid, forKey: SharedData.Keys.UDID.key)
+      } catch {
+        NSLog("firebase auth error: \(error)")
+      }
     }
     return true
   }

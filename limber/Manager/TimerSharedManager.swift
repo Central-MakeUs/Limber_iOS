@@ -119,6 +119,33 @@ class TimerSharedManager {
     datas.append(dto)
     self.saveFocusSessions(datas)
   }
+
+  func loadPendingHistories() -> [PendingTimerHistory] {
+    if let data = SharedData.defaultsGroup?.data(forKey: SharedData.Keys.pendingHistories.key) {
+      let decoder = JSONDecoder()
+      if let histories = try? decoder.decode([PendingTimerHistory].self, from: data) {
+        return histories
+      }
+    }
+    return []
+  }
+
+  func savePendingHistories(_ histories: [PendingTimerHistory]) {
+    let encoder = JSONEncoder()
+    if let data = try? encoder.encode(histories) {
+      SharedData.defaultsGroup?.set(data, forKey: SharedData.Keys.pendingHistories.key)
+    }
+  }
+
+  func appendPendingHistory(_ history: PendingTimerHistory) {
+    var histories = loadPendingHistories()
+    histories.append(history)
+    savePendingHistories(histories)
+  }
+
+  func clearPendingHistories() {
+    SharedData.defaultsGroup?.set(nil, forKey: SharedData.Keys.pendingHistories.key)
+  }
   
 
   

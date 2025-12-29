@@ -70,9 +70,6 @@ struct LookBackView: View {
   }
 }
 
-#Preview {
-  LookBackView(labVM: LabVM())
-}
 struct LookBackToggle: View {
   let leftText: String = "전체"
   let rightText: String = "주간"

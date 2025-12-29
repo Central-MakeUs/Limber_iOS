@@ -1,0 +1,48 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "timerHistories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "delFlag", "order": "ASCENDING" },
+        { "fieldPath": "historyDt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "timerHistories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "delFlag", "order": "ASCENDING" },
+        { "fieldPath": "historyDt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "timerHistories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "delFlag", "order": "ASCENDING" },
+        { "fieldPath": "hasRetrospect", "order": "ASCENDING" },
+        { "fieldPath": "historyDt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "timerHistories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "delFlag", "order": "ASCENDING" },
+        { "fieldPath": "timerId", "order": "ASCENDING" },
+        { "fieldPath": "historyDt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "timerHistories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "delFlag", "order": "ASCENDING" },
+        { "fieldPath": "historyStatus", "order": "ASCENDING" },
+        { "fieldPath": "historyDt", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
