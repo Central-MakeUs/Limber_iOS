@@ -105,6 +105,7 @@ struct LimberApp: App {
           .environmentObject(blockVM)
           .environmentObject(appBootStrapper)
           .background(Color.white)
+          .task { await appBootStrapper.run() }
           
           
         } else {
@@ -112,8 +113,7 @@ struct LimberApp: App {
             hasSeenMain = true
             SharedData.defaultsGroup?.set(false, forKey: SharedData.Keys.doNotNoti.key)
           }, timerRepository: di.timerRepo)
-          
-          
+          .task { await appBootStrapper.run() }
         }
       }
     }
@@ -126,8 +126,6 @@ struct LimberApp: App {
         appDelegate.router = router
       }
     }
-    
-    
   }
   
   //        .onChange(of: appDelegate.currentViewId) { _, view in
@@ -148,6 +146,7 @@ struct LimberApp: App {
 @MainActor
 final class AppBootstrapper: ObservableObject {
   @Published var isReady = false
+  @Published var isRunning = false
   
   private let timerRepo: TimerRepositoryProtocol
   private let timerHistoryRepo: TimerHistoryRepositoryProtocol
@@ -158,6 +157,11 @@ final class AppBootstrapper: ObservableObject {
   }
   
   func run() async {
+    if isReady || isRunning {
+      return
+    }
+    isRunning = true
+    defer { isRunning = false }
     do {
       let deviceID = try await FirebaseAuthManager.shared.ensureSignedIn()
       SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)

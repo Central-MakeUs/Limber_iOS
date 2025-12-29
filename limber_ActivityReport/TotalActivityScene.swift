@@ -73,7 +73,12 @@ struct TotalActivityScene: DeviceActivityReportScene {
       filteredModels.forEach {
         focusTotalDuration += $0.totalDuration ?? 0.0
       }
-      return ActivityReport(totalDuration: totalActivityDuration, apps: sortedList, focusTotalDuration: focusTotalDuration, focuses: filteredModels)
+      return ActivityReport(
+        totalDuration: totalActivityDuration,
+        apps: sortedList,
+        focusTotalDuration: focusTotalDuration,
+        focuses: filteredModels
+      )
     }
 }
 

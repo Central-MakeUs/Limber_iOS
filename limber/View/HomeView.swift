@@ -19,6 +19,7 @@ struct HomeView: View {
 
   @StateObject var timerObserver = TimerObserver.shared
   @StateObject var bootstrapper: AppBootstrapper
+  @State private var showActivityReport = false
 
   var body: some View {
     GeometryReader { geo in
@@ -124,10 +125,16 @@ struct HomeView: View {
           
           Spacer().frame(maxHeight: isSmallScreen ? 10: 40)
           
-          DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 10)
+          ZStack {
+            if showActivityReport {
+              DeviceActivityReport(deviceActivityReportVM.contextTotalActivity, filter: deviceActivityReportVM.filter)
+            } else {
+              Color.clear
+            }
+          }
+          .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+          .padding(.horizontal, 20)
+          .padding(.bottom, 10)
           
           Spacer()
           
@@ -135,30 +142,35 @@ struct HomeView: View {
       }
     }
     .onAppear {
+      if !showActivityReport {
+        Task { @MainActor in
+          await Task.yield()
+          showActivityReport = true
+        }
+      }
       Task {
         await bootstrapper.run()
-        deviceActivityReportVM.contextTotalActivity = .totalActivity
-        var startTimeStr = ""
-        var endTimeStr = ""
-        
-        if let session = TimerSharedManager.shared.getTimeringSession() {
-          startTimeStr = session.startTime.appendingSecondsIfNeeded()
-          endTimeStr = session.endTime.appendingSecondsIfNeeded()
-        }
-        
-        if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , var endDate = TimeManager.shared.parseTimeString(endTimeStr) {
-          
-          if endDate < startDate {
-            endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
-          }
-          homeVM.endDate = endDate
-          timerObserver.startDate = startDate
-          timerObserver.endDate = endDate
-          timerObserver.startTimer()
-        }
-        homeVM.onAppear()
+      }
+      deviceActivityReportVM.contextTotalActivity = .totalActivity
+      var startTimeStr = ""
+      var endTimeStr = ""
+      
+      if let session = TimerSharedManager.shared.getTimeringSession() {
+        startTimeStr = session.startTime.appendingSecondsIfNeeded()
+        endTimeStr = session.endTime.appendingSecondsIfNeeded()
       }
       
+      if let startDate = TimeManager.shared.parseTimeString(startTimeStr) , var endDate = TimeManager.shared.parseTimeString(endTimeStr) {
+        
+        if endDate < startDate {
+          endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate)!
+        }
+        homeVM.endDate = endDate
+        timerObserver.startDate = startDate
+        timerObserver.endDate = endDate
+        timerObserver.startTimer()
+      }
+      homeVM.onAppear()
     }
     .sheet(isPresented: $showPicker) {
       BlockBottomSheet(isOnboarding: true, vm: blockVM, onComplete: {})
