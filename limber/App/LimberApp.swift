@@ -165,12 +165,10 @@ final class AppBootstrapper: ObservableObject {
     do {
       let deviceID = try await FirebaseAuthManager.shared.ensureSignedIn()
       SharedData.defaultsGroup?.set(deviceID, forKey: SharedData.Keys.UDID.key)
-      if let historyRepo = timerHistoryRepo as? TimerHistoryRepository {
-        do {
-          try await historyRepo.flushPendingHistories()
-        } catch {
-          NSLog("pending history sync error: \(error)")
-        }
+      do {
+        try await timerHistoryRepo.flushPendingHistories()
+      } catch {
+        NSLog("pending history sync error: \(error)")
       }
       
       async let timers = timerRepo.getUserTimers(userId: deviceID)

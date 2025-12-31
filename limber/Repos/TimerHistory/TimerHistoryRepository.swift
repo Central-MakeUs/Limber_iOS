@@ -14,6 +14,7 @@ protocol TimerHistoryRepositoryProtocol {
   func getLatestHistory(userId: String, timerId: String) async throws -> TimerHistoryResponseDto?
   func getHistoriesAll(_ dto: TimerHistorySearchDto) async throws -> [TimerHistoryResponseDto]
   func getHistoriesWeekly(_ dto: TimerHistorySearchDto) async throws -> [TimerWeeklyHistoryResponseDto]
+  func flushPendingHistories() async throws
   
   //POST
   func actualByWeekday(_ req: RangeRequest) async throws -> [WeekdayActualDto]
@@ -25,6 +26,7 @@ protocol TimerHistoryRepositoryProtocol {
 
 }
 final class TimerHistoryRepository: TimerHistoryRepositoryProtocol {
+  private static var flushTask: Task<Void, Error>?
   private let db = Firestore.firestore()
   private let isoFormatter = ISO8601DateFormatter()
   private let historyFormatter: DateFormatter = {
@@ -194,44 +196,53 @@ final class TimerHistoryRepository: TimerHistoryRepositoryProtocol {
   }
 
   func flushPendingHistories() async throws {
-    let pending = TimerSharedManager.shared.loadPendingHistories()
-    guard !pending.isEmpty else { return }
-    let fallbackUserId = try await FirebaseAuthManager.shared.ensureUserId()
-    for item in pending {
-      let historyId = Self.makeId()
-      let historyDt = Date(timeIntervalSince1970: item.historyTimestamp)
-      let focusTitle = item.focusTypeTitle ?? (StaticValManager.titleDic[item.focusTypeId] ?? "")
-      let userId = item.userId.isEmpty ? fallbackUserId : item.userId
-      if userId.isEmpty { continue }
-      let data: [String: Any] = [
-        "id": historyId,
-        "timerId": item.timerId,
-        "userId": userId,
-        "title": item.title,
-        "focusTypeId": item.focusTypeId,
-        "focusTypeTitle": focusTitle,
-        "repeatCycleCode": item.repeatCycleCode,
-        "repeatDays": item.repeatDays,
-        "historyDt": Timestamp(date: historyDt),
-        "historyStatus": item.historyStatus,
-        "failReason": item.failReason as Any,
-        "startTime": item.startTime,
-        "endTime": item.endTime,
-        "hasRetrospect": false,
-        "retrospectId": NSNull(),
-        "retrospectImmersion": NSNull(),
-        "retrospectComment": NSNull(),
-        "retrospectSummary": Self.makeRetrospectSummary(
-          historyDt: historyDt,
-          startTime: item.startTime,
-          endTime: item.endTime
-        ),
-        "delFlag": "N",
-      ]
-      let ref = historyCollection(userId: userId).document(String(historyId))
-      try await FirestoreAsync.setData(ref, data: data)
+    if let task = Self.flushTask {
+      try await task.value
+      return
     }
-    TimerSharedManager.shared.clearPendingHistories()
+    let task = Task {
+      let pending = TimerSharedManager.shared.loadPendingHistories()
+      guard !pending.isEmpty else { return }
+      let fallbackUserId = try await FirebaseAuthManager.shared.ensureUserId()
+      for item in pending {
+        let historyId = Self.makeId()
+        let historyDt = Date(timeIntervalSince1970: item.historyTimestamp)
+        let focusTitle = item.focusTypeTitle ?? (StaticValManager.titleDic[item.focusTypeId] ?? "")
+        let userId = item.userId.isEmpty ? fallbackUserId : item.userId
+        if userId.isEmpty { continue }
+        let data: [String: Any] = [
+          "id": historyId,
+          "timerId": item.timerId,
+          "userId": userId,
+          "title": item.title,
+          "focusTypeId": item.focusTypeId,
+          "focusTypeTitle": focusTitle,
+          "repeatCycleCode": item.repeatCycleCode,
+          "repeatDays": item.repeatDays,
+          "historyDt": Timestamp(date: historyDt),
+          "historyStatus": item.historyStatus,
+          "failReason": item.failReason as Any,
+          "startTime": item.startTime,
+          "endTime": item.endTime,
+          "hasRetrospect": false,
+          "retrospectId": NSNull(),
+          "retrospectImmersion": NSNull(),
+          "retrospectComment": NSNull(),
+          "retrospectSummary": Self.makeRetrospectSummary(
+            historyDt: historyDt,
+            startTime: item.startTime,
+            endTime: item.endTime
+          ),
+          "delFlag": "N",
+        ]
+        let ref = historyCollection(userId: userId).document(String(historyId))
+        try await FirestoreAsync.setData(ref, data: data)
+      }
+      TimerSharedManager.shared.clearPendingHistories()
+    }
+    Self.flushTask = task
+    defer { Self.flushTask = nil }
+    try await task.value
   }
   
   static func makeRetrospectSummary(historyDt: Date, startTime: String, endTime: String) -> String {

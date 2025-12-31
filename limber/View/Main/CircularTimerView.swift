@@ -22,8 +22,20 @@ class CircularTimerVM: ObservableObject {
   
   func onAppear() async {
     do {
+      try await historyRepo.flushPendingHistories()
+    } catch {
+      print("error:::circularVM")
+    }
+    do {
       let userId = try await FirebaseAuthManager.shared.ensureUserId()
-      let timerId = TimerSharedManager.shared.getHistoryTimerKey() ?? ""
+      let timerId = TimerSharedManager.shared.getHistoryTimerKey()
+        ?? SharedData.defaultsGroup?.string(forKey: SharedData.Keys.nowTimerKey.key)
+        ?? ""
+      guard !timerId.isEmpty else {
+        dto = nil
+        mmddStr = nil
+        return
+      }
       self.dto = try await historyRepo.getLatestHistory(userId: userId, timerId: timerId)
       self.mmddStr = TimeManager.shared.isoToMMdd(dto?.historyDt ?? "")
     } catch {
@@ -220,25 +232,18 @@ struct CircularTimerView: View {
             
             if (timer.totalTime - timer.elapsed) == 0 {
               Button {
-                
-                if let dto = vm.dto {
-                  DispatchQueue.main.async {
-                    router.push(.retrospective(
-                      id: dto.timerId,
-                      historyId: dto.id,
-                      date: vm.mmddStr ?? "",
-                      focusType: dto.focusTypeTitle
-                    ))
+                Task { @MainActor in
+                  if vm.dto == nil {
+                    await vm.onAppear()
                   }
-                  
-                  
-                } else {
-                  DispatchQueue.main.async {
-                    router.push(.retrospective(id: 0, historyId: 0, date: "", focusType: ""))
-                  }
+                  guard let dto = vm.dto else { return }
+                  router.push(.retrospective(
+                    id: dto.timerId,
+                    historyId: dto.id,
+                    date: vm.mmddStr ?? "",
+                    focusType: dto.focusTypeTitle
+                  ))
                 }
-                
-                
               } label: {
                 Text("회고하기")
                   .font(.suitHeading3Small)
